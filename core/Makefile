@@ -16,6 +16,7 @@ TARGET = $(BIN_DIR)/core
 
 CXX = g++
 CXXFLAGS = -I$(CHAI3D_DIR)/src \
+	-I/opt/homebrew/include/eigen3 \
 	-I$(CHAI3D_DIR)/external/Eigen \
 	-I$(CHAI3D_DIR)/external/glew/include \
 	-I$(CHAI3D_DIR)/external/DHD/include \
@@ -23,7 +24,7 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(SRC_DIR) \
 	-I/usr/include \
 	-I/usr/local/include \
-	-DLINUX -Wno-deprecated -std=c++0x -m64 -fsigned-char -O3
+	-DLINUX -Wno-deprecated -std=c++17 -m64 -fsigned-char -O3
 
 LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(GLFW_BUILD_DIR) \
@@ -37,13 +38,33 @@ LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 	-lpthread -lrt -ldl -lGL -lGLU -lusb-1.0 \
 	-lX11 -lXcursor -lXrandr -lXinerama
 
+# Platform tweaks (Homebrew and macOS frameworks)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+# Homebrew default prefix on Apple Silicon
+ CXXFLAGS += -I/opt/homebrew/include -I/opt/homebrew/include/eigen3 -I/opt/homebrew/include/GL
+ LDFLAGS += -L/opt/homebrew/lib -L/opt/homebrew/lib/glu
+ # Drop Linux/OpenGL/X11-specific libs on macOS; frameworks are linked via chai3d
+ LDLIBS := $(filter-out -lrt -lGL -lGLU -lX11 -lXcursor -lXrandr -lXinerama,$(LDLIBS))
+ # Link GLU explicitly from Homebrew
+ LDLIBS += -lGLU \
+ 	-framework Cocoa -framework IOKit -framework CoreVideo \
+ 	-framework CoreFoundation -framework CoreServices \
+ 	-framework CoreAudio -framework AudioToolbox -framework AudioUnit \
+ 	-framework OpenGL
+ # Remove LINUX define
+ CXXFLAGS := $(filter-out -DLINUX,$(CXXFLAGS))
+ # Ensure grpc/protobuf libs from pkg-config are included
+ LDLIBS += $(shell pkg-config --libs grpc++) $(shell pkg-config --libs protobuf)
+endif
+
 .PHONY: all cmake_chai3d_build clean
 
 all: cmake_chai3d_build $(TARGET)
 
 cmake_chai3d_build:
 	@mkdir -p $(CHAI3D_BUILD_DIR)
-	@cd $(CHAI3D_BUILD_DIR) && cmake .. && $(MAKE)
+	@cd $(CHAI3D_BUILD_DIR) && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -D CMAKE_CXX_FLAGS="-DTCP_KEEPIDLE=TCP_KEEPALIVE" .. && $(MAKE)
 
 
 # Compile regular source files

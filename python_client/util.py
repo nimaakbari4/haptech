@@ -4,8 +4,8 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream):
-    request = pb2.TrialRequest(trial_id=trial_id, trialDuration=duration)
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream, use_mouse_cursor: bool = False):
+    request = pb2.TrialRequest(trial_id=trial_id, trialDuration=duration, useMouseCursor=use_mouse_cursor)
     response_stream = stub.RunTrial(request)
     handle_stream(response_stream, output_csv_stream)
 

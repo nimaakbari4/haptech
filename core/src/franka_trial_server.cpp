@@ -9,16 +9,22 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
 
-    // make sure we can run a trial
+    // ensure simulation is running (allow brief startup lag)
     if (!SimulationManager::simContext.simulationRunning) {
-        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        const double timeoutSec = 2.0;
+        cPrecisionClock waitClock; waitClock.start();
+        while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
+            cSleepMs(10);
+        }
+        if (!SimulationManager::simContext.simulationRunning) {
+            std::cout << "[ERROR] Simulation is not running." << std::endl;
 
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Simulation is not running yet.");
-        writer->Write(statusMsg);
-
-        return grpc::Status::OK;
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Simulation is not running yet.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
     }
 
     if (SimulationManager::trialContext.trialRunning) {
@@ -40,6 +46,16 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
         status->set_status(TrialStatus::ERROR);
         status->set_message("Something went wrong loading the trial.");
+        writer->Write(statusMsg);
+        return grpc::Status::OK;
+    }
+
+    // Ensure a visible cursor object exists in the scene (mouse-controlled when enabled)
+    // Small sphere near origin so it's in view
+    if (!SimulationManager::addSphere("cursor", 0.02, 0.0, 0.0, 0.0)) {
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message("Failed to add cursor object.");
         writer->Write(statusMsg);
         return grpc::Status::OK;
     }
@@ -74,6 +90,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // set trial context
     SimulationManager::trialContext.trialId = request->trial_id();
     SimulationManager::trialContext.trialDuration = request->trialduration();
+    SimulationManager::trialContext.useMouseCursor = request->usemousecursor();
     SimulationManager::trialContext.time = 0.0;
 
     // start trial

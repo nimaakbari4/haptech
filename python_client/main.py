@@ -32,7 +32,7 @@ def main():
 
         # call run_trial with those values
         print(f"Starting trial '{trial_id}' for {duration} seconds...")
-        util.run_trial(stub, trial_id, duration, output_filestream)
+        util.run_trial(stub, trial_id, duration, output_filestream, use_mouse_cursor=config.use_mouse_cursor)
         print("Trial completed.")
     except Exception:
         print("Something went wrong.")

@@ -76,6 +76,7 @@ class TrialConfig:
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
+    use_mouse_cursor: bool = False
 
 
 def xml_parser(xml_path: str) -> TrialConfig:
@@ -177,12 +178,20 @@ def xml_parser(xml_path: str) -> TrialConfig:
             scale       = scale
         ))
 
+    # Optional controls
+    controls_elem = root.find("Controls")
+    use_mouse_cursor = False
+    if controls_elem is not None and controls_elem.find("MouseCursor") is not None:
+        text = controls_elem.findtext("MouseCursor", default="false").strip().lower()
+        use_mouse_cursor = text in ("1", "true", "yes", "on")
+
     return TrialConfig(
         home           = home,
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
-        objects        = objs
+        objects        = objs,
+        use_mouse_cursor = use_mouse_cursor
     )
 
 

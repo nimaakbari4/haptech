@@ -54,6 +54,9 @@ struct SimulationContext {
     // a virtual tool representing the haptic device in the scene
     cToolCursor* tool;
 
+    // visual mouse-driven cursor sphere (for non-hardware mode)
+    cShapeSphere* mouseCursorSphere = nullptr;
+
     // flag to indicate if the haptic simulation currently running
     bool simulationRunning = false;
 
@@ -88,6 +91,19 @@ struct SimulationContext {
     int swapInterval = 1;
 
     bool debug = false;
+
+    // mouse tracking for virtual cursor
+    double mouseX = 0.0;
+    double mouseY = 0.0;
+    bool mouseCaptured = false;
+    double mouseDepth = 0.2; // meters in front of camera along view axis
+
+    // mouse control tuning
+    double mouseSensitivity = 1.0;     // scale for nx,ny mapping
+    double mouseDepthSensitivity = 0.02;// meters per scroll tick
+    double mouseSmoothing = 0.15;       // 0..1 exp smoothing factor
+    // filtered target for smoothing
+    cVector3d filteredTarget = cVector3d(0,0,0);
 };
 
 struct TrialContext {
@@ -96,6 +112,7 @@ struct TrialContext {
 
     std::string trialId = "";
     double trialDuration = 0;
+    bool useMouseCursor = false;
 };
 
 // Singleton SimulationManager class
@@ -140,6 +157,12 @@ private:
 
     // callback when a key is pressed
     static void keyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods);
+
+    // callback when the cursor moves
+    static void cursorPosCallback(GLFWwindow* a_window, double xpos, double ypos);
+
+    // callback for mouse wheel to adjust depth
+    static void scrollCallback(GLFWwindow* a_window, double xoffset, double yoffset);
 
     // this function renders the scene
     static void updateGraphics(void);
