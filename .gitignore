@@ -1,2 +1,3 @@
 core/bin
 python_client/__pycache__
+.vcpkg/
