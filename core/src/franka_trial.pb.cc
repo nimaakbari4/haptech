@@ -86,8 +86,7 @@ inline constexpr TrialRequest::Impl_::Impl_(
         trial_id_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
-        trialduration_{0},
-        usemousecursor_{false} {}
+        trialduration_{0} {}
 
 template <typename>
 PROTOBUF_CONSTEXPR TrialRequest::TrialRequest(::_pbi::ConstantInitialized)
@@ -198,13 +197,11 @@ const ::uint32_t
         protodesc_cold) = {
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::TrialRequest, _impl_._has_bits_),
-        6, // hasbit index offset
+        5, // hasbit index offset
         PROTOBUF_FIELD_OFFSET(::TrialRequest, _impl_.trial_id_),
         PROTOBUF_FIELD_OFFSET(::TrialRequest, _impl_.trialduration_),
-        PROTOBUF_FIELD_OFFSET(::TrialRequest, _impl_.usemousecursor_),
         0,
         1,
-        2,
         0x004, // bitmap
         PROTOBUF_FIELD_OFFSET(::TrialResponseStream, _impl_._oneof_case_[0]),
         PROTOBUF_FIELD_OFFSET(::TrialResponseStream, _impl_.payload_),
@@ -251,11 +248,11 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, sizeof(::TrialRequest)},
-        {9, sizeof(::TrialResponseStream)},
-        {14, sizeof(::TrialStatusUpdate)},
-        {21, sizeof(::TrialDataPoint)},
-        {32, sizeof(::Color)},
-        {41, sizeof(::Vector3)},
+        {7, sizeof(::TrialResponseStream)},
+        {12, sizeof(::TrialStatusUpdate)},
+        {19, sizeof(::TrialDataPoint)},
+        {30, sizeof(::Color)},
+        {39, sizeof(::Vector3)},
 };
 static const ::_pb::Message* PROTOBUF_NONNULL const file_default_instances[] = {
     &::_TrialRequest_default_instance_._instance,
@@ -267,28 +264,28 @@ static const ::_pb::Message* PROTOBUF_NONNULL const file_default_instances[] = {
 };
 const char descriptor_table_protodef_franka_5ftrial_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\022franka_trial.proto\"O\n\014TrialRequest\022\020\n\010"
-    "trial_id\030\001 \001(\t\022\025\n\rtrialDuration\030\002 \001(\001\022\026\n"
-    "\016useMouseCursor\030\003 \001(\010\"r\n\023TrialResponseSt"
-    "ream\022*\n\014statusUpdate\030\001 \001(\0132\022.TrialStatus"
-    "UpdateH\000\022$\n\tdataPoint\030\002 \001(\0132\017.TrialDataP"
-    "ointH\000B\t\n\007payload\"B\n\021TrialStatusUpdate\022\034"
-    "\n\006status\030\001 \001(\0162\014.TrialStatus\022\017\n\007message\030"
-    "\002 \001(\t\"\177\n\016TrialDataPoint\022\021\n\ttimestamp\030\001 \001"
-    "(\001\022 \n\016devicePosition\030\002 \001(\0132\010.Vector3\022\037\n\r"
-    "proxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force\030\004"
-    " \001(\0132\010.Vector3\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030"
-    "\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t"
-    "\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001*4\n\013TrialStatus\022\013\n\007S"
-    "TARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n\022Fr"
-    "ankaTrialService\0221\n\010RunTrial\022\r.TrialRequ"
-    "est\032\024.TrialResponseStream0\001b\006proto3"
+    "\n\022franka_trial.proto\"7\n\014TrialRequest\022\020\n\010"
+    "trial_id\030\001 \001(\t\022\025\n\rtrialDuration\030\002 \001(\001\"r\n"
+    "\023TrialResponseStream\022*\n\014statusUpdate\030\001 \001"
+    "(\0132\022.TrialStatusUpdateH\000\022$\n\tdataPoint\030\002 "
+    "\001(\0132\017.TrialDataPointH\000B\t\n\007payload\"B\n\021Tri"
+    "alStatusUpdate\022\034\n\006status\030\001 \001(\0162\014.TrialSt"
+    "atus\022\017\n\007message\030\002 \001(\t\"\177\n\016TrialDataPoint\022"
+    "\021\n\ttimestamp\030\001 \001(\001\022 \n\016devicePosition\030\002 \001"
+    "(\0132\010.Vector3\022\037\n\rproxyPosition\030\003 \001(\0132\010.Ve"
+    "ctor3\022\027\n\005force\030\004 \001(\0132\010.Vector3\"(\n\005Color\022"
+    "\t\n\001r\030\001 \001(\001\022\t\n\001g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vect"
+    "or3\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001*4\n\013"
+    "TrialStatus\022\013\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tC"
+    "OMPLETED\020\0022G\n\022FrankaTrialService\0221\n\010RunT"
+    "rial\022\r.TrialRequest\032\024.TrialResponseStrea"
+    "m0\001b\006proto3"
 };
 static ::absl::once_flag descriptor_table_franka_5ftrial_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_franka_5ftrial_2eproto = {
     false,
     false,
-    635,
+    611,
     descriptor_table_protodef_franka_5ftrial_2eproto,
     "franka_trial.proto",
     &descriptor_table_franka_5ftrial_2eproto_once,
@@ -347,13 +344,7 @@ TrialRequest::TrialRequest(
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
   new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
-  ::memcpy(reinterpret_cast<char *>(&_impl_) +
-               offsetof(Impl_, trialduration_),
-           reinterpret_cast<const char *>(&from._impl_) +
-               offsetof(Impl_, trialduration_),
-           offsetof(Impl_, usemousecursor_) -
-               offsetof(Impl_, trialduration_) +
-               sizeof(Impl_::usemousecursor_));
+  _impl_.trialduration_ = from._impl_.trialduration_;
 
   // @@protoc_insertion_point(copy_constructor:TrialRequest)
 }
@@ -365,12 +356,7 @@ PROTOBUF_NDEBUG_INLINE TrialRequest::Impl_::Impl_(
 
 inline void TrialRequest::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  ::memset(reinterpret_cast<char *>(&_impl_) +
-               offsetof(Impl_, trialduration_),
-           0,
-           offsetof(Impl_, usemousecursor_) -
-               offsetof(Impl_, trialduration_) +
-               sizeof(Impl_::usemousecursor_));
+  _impl_.trialduration_ = {};
 }
 TrialRequest::~TrialRequest() {
   // @@protoc_insertion_point(destructor:TrialRequest)
@@ -430,16 +416,16 @@ TrialRequest::GetClassData() const {
   return TrialRequest_class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<2, 3, 0, 29, 2>
+const ::_pbi::TcParseTable<1, 2, 0, 29, 2>
 TrialRequest::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_._has_bits_),
     0, // no _extensions_
-    3, 24,  // max_field_number, fast_idx_mask
+    2, 8,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967288,  // skipmap
+    4294967292,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    3,  // num_field_entries
+    2,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     TrialRequest_class_data_.base(),
@@ -449,16 +435,12 @@ TrialRequest::_table_ = {
     ::_pbi::TcParser::GetTable<::TrialRequest>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    {::_pbi::TcParser::MiniParse, {}},
-    // string trial_id = 1;
-    {::_pbi::TcParser::FastUS1,
-     {10, 0, 0, PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trial_id_)}},
     // double trialDuration = 2;
     {::_pbi::TcParser::FastF64S1,
      {17, 1, 0, PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trialduration_)}},
-    // bool useMouseCursor = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(TrialRequest, _impl_.usemousecursor_), 2>(),
-     {24, 2, 0, PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.usemousecursor_)}},
+    // string trial_id = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 0, 0, PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trial_id_)}},
   }}, {{
     65535, 65535
   }}, {{
@@ -466,8 +448,6 @@ TrialRequest::_table_ = {
     {PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trial_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
     // double trialDuration = 2;
     {PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trialduration_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kDouble)},
-    // bool useMouseCursor = 3;
-    {PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.usemousecursor_), _Internal::kHasBitsOffset + 2, 0, (0 | ::_fl::kFcOptional | ::_fl::kBool)},
   }},
   // no aux_entries
   {{
@@ -487,11 +467,7 @@ PROTOBUF_NOINLINE void TrialRequest::Clear() {
   if ((cached_has_bits & 0x00000001U) != 0) {
     _impl_.trial_id_.ClearNonDefaultToEmpty();
   }
-  if ((cached_has_bits & 0x00000006U) != 0) {
-    ::memset(&_impl_.trialduration_, 0, static_cast<::size_t>(
-        reinterpret_cast<char*>(&_impl_.usemousecursor_) -
-        reinterpret_cast<char*>(&_impl_.trialduration_)) + sizeof(_impl_.usemousecursor_));
-  }
+  _impl_.trialduration_ = 0;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -533,15 +509,6 @@ PROTOBUF_NOINLINE void TrialRequest::Clear() {
     }
   }
 
-  // bool useMouseCursor = 3;
-  if ((this_._impl_._has_bits_[0] & 0x00000004U) != 0) {
-    if (this_._internal_usemousecursor() != 0) {
-      target = stream->EnsureSpace(target);
-      target = ::_pbi::WireFormatLite::WriteBoolToArray(
-          3, this_._internal_usemousecursor(), target);
-    }
-  }
-
   if (ABSL_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -567,7 +534,7 @@ PROTOBUF_NOINLINE void TrialRequest::Clear() {
 
   ::_pbi::Prefetch5LinesFrom7Lines(&this_);
   cached_has_bits = this_._impl_._has_bits_[0];
-  if ((cached_has_bits & 0x00000007U) != 0) {
+  if ((cached_has_bits & 0x00000003U) != 0) {
     // string trial_id = 1;
     if ((cached_has_bits & 0x00000001U) != 0) {
       if (!this_._internal_trial_id().empty()) {
@@ -579,12 +546,6 @@ PROTOBUF_NOINLINE void TrialRequest::Clear() {
     if ((cached_has_bits & 0x00000002U) != 0) {
       if (::absl::bit_cast<::uint64_t>(this_._internal_trialduration()) != 0) {
         total_size += 9;
-      }
-    }
-    // bool useMouseCursor = 3;
-    if ((cached_has_bits & 0x00000004U) != 0) {
-      if (this_._internal_usemousecursor() != 0) {
-        total_size += 2;
       }
     }
   }
@@ -604,7 +565,7 @@ void TrialRequest::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::go
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if ((cached_has_bits & 0x00000007U) != 0) {
+  if ((cached_has_bits & 0x00000003U) != 0) {
     if ((cached_has_bits & 0x00000001U) != 0) {
       if (!from._internal_trial_id().empty()) {
         _this->_internal_set_trial_id(from._internal_trial_id());
@@ -617,11 +578,6 @@ void TrialRequest::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::go
     if ((cached_has_bits & 0x00000002U) != 0) {
       if (::absl::bit_cast<::uint64_t>(from._internal_trialduration()) != 0) {
         _this->_impl_.trialduration_ = from._impl_.trialduration_;
-      }
-    }
-    if ((cached_has_bits & 0x00000004U) != 0) {
-      if (from._internal_usemousecursor() != 0) {
-        _this->_impl_.usemousecursor_ = from._impl_.usemousecursor_;
       }
     }
   }
@@ -644,12 +600,7 @@ void TrialRequest::InternalSwap(TrialRequest* PROTOBUF_RESTRICT PROTOBUF_NONNULL
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.trial_id_, &other->_impl_.trial_id_, arena);
-  ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.usemousecursor_)
-      + sizeof(TrialRequest::_impl_.usemousecursor_)
-      - PROTOBUF_FIELD_OFFSET(TrialRequest, _impl_.trialduration_)>(
-          reinterpret_cast<char*>(&_impl_.trialduration_),
-          reinterpret_cast<char*>(&other->_impl_.trialduration_));
+  swap(_impl_.trialduration_, other->_impl_.trialduration_);
 }
 
 ::google::protobuf::Metadata TrialRequest::GetMetadata() const {

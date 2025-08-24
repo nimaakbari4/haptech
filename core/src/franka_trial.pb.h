@@ -698,7 +698,6 @@ class TrialRequest final : public ::google::protobuf::Message
   enum : int {
     kTrialIdFieldNumber = 1,
     kTrialDurationFieldNumber = 2,
-    kUseMouseCursorFieldNumber = 3,
   };
   // string trial_id = 1;
   void clear_trial_id() ;
@@ -725,21 +724,11 @@ class TrialRequest final : public ::google::protobuf::Message
   void _internal_set_trialduration(double value);
 
   public:
-  // bool useMouseCursor = 3;
-  void clear_usemousecursor() ;
-  bool usemousecursor() const;
-  void set_usemousecursor(bool value);
-
-  private:
-  bool _internal_usemousecursor() const;
-  void _internal_set_usemousecursor(bool value);
-
-  public:
   // @@protoc_insertion_point(class_scope:TrialRequest)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<2, 3,
+  static const ::google::protobuf::internal::TcParseTable<1, 2,
                                    0, 29,
                                    2>
       _table_;
@@ -763,7 +752,6 @@ class TrialRequest final : public ::google::protobuf::Message
     ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::internal::ArenaStringPtr trial_id_;
     double trialduration_;
-    bool usemousecursor_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1568,30 +1556,6 @@ inline double TrialRequest::_internal_trialduration() const {
 inline void TrialRequest::_internal_set_trialduration(double value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.trialduration_ = value;
-}
-
-// bool useMouseCursor = 3;
-inline void TrialRequest::clear_usemousecursor() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.usemousecursor_ = false;
-  _impl_._has_bits_[0] &= ~0x00000004U;
-}
-inline bool TrialRequest::usemousecursor() const {
-  // @@protoc_insertion_point(field_get:TrialRequest.useMouseCursor)
-  return _internal_usemousecursor();
-}
-inline void TrialRequest::set_usemousecursor(bool value) {
-  _internal_set_usemousecursor(value);
-  _impl_._has_bits_[0] |= 0x00000004U;
-  // @@protoc_insertion_point(field_set:TrialRequest.useMouseCursor)
-}
-inline bool TrialRequest::_internal_usemousecursor() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.usemousecursor_;
-}
-inline void TrialRequest::_internal_set_usemousecursor(bool value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.usemousecursor_ = value;
 }
 
 // -------------------------------------------------------------------

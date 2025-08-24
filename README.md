@@ -3,30 +3,31 @@ The core functionality of the Haptech project.
 
 ## Building the Core
 
-### 1. Initialize Submodules
-Before building, make sure to initialize and update the required submodules:
+### One‑command setup (macOS/Linux)
 
+```bash
+make bootstrap
+```
+
+This installs prerequisites, initializes submodules, bootstraps vcpkg, sets up a Python venv, optionally regenerates protobuf/gRPC stubs, and builds `core/bin/core`.
+
+Flags:
+- pass Make variable `ARGS` to the script, e.g.:
+  - `make bootstrap ARGS="--no-build"`
+  - `make bootstrap ARGS="--regen"`
+
+Windows:
+- Use PowerShell: `powershell -ExecutionPolicy Bypass -File scripts/bootstrap-windows.ps1`
+- Or use WSL2 (Ubuntu) and run `scripts/bootstrap-linux.sh`.
+
+### Manual build
 ```bash
 git submodule update --init --recursive
+cd core && make
 ```
 
-### 2. Build the Project
-Navigate to the `core` directory and run:
-
+### Run the Core Executable
 ```bash
-cd core
-make
-```
-
-This will automatically build CHAI3D and its dependencies, then build the core executable in `core/bin/core`.
-
-### 3. Run the Core Executable
-
-```bash
-cd bin
+cd core/bin
 ./core
 ```
-
-### Notes
-- Ensure you have development packages for system libraries (GL, X11, etc.) installed.
-- By default, gRPC, protobuf, and Abseil are expected to be installed globally. For portability, consider integrating these as local dependencies.

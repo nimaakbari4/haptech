@@ -81,11 +81,6 @@ bool SimulationManager::run() {
     // set key callback
     glfwSetKeyCallback(simContext.window, keyCallback);
 
-    // set mouse move callback
-    glfwSetCursorPosCallback(simContext.window, cursorPosCallback);
-    // set scroll callback for depth control
-    glfwSetScrollCallback(simContext.window, scrollCallback);
-
     // set resize callback
     glfwSetWindowSizeCallback(simContext.window, windowSizeCallback);
 
@@ -187,20 +182,6 @@ bool SimulationManager::run() {
     // start the haptic tool
     simContext.tool->start();
 
-    // default cursor mode
-    glfwSetInputMode(simContext.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-    // create a visible mouse-driven cursor sphere (only shown when mouse mode is enabled)
-    if (simContext.mouseCursorSphere == nullptr) {
-        simContext.mouseCursorSphere = new cShapeSphere(8.0); // pixels when used in front layer
-        cMaterialPtr mat = cMaterial::create();
-        mat->setRedFireBrick();
-        mat->setTransparencyLevel(0.0f); // fully opaque for clarity
-        simContext.mouseCursorSphere->setMaterial(mat);
-        // attach to front layer so it's always visible (overlay)
-        simContext.camera->m_frontLayer->addChild(simContext.mouseCursorSphere);
-        simContext.mouseCursorSphere->setShowEnabled(false);
-    }
 
     //--------------------------------------------------------------------------
     // WIDGETS
@@ -401,18 +382,6 @@ void SimulationManager::windowSizeCallback(GLFWwindow* a_window, int a_width, in
 void SimulationManager::errorCallback(int error, const char* a_description) {
     std::cout << "Error: " << a_description << std::endl;
 }
-// callback when the cursor moves
-void SimulationManager::cursorPosCallback(GLFWwindow* a_window, double xpos, double ypos) {
-    simContext.mouseX = xpos;
-    simContext.mouseY = ypos;
-}
-
-// scroll to adjust mouse cursor depth (closer with up, farther with down)
-void SimulationManager::scrollCallback(GLFWwindow* a_window, double xoffset, double yoffset) {
-    // step depth using tunable sensitivity, clamp between 5 cm and 2 m
-    simContext.mouseDepth = cClamp(simContext.mouseDepth - simContext.mouseDepthSensitivity * yoffset, 0.05, 2.0);
-}
-
 
 // callback when a key is pressed
 void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods) {
@@ -464,42 +433,6 @@ void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scanc
         simContext.camera->setMirrorVertical(simContext.mirroredDisplay);
     }
 
-    // toggle mouse capture for virtual cursor
-    else if (a_key == GLFW_KEY_C)
-    {
-        simContext.mouseCaptured = !simContext.mouseCaptured;
-        glfwSetInputMode(simContext.window, GLFW_CURSOR, simContext.mouseCaptured ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-        if (SimulationManager::trialContext.useMouseCursor && simContext.mouseCursorSphere) {
-            simContext.mouseCursorSphere->setShowEnabled(simContext.mouseCaptured);
-        }
-    }
-
-    // tuning keys: [ ] adjust sensitivity, -/= adjust smoothing, R reset depth
-    else if (a_key == GLFW_KEY_LEFT_BRACKET)
-    {
-        simContext.mouseSensitivity = std::max(0.1, simContext.mouseSensitivity * 0.8);
-        std::cout << "[MOUSE] sensitivity=" << simContext.mouseSensitivity << std::endl;
-    }
-    else if (a_key == GLFW_KEY_RIGHT_BRACKET)
-    {
-        simContext.mouseSensitivity = std::min(5.0, simContext.mouseSensitivity * 1.25);
-        std::cout << "[MOUSE] sensitivity=" << simContext.mouseSensitivity << std::endl;
-    }
-    else if (a_key == GLFW_KEY_MINUS)
-    {
-        simContext.mouseSmoothing = std::max(0.0, simContext.mouseSmoothing - 0.05);
-        std::cout << "[MOUSE] smoothing=" << simContext.mouseSmoothing << std::endl;
-    }
-    else if (a_key == GLFW_KEY_EQUAL)
-    {
-        simContext.mouseSmoothing = std::min(0.95, simContext.mouseSmoothing + 0.05);
-        std::cout << "[MOUSE] smoothing=" << simContext.mouseSmoothing << std::endl;
-    }
-    else if (a_key == GLFW_KEY_R)
-    {
-        simContext.mouseDepth = 0.2;
-        std::cout << "[MOUSE] depth reset to " << simContext.mouseDepth << std::endl;
-    }
 }
 
 // this function renders the scene
@@ -557,49 +490,8 @@ void SimulationManager::updateHaptics(void) {
         // update world transforms
         simContext.world->computeGlobalPositions(true);
 
-        // update tool from device or mouse
-        if (SimulationManager::trialContext.useMouseCursor) {
-            // Map mouse position using window size (screen points) to handle Retina correctly
-            int winW = std::max(1, simContext.width);
-            int winH = std::max(1, simContext.height);
-            double mx = simContext.mouseX;
-            double my = simContext.mouseY;
-            double nx = (mx / winW) - 0.5;
-            double ny = 0.5 - (my / winH);
-            // fine control when holding shift
-            double sens = simContext.mouseSensitivity * ( (glfwGetKey(simContext.window, GLFW_KEY_LEFT_SHIFT)==GLFW_PRESS ||
-                                                           glfwGetKey(simContext.window, GLFW_KEY_RIGHT_SHIFT)==GLFW_PRESS) ? 0.3 : 1.0);
-            const double scale = sens;
-            // derive camera basis from configured camera set() (eye->target along -X in our setup)
-            cVector3d camForward(-1, 0, 0); // from eye toward target
-            cVector3d camRight(0, 1, 0);
-            cVector3d camUp(0, 0, 1);
-            cVector3d camOrigin(0, 0, 0);
-            // map nx,ny screen to world plane at adjustable depth along forward
-            cVector3d target = camOrigin + (nx * scale) * camRight + (ny * scale) * camUp + simContext.mouseDepth * camForward;
-            // exponential smoothing
-            simContext.filteredTarget = simContext.filteredTarget * simContext.mouseSmoothing + target * (1.0 - simContext.mouseSmoothing);
-            cVector3d smoothed = simContext.filteredTarget;
-            // keep tool proxy in sync (for interactions if enabled)
-            simContext.tool->setDeviceGlobalPos(smoothed);
-            // move existing scene object labeled "cursor" if present
-            auto it = simContext.objectMap.find("cursor");
-            if (it != simContext.objectMap.end() && it->second) {
-                it->second->setLocalPos(smoothed);
-            }
-            // hide overlay dot; we are driving the scene object instead
-            if (simContext.mouseCursorSphere) {
-                simContext.mouseCursorSphere->setShowEnabled(false);
-            }
-            if (simContext.debug) {
-                std::cout << "[MOUSE] win=" << winW << "x" << winH
-                          << " pos=" << mx << "," << my
-                          << " nx,ny=" << nx << "," << ny
-                          << " target=" << target << std::endl;
-            }
-        } else {
-            simContext.tool->updateFromDevice();
-        }
+        // update tool from device only (mouse controls removed)
+        simContext.tool->updateFromDevice();
 
         // compute interaction forces
         simContext.tool->computeInteractionForces();

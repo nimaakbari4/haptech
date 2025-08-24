@@ -50,16 +50,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Ensure a visible cursor object exists in the scene (mouse-controlled when enabled)
-    // Small sphere near origin so it's in view
-    if (!SimulationManager::addSphere("cursor", 0.02, 0.0, 0.0, 0.0)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Failed to add cursor object.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
-    }
-
     // Add sphere - positioned back and to the left
     if (!SimulationManager::addSphere("SMALL_SPHERE", 0.08, -0.2, 0.0, -0.1)) {
         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
@@ -90,7 +80,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // set trial context
     SimulationManager::trialContext.trialId = request->trial_id();
     SimulationManager::trialContext.trialDuration = request->trialduration();
-    SimulationManager::trialContext.useMouseCursor = request->usemousecursor();
     SimulationManager::trialContext.time = 0.0;
 
     // start trial

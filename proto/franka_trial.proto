@@ -8,7 +8,6 @@ service FrankaTrialService {
 message TrialRequest {
     string trial_id = 1;
     double trialDuration = 2;
-    bool useMouseCursor = 3;
 }
 
 // Message structure for server responses (in a stream)
