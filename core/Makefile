@@ -16,7 +16,6 @@ TARGET = $(BIN_DIR)/core
 
 CXX = g++
 CXXFLAGS = -I$(CHAI3D_DIR)/src \
-	-I/opt/homebrew/include/eigen3 \
 	-I$(CHAI3D_DIR)/external/Eigen \
 	-I$(CHAI3D_DIR)/external/glew/include \
 	-I$(CHAI3D_DIR)/external/DHD/include \
@@ -24,19 +23,22 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(SRC_DIR) \
 	-I/usr/include \
 	-I/usr/local/include \
+	-I/usr/include/eigen3 \
 	-DLINUX -Wno-deprecated -std=c++17 -m64 -fsigned-char -O3
 
 LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(GLFW_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
-	-L/usr/local/lib
+	-L/usr/local/lib \
+	-L/usr/lib/x86_64-linux-gnu
 
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 	$(GLFW_BUILD_DIR)/libglfw.a \
-	-lgrpc++ -lgrpc -lprotobuf \
+	-lgrpc++ -lgrpc -lgpr -lprotobuf \
 	-labsl_synchronization -labsl_symbolize -labsl_stacktrace -labsl_debugging_internal -labsl_demangle_internal -labsl_base -labsl_spinlock_wait \
 	-lpthread -lrt -ldl -lGL -lGLU -lusb-1.0 \
-	-lX11 -lXcursor -lXrandr -lXinerama
+	-lX11 -lXcursor -lXrandr -lXinerama \
+	-lPocoFoundation -lPocoNet -lPocoNetSSL -lPocoCrypto -lssl -lcrypto
 
 # Platform tweaks (Homebrew and macOS frameworks)
 UNAME_S := $(shell uname -s)
@@ -64,7 +66,11 @@ all: cmake_chai3d_build $(TARGET)
 
 cmake_chai3d_build:
 	@mkdir -p $(CHAI3D_BUILD_DIR)
-	@cd $(CHAI3D_BUILD_DIR) && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -D CMAKE_CXX_FLAGS="-DTCP_KEEPIDLE=TCP_KEEPALIVE" .. && $(MAKE)
+	@cd $(CHAI3D_BUILD_DIR) && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+		-DCMAKE_CXX_FLAGS="-DTCP_KEEPIDLE=TCP_KEEPALIVE" \
+		-DCMAKE_PREFIX_PATH="/usr" \
+		-DPoco_DIR="/usr/lib/x86_64-linux-gnu/cmake/Poco" \
+		.. && $(MAKE)
 
 
 # Compile regular source files

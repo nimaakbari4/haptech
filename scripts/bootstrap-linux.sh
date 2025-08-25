@@ -20,14 +20,64 @@ export DEBIAN_FRONTEND=noninteractive || true
 if command -v apt-get >/dev/null 2>&1; then
   echo "[bootstrap] Installing packages via apt"
   sudo apt-get update
+  
+  # Try to install packages with fallbacks for different Ubuntu versions
+  echo "[bootstrap] Installing core build tools..."
   sudo apt-get install -y \
+    git curl ca-certificates zip unzip tar \
     build-essential cmake ninja-build pkg-config \
     protobuf-compiler libprotobuf-dev \
-    libgrpc++-dev grpc-proto \
-    abseil-cpp-dev \
+    libgrpc++-dev \
     libeigen3-dev libglew-dev libglfw3-dev libusb-1.0-0-dev \
     mesa-common-dev libglu1-mesa-dev \
-    python3-venv python3-pip
+    python3-venv python3-pip \
+    libpoco-dev libssl-dev libcrypto++-dev \
+    libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev \
+    protobuf-compiler-grpc || true
+  
+  # Try to install abseil (package name varies by Ubuntu version)
+  echo "[bootstrap] Installing abseil..."
+  if sudo apt-get install -y abseil-cpp-dev 2>/dev/null; then
+    echo "abseil-cpp-dev installed successfully"
+  elif sudo apt-get install -y libabsl-dev 2>/dev/null; then
+    echo "libabsl-dev installed successfully"
+  else
+    echo "Warning: abseil not found in system packages, will use vcpkg version"
+  fi
+  
+  # Try to install grpc-proto (package name varies by Ubuntu version)
+  echo "[bootstrap] Installing gRPC proto..."
+  if sudo apt-get install -y grpc-proto 2>/dev/null; then
+    echo "grpc-proto installed successfully"
+  elif sudo apt-get install -y libgrpc-dev 2>/dev/null; then
+    echo "libgrpc-dev installed successfully"
+  else
+    echo "Warning: gRPC proto not found in system packages, will use vcpkg version"
+  fi
+
+  # Ensure grpc_cpp_plugin is available (apt first, then vcpkg fallback)
+  echo "[bootstrap] Ensuring grpc_cpp_plugin is available..."
+  if ! command -v grpc_cpp_plugin >/dev/null 2>&1; then
+    if sudo apt-get install -y protobuf-compiler-grpc 2>/dev/null; then
+      echo "protobuf-compiler-grpc installed successfully"
+    else
+      echo "protobuf-compiler-grpc not available; installing gRPC via vcpkg to obtain plugin"
+      echo "[bootstrap] vcpkg (ensure bootstrapped)"
+      if [[ ! -d "$ROOT_DIR/.vcpkg" ]]; then
+        git -C "$ROOT_DIR" clone https://github.com/microsoft/vcpkg.git .vcpkg
+        "$ROOT_DIR/.vcpkg/bootstrap-vcpkg.sh"
+      fi
+      "$ROOT_DIR/.vcpkg/vcpkg" install grpc
+      VCPKG_PLUGIN="$ROOT_DIR/.vcpkg/installed/x64-linux/tools/grpc/grpc_cpp_plugin"
+      if [[ -x "$VCPKG_PLUGIN" ]]; then
+        export PATH="$ROOT_DIR/.vcpkg/installed/x64-linux/tools/grpc:$PATH"
+        echo "Using vcpkg grpc_cpp_plugin at $VCPKG_PLUGIN"
+      else
+        echo "Warning: grpc_cpp_plugin still not found after vcpkg install" >&2
+      fi
+    fi
+  fi
+  
 else
   echo "[bootstrap] Please install prerequisites for your distro (apt, dnf, yum)." >&2
 fi
@@ -56,6 +106,16 @@ pip install -r "$ROOT_DIR/python_client/requirements.txt"
 echo "[bootstrap] Verify protoc and grpc_cpp_plugin"
 protoc --version
 which grpc_cpp_plugin || echo "(Note) grpc_cpp_plugin path not required when using system libgrpc++-dev"
+
+# Auto-regenerate C++ protobuf if generated headers are from a newer protoc
+if grep -q 'google/protobuf/runtime_version.h' "$ROOT_DIR/core/src/franka_trial.pb.h" 2>/dev/null; then
+  echo "[bootstrap] Detected stale protobuf headers (runtime_version.h). Regenerating C++ stubs..."
+  protoc --proto_path="$ROOT_DIR/proto" \
+    --cpp_out="$ROOT_DIR/core/src" \
+    --grpc_out="$ROOT_DIR/core/src" \
+    --plugin=protoc-gen-grpc="$(which grpc_cpp_plugin || echo grpc_cpp_plugin)" \
+    "$ROOT_DIR/proto/franka_trial.proto"
+fi
 
 if $REGEN; then
   echo "[bootstrap] Regenerating protobuf/gRPC (C++ & Python)"
