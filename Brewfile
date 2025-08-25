@@ -1,0 +1,13 @@
+brew "cmake"
+brew "ninja"
+brew "pkg-config"
+brew "protobuf"
+brew "grpc"
+brew "abseil"
+brew "eigen"
+brew "glew"
+brew "glfw"
+brew "libusb"
+brew "mesa-glu"
+brew "python@3.12"
+

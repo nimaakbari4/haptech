@@ -1,0 +1,4 @@
+grpcio>=1.59
+grpcio-tools>=1.59
+protobuf>=4.25
+
