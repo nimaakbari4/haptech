@@ -33,6 +33,7 @@ if command -v apt-get >/dev/null 2>&1; then
     python3-venv python3-pip \
     libpoco-dev libssl-dev libcrypto++-dev \
     libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev \
+    libasound2-dev libpulse-dev \
     protobuf-compiler-grpc || true
   
   # Try to install abseil (package name varies by Ubuntu version)
