@@ -19,6 +19,11 @@ bool SimulationManager::run() {
     std::cout << "[q] - Exit application" << std::endl;
     std::cout << std::endl << std::endl;
 
+    // ADDED
+    std::cout << "GL_VENDOR   = " << glGetString(GL_VENDOR)   << "\n";
+    std::cout << "GL_RENDERER = " << glGetString(GL_RENDERER) << "\n";
+    std::cout << "GL_VERSION  = " << glGetString(GL_VERSION)  << "\n";
+
 
     //--------------------------------------------------------------------------
     // OPENGL - WINDOW DISPLAY
