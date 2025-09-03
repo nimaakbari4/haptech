@@ -29,16 +29,17 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(GLFW_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
-	-L/usr/local/lib \
 	-L/usr/lib/x86_64-linux-gnu
 
+	
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
-	$(GLFW_BUILD_DIR)/libglfw.a \
-	-lgrpc++ -lgrpc -lgpr -lprotobuf \
-	-labsl_synchronization -labsl_symbolize -labsl_stacktrace -labsl_debugging_internal -labsl_demangle_internal -labsl_base -labsl_spinlock_wait \
-	-lpthread -lrt -ldl -lGL -lGLU -lusb-1.0 \
-	-lX11 -lXcursor -lXrandr -lXinerama \
-	-lPocoFoundation -lPocoNet -lPocoNetSSL -lPocoCrypto -lssl -lcrypto
+$(GLFW_BUILD_DIR)/libglfw.a \
+ -lgrpc++ -lgrpc -lgpr -lprotobuf \
+ -lcares \
+ -lz -lssl -lcrypto \
+ -lpthread -lrt -ldl -lGL -lGLU -lusb-1.0 \
+ -lX11 -lXcursor -lXrandr -lXinerama \
+ -lPocoFoundation -lPocoNet -lPocoNetSSL -lPocoCrypto
 
 # Platform tweaks (Homebrew and macOS frameworks)
 UNAME_S := $(shell uname -s)
