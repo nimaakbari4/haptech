@@ -4,6 +4,8 @@
 #include <chrono>
 #include <iostream>
 
+#define C_ENABLE_FRANKA_DEVICE_SUPPORT
+
 int main() {
     SimulationManager::setDebugMode(true);
 

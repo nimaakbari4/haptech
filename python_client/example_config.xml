@@ -11,7 +11,7 @@
       <Position x="0.1" y="0.2" z="0.3"/>
       <Tolerance>0.01</Tolerance>
     </Condition>
-    <Condition type="time" value="400.0" result="failure" />
+    <Condition type="time" value="20.0" result="failure" />
     <Condition type="velocity" result="failure">
       <MaxVelocity>0.5</MaxVelocity>
     </Condition>

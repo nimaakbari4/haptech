@@ -20,6 +20,8 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(CHAI3D_DIR)/external/glew/include \
 	-I$(CHAI3D_DIR)/external/DHD/include \
 	-I$(CHAI3D_DIR)/extras/GLFW/include \
+	-I$(CHAI3D_DIR)/external/libfranka/include \
+	-I$(CHAI3D_DIR)/external/libfranka/common/include \
 	-I$(SRC_DIR) \
 	-I/usr/include \
 	-I/usr/local/include \
@@ -34,6 +36,7 @@ LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
+$(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
  -lgrpc++ -lgrpc -lgpr -lprotobuf \
  -lcares \
  -lz -lssl -lcrypto \
