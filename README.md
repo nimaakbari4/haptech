@@ -2,7 +2,7 @@
 The core functionality of the Haptech project.
 
 ## Supported platforms
-- macOS (Homebrew)
+- macOS (Sort of works, may be broken on core launch)
 - Linux (Ubuntu 22.04/24.04)
 - Windows via WSL2 (Ubuntu). Native Windows builds are not supported.
 
@@ -59,3 +59,6 @@ make bootstrap ARGS="--regen --no-build"
 ## Troubleshooting
 - If `protoc-gen-grpc`/`grpc_cpp_plugin` is missing, the bootstrap will install `protobuf-compiler-grpc` or use vcpkg to provide the plugin automatically.
 - If the Python client can’t import `grpc`, make sure you’re using the project venv: `source .venv/bin/activate` then `pip install -r python_client/requirements.txt`.
+- Eigen binder errors (e.g., `std::binder1st/binder2nd` not found) when compiling with C++17: ensure the system Eigen is used (installed by bootstrap) and avoid picking up any vendored/ancient Eigen from submodules.
+- Protobuf header not found (e.g., `generated_message_table_driven.h`): your generated C++ stubs are out of sync with the installed Protobuf version. Regenerate with `make bootstrap ARGS="--regen --no-build"`.
+- Submodules out of sync or fetch failures: run `git submodule sync --recursive && git submodule update --init --recursive`.
