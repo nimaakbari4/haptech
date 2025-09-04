@@ -1,0 +1,13 @@
+For C++ server:
+protoc --proto_path=proto \
+       --cpp_out=core/src \
+       --grpc_out=core/src \
+       --plugin=protoc-gen-grpc=$(which grpc_cpp_plugin) \
+       proto/franka_trial.proto
+
+For Python client:
+python3 -m grpc_tools.protoc \
+       --proto_path=proto \
+       --python_out=python_client \
+       --grpc_python_out=python_client \
+       proto/franka_trial.proto
