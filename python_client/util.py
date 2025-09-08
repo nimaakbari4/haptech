@@ -4,8 +4,39 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream, objects=None):
     request = pb2.TrialRequest(trial_id=trial_id, trialDuration=duration)
+    
+    # Add objects to the request if provided
+    if objects:
+        for obj in objects:
+            # Create Object message
+            obj_msg = request.objects.add()
+            obj_msg.id = obj.id
+            obj_msg.type = obj.type
+            obj_msg.position.x = obj.position.x
+            obj_msg.position.y = obj.position.y
+            obj_msg.position.z = obj.position.z
+            obj_msg.orientation.x = obj.orientation.x
+            obj_msg.orientation.y = obj.orientation.y
+            obj_msg.orientation.z = obj.orientation.z
+            
+            if obj.color:
+                obj_msg.color.r = obj.color.r
+                obj_msg.color.g = obj.color.g
+                obj_msg.color.b = obj.color.b
+            
+            # Set object-specific data based on type
+            if obj.type == "sphere" and "radius" in obj.size:
+                obj_msg.sphere.radius = obj.size["radius"]
+            elif obj.type == "box" and all(k in obj.size for k in ["width", "height", "depth"]):
+                obj_msg.box.width = obj.size["width"]
+                obj_msg.box.height = obj.size["height"]
+                obj_msg.box.depth = obj.size["depth"]
+            elif obj.type == "cylinder" and all(k in obj.size for k in ["radius", "height"]):
+                obj_msg.cylinder.radius = obj.size["radius"]
+                obj_msg.cylinder.height = obj.size["height"]
+    
     response_stream = stub.RunTrial(request)
     handle_stream(response_stream, output_csv_stream)
 
