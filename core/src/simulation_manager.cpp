@@ -1,5 +1,7 @@
 #include "simulation_manager.h"
 #include <iostream>
+#include <map>
+#include <algorithm>
 
 SimulationContext SimulationManager::simContext;
 TrialContext SimulationManager::trialContext;
@@ -368,6 +370,68 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
     sphere->createAABBCollisionDetector(radius);
 
     return addObject(id, sphere, x, y, z);
+}
+
+bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
+                                           double x, double y, double z, 
+                                           double r, double g, double b,
+                                           const std::map<std::string, double>& sizeParams) {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    cMesh* mesh = new cMesh();
+    
+    if (type == "sphere") {
+        auto radiusIt = sizeParams.find("radius");
+        if (radiusIt == sizeParams.end()) {
+            std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateSphere(mesh, radiusIt->second);
+        mesh->createAABBCollisionDetector(radiusIt->second);
+    }
+    else if (type == "box") {
+        auto widthIt = sizeParams.find("width");
+        auto heightIt = sizeParams.find("height");
+        auto depthIt = sizeParams.find("depth");
+        
+        if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
+            std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateBox(mesh, widthIt->second, heightIt->second, depthIt->second);
+        double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
+        mesh->createAABBCollisionDetector(maxDim);
+    }
+    else if (type == "cylinder") {
+        auto radiusIt = sizeParams.find("radius");
+        auto heightIt = sizeParams.find("height");
+        
+        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+            std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateCylinder(mesh, radiusIt->second, heightIt->second);
+        double maxDim = std::max(radiusIt->second, heightIt->second);
+        mesh->createAABBCollisionDetector(maxDim);
+    }
+    else {
+        std::cout << "[ERROR] Unknown object type: " << type << std::endl;
+        delete mesh;
+        return false;
+    }
+
+    // Set color
+    mesh->m_material->m_ambient.set(r, g, b);
+    mesh->m_material->m_diffuse.set(r, g, b);
+    mesh->m_material->m_specular.set(r, g, b);
+
+    return addObject(id, mesh, x, y, z);
 }
 
 // PRIVATE CALLBACKS //

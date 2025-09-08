@@ -50,8 +50,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Add sphere - positioned back and to the left
-    if (!SimulationManager::addSphere("SMALL_SPHERE", 0.08, -0.2, 0.0, -0.1)) {
+    // Example: Add objects using the new dynamic configuration approach
+    // This demonstrates how to create objects from configuration data
+    
+    // Small red sphere
+    std::map<std::string, double> smallSphereParams;
+    smallSphereParams["radius"] = 0.08;
+    if (!SimulationManager::addObjectFromConfig("SMALL_SPHERE", "sphere", -0.2, 0.0, -0.1, 1.0, 0.0, 0.0, smallSphereParams)) {
         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
         status->set_status(TrialStatus::ERROR);
         status->set_message("Something went wrong loading the trial.");
@@ -59,8 +64,10 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Add torus - positioned to the right
-    if (!SimulationManager::addSphere("BIG_SPHERE", 0.2, -0.3, 0.3, 0.0)) {
+    // Large blue sphere
+    std::map<std::string, double> bigSphereParams;
+    bigSphereParams["radius"] = 0.2;
+    if (!SimulationManager::addObjectFromConfig("BIG_SPHERE", "sphere", -0.3, 0.3, 0.0, 0.0, 0.0, 1.0, bigSphereParams)) {
         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
         status->set_status(TrialStatus::ERROR);
         status->set_message("Something went wrong loading the trial.");
@@ -68,8 +75,23 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Add torus - positioned to the right
-    if (!SimulationManager::addSphere("MEDIUM_SPHERE", 0.1, -0.1, -0.2, 0.0)) {
+    // Medium green sphere
+    std::map<std::string, double> mediumSphereParams;
+    mediumSphereParams["radius"] = 0.1;
+    if (!SimulationManager::addObjectFromConfig("MEDIUM_SPHERE", "sphere", -0.1, -0.2, 0.0, 0.0, 1.0, 0.0, mediumSphereParams)) {
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message("Something went wrong loading the trial.");
+        writer->Write(statusMsg);
+        return grpc::Status::OK;
+    }
+
+    // Example: Add a box object
+    std::map<std::string, double> boxParams;
+    boxParams["width"] = 0.05;
+    boxParams["height"] = 0.05;
+    boxParams["depth"] = 0.05;
+    if (!SimulationManager::addObjectFromConfig("TARGET_BOX", "box", 0.1, 0.2, 0.3, 1.0, 1.0, 0.0, boxParams)) {
         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
         status->set_status(TrialStatus::ERROR);
         status->set_message("Something went wrong loading the trial.");
