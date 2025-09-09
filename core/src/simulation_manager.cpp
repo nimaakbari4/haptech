@@ -372,6 +372,10 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
     return addObject(id, sphere, x, y, z);
 }
 
+# If creating a custom object, you need to create a cMesh object and then add it to the world
+# You can then add the object to the map and return true
+# The object will be added to the world and the map will be updated
+# The object will be added to the world and the map will be updated
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
                                            double x, double y, double z, 
                                            double r, double g, double b,
@@ -421,10 +425,10 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         mesh->createAABBCollisionDetector(maxDim);
     }
     else if (type == "custom") {
-        // For custom objects, we'll create a simple sphere as a placeholder
+        // For custom objects, we create a simple sphere as a placeholder
         // In a full implementation, you would load the mesh from file
         std::cout << "[WARNING] Custom object type not fully implemented. Using sphere placeholder." << std::endl;
-        cCreateSphere(mesh, 0.02);  // Default small sphere
+        cCreateSphere(mesh, 0.02);  // Default small sphere NEED TO CHANGE TO THE ACTUAL MESH
         mesh->createAABBCollisionDetector(0.02);
     }
     else {
