@@ -420,6 +420,13 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         double maxDim = std::max(radiusIt->second, heightIt->second);
         mesh->createAABBCollisionDetector(maxDim);
     }
+    else if (type == "custom") {
+        // For custom objects, we'll create a simple sphere as a placeholder
+        // In a full implementation, you would load the mesh from file
+        std::cout << "[WARNING] Custom object type not fully implemented. Using sphere placeholder." << std::endl;
+        cCreateSphere(mesh, 0.02);  // Default small sphere
+        mesh->createAABBCollisionDetector(0.02);
+    }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;
         delete mesh;
