@@ -36,6 +36,15 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: fl
             elif obj.type == "cylinder" and all(k in obj.size for k in ["radius", "height"]):
                 obj_msg.cylinder.radius = obj.size["radius"]
                 obj_msg.cylinder.height = obj.size["height"]
+            elif obj.type == "custom" and "file_path" in obj.size:
+                obj_msg.custom.file_path = obj.size["file_path"]
+                # Set scale if provided
+                if "scale_x" in obj.size:
+                    obj_msg.custom.scale.x = obj.size["scale_x"]
+                if "scale_y" in obj.size:
+                    obj_msg.custom.scale.y = obj.size["scale_y"]
+                if "scale_z" in obj.size:
+                    obj_msg.custom.scale.z = obj.size["scale_z"]
     
     response_stream = stub.RunTrial(request)
     handle_stream(response_stream, output_csv_stream)

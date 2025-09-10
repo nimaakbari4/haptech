@@ -64,6 +64,7 @@ message Object {
         Sphere sphere = 6;
         Box box = 7;
         Cylinder cylinder = 8;
+        Custom custom = 9;
     }
 }
 
@@ -80,4 +81,9 @@ message Box {
 message Cylinder {
     double radius = 1;
     double height = 2;
+}
+
+message Custom {
+    string file_path = 1;
+    Vector3 scale = 2;
 }

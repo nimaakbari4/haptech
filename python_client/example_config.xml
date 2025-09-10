@@ -62,12 +62,22 @@
       <Color r="0.5" g="0.5" b="0.5"/>
     </Object>
 
-    <!-- Example of a custom mesh -->
-    <Object id="obstacle" type="custom">
-      <File>models/obstacle.obj</File>
-      <Position x="0.05" y="0.0" z="0.0"/>
-      <Orientation roll="0" pitch="45" yaw="0"/>
-      <Scale x="1.0" y="1.0" z="1.0"/>
+    <!-- Example of a custom square -->
+    <Object id="custom_square" type="custom">
+      <File>models/square.obj</File>
+      <Position x="0.1" y="0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Scale x="0.5" y="0.5" z="0.1"/>
+      <Color r="0.8" g="0.2" b="0.2"/>
+    </Object>
+    
+    <!-- Another custom object -->
+    <Object id="custom_cube" type="custom">
+      <File>models/cube.obj</File>
+      <Position x="-0.1" y="0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="45"/>
+      <Scale x="0.3" y="0.3" z="0.3"/>
+      <Color r="0.2" g="0.8" b="0.2"/>
     </Object>
   </Objects>
 </TrialConfig>
