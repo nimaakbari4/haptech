@@ -38,11 +38,6 @@ LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
 $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
  -lgrpc++ -lgrpc -lgpr -lprotobuf \
- -labsl_synchronization -labsl_strings -labsl_base -labsl_raw_logging_internal \
- -labsl_spinlock_wait -labsl_time -labsl_civil_time -labsl_time_zone \
- -labsl_strings_internal -labsl_throw_delegate -labsl_log_severity -labsl_int128 \
- -labsl_cord -labsl_cordz_info -labsl_cordz_functions -labsl_cordz_handle \
- -labsl_cord_internal \
  -lcares \
  -lz -lssl -lcrypto \
  -lpthread -lrt -ldl -lGL -lGLU -lusb-1.0 \
