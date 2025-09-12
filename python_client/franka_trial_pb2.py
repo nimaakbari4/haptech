@@ -24,27 +24,37 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x66ranka_trial.proto\"7\n\x0cTrialRequest\x12\x10\n\x08trial_id\x18\x01 \x01(\t\x12\x15\n\rtrialDuration\x18\x02 \x01(\x01\"r\n\x13TrialResponseStream\x12*\n\x0cstatusUpdate\x18\x01 \x01(\x0b\x32\x12.TrialStatusUpdateH\x00\x12$\n\tdataPoint\x18\x02 \x01(\x0b\x32\x0f.TrialDataPointH\x00\x42\t\n\x07payload\"B\n\x11TrialStatusUpdate\x12\x1c\n\x06status\x18\x01 \x01(\x0e\x32\x0c.TrialStatus\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x7f\n\x0eTrialDataPoint\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12 \n\x0e\x64\x65vicePosition\x18\x02 \x01(\x0b\x32\x08.Vector3\x12\x1f\n\rproxyPosition\x18\x03 \x01(\x0b\x32\x08.Vector3\x12\x17\n\x05\x66orce\x18\x04 \x01(\x0b\x32\x08.Vector3\"(\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x01(\x01\x12\t\n\x01g\x18\x02 \x01(\x01\x12\t\n\x01\x62\x18\x03 \x01(\x01\"*\n\x07Vector3\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01*4\n\x0bTrialStatus\x12\x0b\n\x07STARTED\x10\x00\x12\t\n\x05\x45RROR\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x32G\n\x12\x46rankaTrialService\x12\x31\n\x08RunTrial\x12\r.TrialRequest\x1a\x14.TrialResponseStream0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12\x66ranka_trial.proto\"Q\n\x0cTrialRequest\x12\x10\n\x08trial_id\x18\x01 \x01(\t\x12\x15\n\rtrialDuration\x18\x02 \x01(\x01\x12\x18\n\x07objects\x18\x03 \x03(\x0b\x32\x07.Object\"r\n\x13TrialResponseStream\x12*\n\x0cstatusUpdate\x18\x01 \x01(\x0b\x32\x12.TrialStatusUpdateH\x00\x12$\n\tdataPoint\x18\x02 \x01(\x0b\x32\x0f.TrialDataPointH\x00\x42\t\n\x07payload\"B\n\x11TrialStatusUpdate\x12\x1c\n\x06status\x18\x01 \x01(\x0e\x32\x0c.TrialStatus\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x7f\n\x0eTrialDataPoint\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12 \n\x0e\x64\x65vicePosition\x18\x02 \x01(\x0b\x32\x08.Vector3\x12\x1f\n\rproxyPosition\x18\x03 \x01(\x0b\x32\x08.Vector3\x12\x17\n\x05\x66orce\x18\x04 \x01(\x0b\x32\x08.Vector3\"(\n\x05\x43olor\x12\t\n\x01r\x18\x01 \x01(\x01\x12\t\n\x01g\x18\x02 \x01(\x01\x12\t\n\x01\x62\x18\x03 \x01(\x01\"*\n\x07Vector3\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01\"\xed\x01\n\x06Object\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12\x1a\n\x08position\x18\x03 \x01(\x0b\x32\x08.Vector3\x12\x1d\n\x0borientation\x18\x04 \x01(\x0b\x32\x08.Vector3\x12\x15\n\x05\x63olor\x18\x05 \x01(\x0b\x32\x06.Color\x12\x19\n\x06sphere\x18\x06 \x01(\x0b\x32\x07.SphereH\x00\x12\x13\n\x03\x62ox\x18\x07 \x01(\x0b\x32\x04.BoxH\x00\x12\x1d\n\x08\x63ylinder\x18\x08 \x01(\x0b\x32\t.CylinderH\x00\x12\x19\n\x06\x63ustom\x18\t \x01(\x0b\x32\x07.CustomH\x00\x42\r\n\x0bobject_data\"\x18\n\x06Sphere\x12\x0e\n\x06radius\x18\x01 \x01(\x01\"3\n\x03\x42ox\x12\r\n\x05width\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\x12\r\n\x05\x64\x65pth\x18\x03 \x01(\x01\"*\n\x08\x43ylinder\x12\x0e\n\x06radius\x18\x01 \x01(\x01\x12\x0e\n\x06height\x18\x02 \x01(\x01\"4\n\x06\x43ustom\x12\x11\n\tfile_path\x18\x01 \x01(\t\x12\x17\n\x05scale\x18\x02 \x01(\x0b\x32\x08.Vector3*4\n\x0bTrialStatus\x12\x0b\n\x07STARTED\x10\x00\x12\t\n\x05\x45RROR\x10\x01\x12\r\n\tCOMPLETED\x10\x02\x32G\n\x12\x46rankaTrialService\x12\x31\n\x08RunTrial\x12\r.TrialRequest\x1a\x14.TrialResponseStream0\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'franka_trial_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_TRIALSTATUS']._serialized_start=478
-  _globals['_TRIALSTATUS']._serialized_end=530
+  _globals['_TRIALSTATUS']._serialized_start=921
+  _globals['_TRIALSTATUS']._serialized_end=973
   _globals['_TRIALREQUEST']._serialized_start=22
-  _globals['_TRIALREQUEST']._serialized_end=77
-  _globals['_TRIALRESPONSESTREAM']._serialized_start=79
-  _globals['_TRIALRESPONSESTREAM']._serialized_end=193
-  _globals['_TRIALSTATUSUPDATE']._serialized_start=195
-  _globals['_TRIALSTATUSUPDATE']._serialized_end=261
-  _globals['_TRIALDATAPOINT']._serialized_start=263
-  _globals['_TRIALDATAPOINT']._serialized_end=390
-  _globals['_COLOR']._serialized_start=392
-  _globals['_COLOR']._serialized_end=432
-  _globals['_VECTOR3']._serialized_start=434
-  _globals['_VECTOR3']._serialized_end=476
-  _globals['_FRANKATRIALSERVICE']._serialized_start=532
-  _globals['_FRANKATRIALSERVICE']._serialized_end=603
+  _globals['_TRIALREQUEST']._serialized_end=103
+  _globals['_TRIALRESPONSESTREAM']._serialized_start=105
+  _globals['_TRIALRESPONSESTREAM']._serialized_end=219
+  _globals['_TRIALSTATUSUPDATE']._serialized_start=221
+  _globals['_TRIALSTATUSUPDATE']._serialized_end=287
+  _globals['_TRIALDATAPOINT']._serialized_start=289
+  _globals['_TRIALDATAPOINT']._serialized_end=416
+  _globals['_COLOR']._serialized_start=418
+  _globals['_COLOR']._serialized_end=458
+  _globals['_VECTOR3']._serialized_start=460
+  _globals['_VECTOR3']._serialized_end=502
+  _globals['_OBJECT']._serialized_start=505
+  _globals['_OBJECT']._serialized_end=742
+  _globals['_SPHERE']._serialized_start=744
+  _globals['_SPHERE']._serialized_end=768
+  _globals['_BOX']._serialized_start=770
+  _globals['_BOX']._serialized_end=821
+  _globals['_CYLINDER']._serialized_start=823
+  _globals['_CYLINDER']._serialized_end=865
+  _globals['_CUSTOM']._serialized_start=867
+  _globals['_CUSTOM']._serialized_end=919
+  _globals['_FRANKATRIALSERVICE']._serialized_start=975
+  _globals['_FRANKATRIALSERVICE']._serialized_end=1046
 # @@protoc_insertion_point(module_scope)
