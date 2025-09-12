@@ -6,12 +6,16 @@
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
+#include <set>
 
 using namespace chai3d;
 
 #define DATA_POLL_FREQUENCY 10 // Hz
 
 struct SimulationContext {
+    // flag to enable/disable haptic calculations
+    bool hapticsEnabled = true;
+    std::mutex objectMutex;
     // stereo Mode
     /*
         C_STEREO_DISABLED:            Stereo is disabled 
@@ -34,7 +38,7 @@ struct SimulationContext {
     cCamera* camera;
 
     // map object ID's to pointers to the actual objects
-    std::unordered_map<std::string, cGenericObject*> objectMap;
+    std::unordered_map<std::string, std::unique_ptr<cGenericObject>> objectMap;
 
     // a light source to illuminate the objects in the world
     cDirectionalLight *light;
@@ -54,7 +58,8 @@ struct SimulationContext {
     // a virtual tool representing the haptic device in the scene
     cToolCursor* tool;
 
-    
+    // Set of object IDs pending deletion (deferred deletion)
+    std::set<std::string> pendingDelete;
 
     // flag to indicate if the haptic simulation currently running
     bool simulationRunning = false;
@@ -91,7 +96,7 @@ struct SimulationContext {
 
     bool debug = false;
 
-    
+
 };
 
 struct TrialContext {

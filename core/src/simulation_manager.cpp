@@ -11,6 +11,7 @@ bool SimulationManager::run() {
     // INITIALIZATION
     //--------------------------------------------------------------------------
 
+    std::cout << "[SimulationManager] simContext address: " << &simContext << std::endl;
     std::cout << std::endl;
     std::cout << "-----------------------------------" << std::endl;
     std::cout << "CHAI3D" << std::endl;
@@ -266,8 +267,16 @@ bool SimulationManager::reset() {
         return false;
     }
 
+    // disable haptic calculations
+    simContext.hapticsEnabled = false;
+
+    cSleepMs(100);
+
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+
+    cSleepMs(100);
+
     return true;
 }
 
@@ -313,8 +322,8 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x,
     material->setStiffness(maxStiffness);
     obj->setMaterial(material);
 
-    // Add the object to the map
-    simContext.objectMap[id] = obj;
+    // Add the object to the map using unique_ptr
+    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
     std::cout << "[DEBUG] Added object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
 
     return true;
@@ -331,9 +340,9 @@ bool SimulationManager::removeObject(std::string id) {
     // Remove the object from the world
     auto it = simContext.objectMap.find(id);
     if (it != simContext.objectMap.end()) {
-        cGenericObject* obj = it->second;
+        cGenericObject* obj = it->second.get();
         simContext.world->removeChild(obj);
-        delete obj;
+        // unique_ptr will delete obj automatically
         simContext.objectMap.erase(it);
         std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
         success = true;
@@ -360,16 +369,17 @@ bool SimulationManager::removeAllObjects() {
         removeObject(id);
     }
 
+    // All objects are now removed and deleted by unique_ptr
     std::cout << "[DEBUG] Removed all objects." << std::endl;
     return true;
 }
 
 bool SimulationManager::addSphere(std::string id, double radius, double x, double y, double z) {
-    cMesh* sphere = new cMesh();
-    cCreateSphere(sphere, radius);
+    std::unique_ptr<cMesh> sphere = std::make_unique<cMesh>();
+    cCreateSphere(sphere.get(), radius);
     sphere->createAABBCollisionDetector(radius);
 
-    return addObject(id, sphere, x, y, z);
+    return addObject(id, sphere.release(), x, y, z);
 }
 
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
@@ -381,16 +391,15 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         return false;
     }
 
-    cMesh* mesh = new cMesh();
+    std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
     
     if (type == "sphere") {
         auto radiusIt = sizeParams.find("radius");
         if (radiusIt == sizeParams.end()) {
             std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateSphere(mesh, radiusIt->second);
+        cCreateSphere(mesh.get(), radiusIt->second);
         mesh->createAABBCollisionDetector(radiusIt->second);
     }
     else if (type == "box") {
@@ -400,10 +409,9 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
             std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateBox(mesh, widthIt->second, heightIt->second, depthIt->second);
+        cCreateBox(mesh.get(), widthIt->second, heightIt->second, depthIt->second);
         double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
         mesh->createAABBCollisionDetector(maxDim);
     }
@@ -413,16 +421,14 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
             std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateCylinder(mesh, radiusIt->second, heightIt->second);
+        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
         double maxDim = std::max(radiusIt->second, heightIt->second);
         mesh->createAABBCollisionDetector(maxDim);
     }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;
-        delete mesh;
         return false;
     }
 
@@ -431,7 +437,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
     mesh->m_material->m_diffuse.set(r, g, b);
     mesh->m_material->m_specular.set(r, g, b);
 
-    return addObject(id, mesh, x, y, z);
+    return addObject(id, mesh.release(), x, y, z);
 }
 
 // PRIVATE CALLBACKS //
@@ -551,6 +557,8 @@ void SimulationManager::updateHaptics(void) {
     simContext.simulationRunning  = true;
     simContext.simulationFinished = false;
 
+    std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
+
     while (simContext.simulationRunning) {
         // update world transforms
         simContext.world->computeGlobalPositions(true);
@@ -574,6 +582,8 @@ void SimulationManager::updateHaptics(void) {
     }
 
     simContext.simulationFinished = true;
+
+    std::cout << "Haptics thread terminated, simRunning = " << simContext.simulationRunning << std::endl;
 }
 
 void SimulationManager::dataPollingThread() {
@@ -611,6 +621,13 @@ void SimulationManager::dataPollingThread() {
 
 // this function closes the application
 void SimulationManager::close(void) {
+    // reset tool and proxy to avoid dangling references
+    if (simContext.tool) {
+        simContext.tool->initialize();
+    }
+    // disable haptic calculations
+    simContext.hapticsEnabled = false;
+
     // remove all objects from the world
     removeAllObjects();
 

@@ -9,6 +9,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
 
+    std::cout << "[SERVER] simContext address: " << &SimulationManager::simContext << std::endl;
+
     // ensure simulation is running (allow brief startup lag)
     if (!SimulationManager::simContext.simulationRunning) {
         const double timeoutSec = 2.0;
@@ -16,6 +18,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
             cSleepMs(10);
         }
+
+        std::cout << "[DEBUG] [server] simulationRunning: " << SimulationManager::simContext.simulationRunning << std::endl;
+
         if (!SimulationManager::simContext.simulationRunning) {
             std::cout << "[ERROR] Simulation is not running." << std::endl;
 
