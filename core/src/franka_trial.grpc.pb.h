@@ -10,21 +10,20 @@
 #include <grpcpp/generic/async_generic_service.h>
 #include <grpcpp/support/async_stream.h>
 #include <grpcpp/support/async_unary_call.h>
-#include <grpcpp/support/client_callback.h>
-#include <grpcpp/client_context.h>
-#include <grpcpp/completion_queue.h>
-#include <grpcpp/support/message_allocator.h>
-#include <grpcpp/support/method_handler.h>
-#include <grpcpp/impl/proto_utils.h>
-#include <grpcpp/impl/rpc_method.h>
-#include <grpcpp/support/server_callback.h>
-#include <grpcpp/impl/server_callback_handlers.h>
-#include <grpcpp/server_context.h>
-#include <grpcpp/impl/service_type.h>
-#include <grpcpp/support/status.h>
-#include <grpcpp/support/stub_options.h>
-#include <grpcpp/support/sync_stream.h>
-#include <grpcpp/ports_def.inc>
+#include <grpcpp/impl/codegen/client_callback.h>
+#include <grpcpp/impl/codegen/client_context.h>
+#include <grpcpp/impl/codegen/completion_queue.h>
+#include <grpcpp/impl/codegen/message_allocator.h>
+#include <grpcpp/impl/codegen/method_handler.h>
+#include <grpcpp/impl/codegen/proto_utils.h>
+#include <grpcpp/impl/codegen/rpc_method.h>
+#include <grpcpp/impl/codegen/server_callback.h>
+#include <grpcpp/impl/codegen/server_callback_handlers.h>
+#include <grpcpp/impl/codegen/server_context.h>
+#include <grpcpp/impl/codegen/service_type.h>
+#include <grpcpp/impl/codegen/status.h>
+#include <grpcpp/impl/codegen/stub_options.h>
+#include <grpcpp/impl/codegen/sync_stream.h>
 
 class FrankaTrialService final {
  public:
@@ -44,10 +43,17 @@ class FrankaTrialService final {
       return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::TrialResponseStream>>(PrepareAsyncRunTrialRaw(context, request, cq));
     }
     class async_interface {
+    class async_interface {
      public:
       virtual ~async_interface() {}
       virtual void RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) = 0;
+      virtual ~async_interface() {}
+      virtual void RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) = 0;
     };
+    typedef class async_interface experimental_async_interface;
+    virtual class async_interface* async() { return nullptr; }
+    class async_interface* experimental_async() { return async(); }
+   private:
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
@@ -58,6 +64,7 @@ class FrankaTrialService final {
   };
   class Stub final : public StubInterface {
    public:
+    Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
     std::unique_ptr< ::grpc::ClientReader< ::TrialResponseStream>> RunTrial(::grpc::ClientContext* context, const ::TrialRequest& request) {
       return std::unique_ptr< ::grpc::ClientReader< ::TrialResponseStream>>(RunTrialRaw(context, request));
@@ -70,18 +77,24 @@ class FrankaTrialService final {
     }
     class async final :
       public StubInterface::async_interface {
+    class async final :
+      public StubInterface::async_interface {
      public:
+      void RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) override;
       void RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) override;
      private:
       friend class Stub;
+      explicit async(Stub* stub): stub_(stub) { }
       explicit async(Stub* stub): stub_(stub) { }
       Stub* stub() { return stub_; }
       Stub* stub_;
     };
     class async* async() override { return &async_stub_; }
+    class async* async() override { return &async_stub_; }
 
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
+    class async async_stub_{this};
     class async async_stub_{this};
     ::grpc::ClientReader< ::TrialResponseStream>* RunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request) override;
     ::grpc::ClientAsyncReader< ::TrialResponseStream>* AsyncRunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
@@ -100,6 +113,7 @@ class FrankaTrialService final {
   class WithAsyncMethod_RunTrial : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_RunTrial() {
       ::grpc::Service::MarkMethodAsync(0);
@@ -108,6 +122,7 @@ class FrankaTrialService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
     ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
@@ -142,8 +157,33 @@ class FrankaTrialService final {
   typedef WithCallbackMethod_RunTrial<Service > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
+  class WithCallbackMethod_RunTrial : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_RunTrial() {
+      ::grpc::Service::MarkMethodCallback(0,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::TrialRequest, ::TrialResponseStream>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::TrialRequest* request) { return this->RunTrial(context, request); }));
+    }
+    ~WithCallbackMethod_RunTrial() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::TrialResponseStream>* RunTrial(
+      ::grpc::CallbackServerContext* /*context*/, const ::TrialRequest* /*request*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_RunTrial<Service > CallbackService;
+  typedef CallbackService ExperimentalCallbackService;
+  template <class BaseClass>
   class WithGenericMethod_RunTrial : public BaseClass {
    private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_RunTrial() {
@@ -154,6 +194,7 @@ class FrankaTrialService final {
     }
     // disable synchronous version of this method
     ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -161,6 +202,7 @@ class FrankaTrialService final {
   template <class BaseClass>
   class WithRawMethod_RunTrial : public BaseClass {
    private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_RunTrial() {
@@ -170,6 +212,7 @@ class FrankaTrialService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
     ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
@@ -200,14 +243,45 @@ class FrankaTrialService final {
     virtual ::grpc::ServerWriteReactor< ::grpc::ByteBuffer>* RunTrial(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)  { return nullptr; }
   };
+  template <class BaseClass>
+  class WithRawCallbackMethod_RunTrial : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_RunTrial() {
+      ::grpc::Service::MarkMethodRawCallback(0,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const::grpc::ByteBuffer* request) { return this->RunTrial(context, request); }));
+    }
+    ~WithRawCallbackMethod_RunTrial() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::grpc::ByteBuffer>* RunTrial(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)  { return nullptr; }
+  };
   typedef Service StreamedUnaryService;
   template <class BaseClass>
   class WithSplitStreamingMethod_RunTrial : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithSplitStreamingMethod_RunTrial() {
       ::grpc::Service::MarkMethodStreamed(0,
+        new ::grpc::internal::SplitServerStreamingHandler<
+          ::TrialRequest, ::TrialResponseStream>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerSplitStreamer<
+                     ::TrialRequest, ::TrialResponseStream>* streamer) {
+                       return this->StreamedRunTrial(context,
+                         streamer);
+                  }));
         new ::grpc::internal::SplitServerStreamingHandler<
           ::TrialRequest, ::TrialResponseStream>(
             [this](::grpc::ServerContext* context,
@@ -221,6 +295,7 @@ class FrankaTrialService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
+    ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
     ::grpc::Status RunTrial(::grpc::ServerContext* /*context*/, const ::TrialRequest* /*request*/, ::grpc::ServerWriter< ::TrialResponseStream>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");

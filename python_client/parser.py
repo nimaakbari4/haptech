@@ -146,6 +146,18 @@ def xml_parser(xml_path: str) -> TrialConfig:
             size = {k: float(v) for k, v in size_elem.attrib.items()}
         else:
            size = {}
+        
+        # Handle custom objects - add file path and scale to size dict
+        if obj.get("type") == "custom":
+            file_elem = obj.find("File")
+            if file_elem is not None:
+                size["file_path"] = file_elem.text
+            
+            scale_elem = obj.find("Scale")
+            if scale_elem is not None:
+                size["scale_x"] = float(scale_elem.get("x", 1.0))
+                size["scale_y"] = float(scale_elem.get("y", 1.0))
+                size["scale_z"] = float(scale_elem.get("z", 1.0))
 
         color_elem = obj.find("Color")
         color = (

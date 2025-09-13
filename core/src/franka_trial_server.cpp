@@ -50,31 +50,49 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Add sphere - positioned back and to the left
-    if (!SimulationManager::addSphere("SMALL_SPHERE", 0.08, -0.2, 0.0, -0.1)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
-    }
-
-    // Add torus - positioned to the right
-    if (!SimulationManager::addSphere("BIG_SPHERE", 0.2, -0.3, 0.3, 0.0)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
-    }
-
-    // Add torus - positioned to the right
-    if (!SimulationManager::addSphere("MEDIUM_SPHERE", 0.1, -0.1, -0.2, 0.0)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
+    // Add objects from the request configuration
+    for (const auto& obj : request->objects()) {
+        std::map<std::string, double> sizeParams;
+        
+        // Extract size parameters based on object type
+        if (obj.type() == "sphere" && obj.has_sphere()) {
+            sizeParams["radius"] = obj.sphere().radius();
+        } else if (obj.type() == "box" && obj.has_box()) {
+            sizeParams["width"] = obj.box().width();
+            sizeParams["height"] = obj.box().height();
+            sizeParams["depth"] = obj.box().depth();
+        } else if (obj.type() == "cylinder" && obj.has_cylinder()) {
+            sizeParams["radius"] = obj.cylinder().radius();
+            sizeParams["height"] = obj.cylinder().height();
+        } else if (obj.type() == "custom" && obj.has_custom()) {
+            // For custom objects, we'll use the file path and scale
+            // Note: We need to handle file_path separately since it's a string, not double
+            // For now, we'll just set the scale parameters
+            sizeParams["scale_x"] = obj.custom().scale().x();
+            sizeParams["scale_y"] = obj.custom().scale().y();
+            sizeParams["scale_z"] = obj.custom().scale().z();
+        }
+        
+        // Get color values
+        double r = obj.has_color() ? obj.color().r() : 1.0;
+        double g = obj.has_color() ? obj.color().g() : 1.0;
+        double b = obj.has_color() ? obj.color().b() : 1.0;
+        
+        // Add the object
+        std::string filePath = "";
+        if (obj.type() == "custom" && obj.has_custom()) {
+            filePath = obj.custom().file_path();
+        }
+        
+        if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
+                                                   obj.position().x(), obj.position().y(), obj.position().z(),
+                                                   r, g, b, sizeParams, filePath)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong loading object: " + obj.id());
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
     }
 
     // set trial context

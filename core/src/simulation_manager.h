@@ -136,6 +136,11 @@ public:
 
     // OBJECT HELPERS
     static bool addSphere(std::string id, double radius, double x, double y, double z);
+    static bool addObjectFromConfig(const std::string& id, const std::string& type, 
+                                   double x, double y, double z, 
+                                   double r, double g, double b,
+                                   const std::map<std::string, double>& sizeParams,
+                                   const std::string& filePath = "");
 private:
     // callback when the window display is resized
     static void windowSizeCallback(GLFWwindow* a_window, int a_width, int a_height);

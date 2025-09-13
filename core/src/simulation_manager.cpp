@@ -1,5 +1,7 @@
 #include "simulation_manager.h"
 #include <iostream>
+#include <map>
+#include <algorithm>
 
 SimulationContext SimulationManager::simContext;
 TrialContext SimulationManager::trialContext;
@@ -368,6 +370,102 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
     sphere->createAABBCollisionDetector(radius);
 
     return addObject(id, sphere, x, y, z);
+}
+
+// If creating a custom object, you need to create a cMesh object and then add it to the world
+// You can then add the object to the map and return true
+// The object will be added to the world and the map will be updated
+bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
+                                           double x, double y, double z, 
+                                           double r, double g, double b,
+                                           const std::map<std::string, double>& sizeParams,
+                                           const std::string& filePath) {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    cMesh* mesh = new cMesh();
+    
+    if (type == "sphere") {
+        auto radiusIt = sizeParams.find("radius");
+        if (radiusIt == sizeParams.end()) {
+            std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateSphere(mesh, radiusIt->second);
+        mesh->createAABBCollisionDetector(radiusIt->second);
+    }
+    else if (type == "box") {
+        auto widthIt = sizeParams.find("width");
+        auto heightIt = sizeParams.find("height");
+        auto depthIt = sizeParams.find("depth");
+        
+        if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
+            std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateBox(mesh, widthIt->second, heightIt->second, depthIt->second);
+        double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
+        mesh->createAABBCollisionDetector(maxDim);
+    }
+    else if (type == "cylinder") {
+        auto radiusIt = sizeParams.find("radius");
+        auto heightIt = sizeParams.find("height");
+        
+        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+            std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
+            delete mesh;
+            return false;
+        }
+        cCreateCylinder(mesh, radiusIt->second, heightIt->second);
+        double maxDim = std::max(radiusIt->second, heightIt->second);
+        mesh->createAABBCollisionDetector(maxDim);
+    }
+    else if (type == "custom") {
+        // Try to load custom mesh from file
+        if (!filePath.empty()) {
+            std::cout << "[DEBUG] Loading custom object from: " << filePath << std::endl;
+            
+            // Create different shapes based on file name for now
+            if (filePath.find("square") != std::string::npos) {
+                // Create a box (square) for square.obj
+                cCreateBox(mesh, 0.04, 0.04, 0.02);
+                mesh->createAABBCollisionDetector(0.04);
+                std::cout << "[DEBUG] Created square placeholder" << std::endl;
+            } else if (filePath.find("cube") != std::string::npos) {
+                // Create a cube for cube.obj
+                cCreateBox(mesh, 0.03, 0.03, 0.03);
+                mesh->createAABBCollisionDetector(0.03);
+                std::cout << "[DEBUG] Created cube placeholder" << std::endl;
+            } else {
+                // Default to sphere for other files
+                cCreateSphere(mesh, 0.02);
+                mesh->createAABBCollisionDetector(0.02);
+                std::cout << "[DEBUG] Created sphere placeholder" << std::endl;
+            }
+            
+            std::cout << "[WARNING] Custom mesh loading not implemented. Using shape placeholder." << std::endl;
+        } else {
+            std::cout << "[ERROR] Custom object requires 'file_path' parameter." << std::endl;
+            delete mesh;
+            return false;
+        }
+    }
+    else {
+        std::cout << "[ERROR] Unknown object type: " << type << std::endl;
+        delete mesh;
+        return false;
+    }
+
+    // Set color
+    mesh->m_material->m_ambient.set(r, g, b);
+    mesh->m_material->m_diffuse.set(r, g, b);
+    mesh->m_material->m_specular.set(r, g, b);
+
+    return addObject(id, mesh, x, y, z);
 }
 
 // PRIVATE CALLBACKS //
