@@ -1,49 +1,45 @@
 <TrialConfig>
-  <!-- Trial End Conditions -->
+  <HomePosition>
+    <Position x="-0.5" y="0.0" z="0.0"/>
+    <Tolerance>0.05</Tolerance>
+  </HomePosition>
+
   <EndConditions>
-    <Condition type="time" value="10.0" result="failure" />
+    <!-- Ends by time for now; we can add goal-reached end next -->
+    <Condition type="time" value="30.0" result="failure"/>
   </EndConditions>
 
-  <!-- HUD Text -->
   <HUDText>
-    <StartMessage>Testing dynamic object creation!</StartMessage>
-    <SuccessMessage>Great job!</SuccessMessage>
-    <FailureMessage>Try again.</FailureMessage>
+    <StartMessage>Move the red sphere to the green goal on the right!</StartMessage>
+    <SuccessMessage>Well done!</SuccessMessage>
+    <FailureMessage>Time’s up. Try again!</FailureMessage>
   </HUDText>
 
-  <!-- Scene Settings -->
   <SceneSettings>
-    <BackgroundColor r="0.8" g="0.8" b="0.9" />
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
     <Camera>
-      <Position x="0.5" y="0.5" z="1.0"/>
+      <Position x="1.0" y="1.0" z="2.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
       <Up x="0.0" y="1.0" z="0.0"/>
     </Camera>
   </SceneSettings>
 
-  <!-- Test Objects -->
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
   <Objects>
-    <!-- Red sphere -->
-    <Object id="test_sphere" type="sphere">
-      <Position x="0.0" y="0.0" z="0.0"/>
+    <Object id="cursor" type="sphere">
+      <Position x="0.0" y="-0.5" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size radius="0.1"/>
+      <Size radius="0.01"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
 
-    <!-- Blue box -->
-    <Object id="test_box" type="box">
-      <Position x="0.2" y="0.0" z="0.0"/>
+    <Object id="goal" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size width="0.05" height="0.05" depth="0.05"/>
-      <Color r="0.0" g="0.0" b="1.0"/>
-    </Object>
-
-    <!-- Green cylinder -->
-    <Object id="test_cylinder" type="cylinder">
-      <Position x="-0.2" y="0.0" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size radius="0.05" height="0.1"/>
+      <Size width="0.02" height="0.02" depth="0.02"/>
       <Color r="0.0" g="1.0" b="0.0"/>
     </Object>
   </Objects>

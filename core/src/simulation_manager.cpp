@@ -118,7 +118,7 @@ bool SimulationManager::run() {
     simContext.world->addChild(simContext.camera);
 
     // position and orient the camera
-    simContext.camera->set( cVector3d (0.5, 0.0, 0.0),    // camera position (eye)
+    simContext.camera->set( cVector3d (1.0, 0.0, 0.0),    // camera position (eye)
                  cVector3d (0.0, 0.0, 0.0),    // look at position (target)
                  cVector3d (0.0, 0.0, 1.0));   // direction of the (up) vector
 

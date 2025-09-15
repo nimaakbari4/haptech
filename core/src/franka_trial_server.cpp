@@ -129,8 +129,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     cVector3d retrievedComputedForce;
     cVector3d retrievedDevicePos;
 
-    // go until time limit reached
-    while (SimulationManager::trialContext.time < SimulationManager::trialContext.trialDuration) {
+    // go until time limit reached or goal reached
+    bool reachedGoal = false;
+    while (SimulationManager::trialContext.time < SimulationManager::trialContext.trialDuration && !reachedGoal) {
         // get haptic point data
         retrievedProxyPos = hapticPoint->getGlobalPosProxy();
         retrievedComputedForce = hapticPoint->getLastComputedForce();
@@ -157,6 +158,19 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
         writer->Write(dataPointMsg);
 
+        // Check if cursor reached goal (look for goal object at x=0.5)
+        auto goalIt = SimulationManager::simContext.objectMap.find("goal");
+        if (goalIt != SimulationManager::simContext.objectMap.end()) {
+            cVector3d goalPos = goalIt->second->getGlobalPos();
+            double dx = retrievedProxyPos.x() - goalPos.x();
+            double dy = retrievedProxyPos.y() - goalPos.y();
+            double dz = retrievedProxyPos.z() - goalPos.z();
+            double dist = sqrt(dx*dx + dy*dy + dz*dz);
+            if (dist < 0.05) { // 5cm tolerance
+                reachedGoal = true;
+            }
+        }
+
         if (SimulationManager::simContext.debug) {
             std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
         }
@@ -174,7 +188,11 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     std::cout << "[TRIAL] Trial ended: " << SimulationManager::trialContext.trialId << ", lasted " << SimulationManager::trialContext.time << "s" << std::endl;
 
     status->set_status(TrialStatus::COMPLETED);
-    status->set_message("The trial was completed.");
+    if (reachedGoal) {
+        status->set_message("The trial was completed: goal reached!");
+    } else {
+        status->set_message("The trial was completed: time elapsed.");
+    }
     writer->Write(statusMsg);
 
     // reset environment
