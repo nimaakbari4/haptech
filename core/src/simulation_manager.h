@@ -15,7 +15,6 @@ using namespace chai3d;
 struct SimulationContext {
     // flag to enable/disable haptic calculations
     bool hapticsEnabled = true;
-    std::mutex objectMutex;
     // stereo Mode
     /*
         C_STEREO_DISABLED:            Stereo is disabled 
@@ -62,7 +61,7 @@ struct SimulationContext {
     std::set<std::string> pendingDelete;
 
     // flag to indicate if the haptic simulation currently running
-    bool simulationRunning = false;
+    bool simulationRunning = true;
 
     // flag to indicate if the haptic simulation has terminated
     bool simulationFinished = false;

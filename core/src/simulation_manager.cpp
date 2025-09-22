@@ -217,6 +217,7 @@ bool SimulationManager::run() {
     simContext.dataThread = new cThread();
     simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
 
+    simContext.simulationRunning = true;
     // setup callback when application exits
     atexit(close);
 
@@ -272,10 +273,17 @@ bool SimulationManager::reset() {
 
     cSleepMs(100);
 
+    // Clear tool state to drop any contacts before removing objects
+    if (simContext.tool) {
+        simContext.tool->initialize();
+    }
+
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
 
     cSleepMs(100);
+
+    simContext.hapticsEnabled = true;
 
     return true;
 }
@@ -337,14 +345,11 @@ bool SimulationManager::removeObject(std::string id) {
 
     bool success;
 
-    // Remove the object from the world
+    // Defer deletion: mark for removal and let graphics thread remove safely
     auto it = simContext.objectMap.find(id);
     if (it != simContext.objectMap.end()) {
-        cGenericObject* obj = it->second.get();
-        simContext.world->removeChild(obj);
-        // unique_ptr will delete obj automatically
-        simContext.objectMap.erase(it);
-        std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
+        simContext.pendingDelete.insert(id);
+        std::cout << "[DEBUG] Scheduled removal of object ID " << id << "." << std::endl;
         success = true;
     } else {
         std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
@@ -360,13 +365,8 @@ bool SimulationManager::removeAllObjects() {
         return false;
     }
 
-    std::vector<std::string> ids;
     for (const auto& pair : simContext.objectMap) {
-        ids.push_back(pair.first);
-    }
-
-    for (const auto& id : ids) {
-        removeObject(id);
+        simContext.pendingDelete.insert(pair.first);
     }
 
     // All objects are now removed and deleted by unique_ptr
@@ -508,6 +508,20 @@ void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scanc
 
 // this function renders the scene
 void SimulationManager::updateGraphics(void) {
+    // Process any pending deletions when haptics are disabled (safe point)
+    if (!simContext.pendingDelete.empty() && !simContext.hapticsEnabled) {
+        for (const auto& id : simContext.pendingDelete) {
+            auto it = simContext.objectMap.find(id);
+            if (it != simContext.objectMap.end()) {
+                cGenericObject* obj = it->second.get();
+                simContext.world->removeChild(obj);
+                simContext.objectMap.erase(it);
+                std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
+            }
+        }
+        simContext.pendingDelete.clear();
+    }
+
     /////////////////////////////////////////////////////////////////////
     // UPDATE WIDGETS
     /////////////////////////////////////////////////////////////////////
@@ -549,32 +563,35 @@ void SimulationManager::updateGraphics(void) {
     // check for any OpenGL errors
     GLenum err;
     err = glGetError();
-    if (err != GL_NO_ERROR) std::cout << "Error:  %s\n" << gluErrorString(err);
+    if (err != GL_NO_ERROR) {
+        const GLubyte* msg = gluErrorString(err);
+        std::cout << "OpenGL error: " << (msg ? reinterpret_cast<const char*>(msg) : "unknown") << std::endl;
+    }
 }
 
 // this function contains the main haptics simulation loop
 void SimulationManager::updateHaptics(void) {
-    simContext.simulationRunning  = true;
+    simContext.simulationRunning = true;
     simContext.simulationFinished = false;
 
     std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
 
     while (simContext.simulationRunning) {
-        // update world transforms
-        simContext.world->computeGlobalPositions(true);
+        if (simContext.hapticsEnabled) {
+            // update world transforms
+            simContext.world->computeGlobalPositions(true);
 
-        // update tool from device only (mouse controls removed)
-        simContext.tool->updateFromDevice();
+            // update tool from device only (mouse controls removed)
+            simContext.tool->updateFromDevice();
 
-        // compute interaction forces
-        simContext.tool->computeInteractionForces();
+            // compute interaction forces
+            simContext.tool->computeInteractionForces();
 
-        auto hapticPoint = simContext.tool->getHapticPoint(0);
-        cVector3d proxyPos = hapticPoint->getGlobalPosProxy();
-        cVector3d computedForce = hapticPoint->getLastComputedForce();
-        
+            auto hapticPoint = simContext.tool->getHapticPoint(0);
+            (void)hapticPoint; // values used only for debug prints
+        }
 
-        // apply forces
+        // apply forces (outside lock)
         simContext.tool->applyToDevice();
 
         // update haptic loop frequency
