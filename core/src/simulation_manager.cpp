@@ -281,8 +281,15 @@ bool SimulationManager::reset() {
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
 
+    // ensure device sees zero force while haptics are disabled
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    }
+
+    // allow one or two frames for deferred deletion to flush
     cSleepMs(100);
 
+    // re-enable haptics for next trial
     simContext.hapticsEnabled = true;
 
     return true;
@@ -316,7 +323,7 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x,
         return false;
     }
 
-    // Add the object into the world
+    // Add the object into the world immediately
     simContext.world->addChild(obj);
     obj->setLocalPos(x, y, z);
 
@@ -427,6 +434,11 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         double maxDim = std::max(radiusIt->second, heightIt->second);
         mesh->createAABBCollisionDetector(maxDim);
     }
+    else if (type == "custom") {
+        // Temporarily skip custom objects
+        std::cout << "[INFO] Skipping custom object '" << id << "' for now." << std::endl;
+        return true;
+    }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;
         return false;
@@ -508,18 +520,29 @@ void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scanc
 
 // this function renders the scene
 void SimulationManager::updateGraphics(void) {
+    // No queued additions path
     // Process any pending deletions when haptics are disabled (safe point)
+    bool deletedAny = false;
     if (!simContext.pendingDelete.empty() && !simContext.hapticsEnabled) {
+        // Ensure all prior GL commands are complete before destroying geometry
+        glFinish();
         for (const auto& id : simContext.pendingDelete) {
             auto it = simContext.objectMap.find(id);
             if (it != simContext.objectMap.end()) {
+                // Detach and destroy immediately after this frame
                 cGenericObject* obj = it->second.get();
                 simContext.world->removeChild(obj);
                 simContext.objectMap.erase(it);
                 std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
+                deletedAny = true;
             }
         }
         simContext.pendingDelete.clear();
+        // After deletion, give GL a frame to settle and skip rendering this cycle
+        if (deletedAny) {
+            glFinish();
+            return;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -552,13 +575,19 @@ void SimulationManager::updateGraphics(void) {
     /////////////////////////////////////////////////////////////////////
 
     // update shadow maps (if any)
-    simContext.world->updateShadowMaps(false, simContext.mirroredDisplay);
+    if (!trialContext.trialRunning) {
+        // during teardown/idle, skip shadow map updates to avoid touching deleted geometry
+    } else {
+        simContext.world->updateShadowMaps(false, simContext.mirroredDisplay);
+    }
 
     // render world using framebuffer dimensions to fill the window
     simContext.camera->renderView(fbw, fbh);
 
     // wait until all GL commands are completed
     glFinish();
+
+    // No deferred garbage mechanism
 
     // check for any OpenGL errors
     GLenum err;
@@ -589,13 +618,23 @@ void SimulationManager::updateHaptics(void) {
 
             auto hapticPoint = simContext.tool->getHapticPoint(0);
             (void)hapticPoint; // values used only for debug prints
-        }
 
-        // apply forces (outside lock)
-        simContext.tool->applyToDevice();
+            // apply computed forces
+            simContext.tool->applyToDevice();
+        } else {
+            // haptics disabled: actively drive zero force and skip applyToDevice()
+            if (simContext.hapticDevice) {
+                simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+            }
+            // avoid busy spinning when disabled
+            cSleepMs(2);
+        }
 
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
+
+        // small yield to avoid CPU starvation
+        cSleepMs(1);
     }
 
     simContext.simulationFinished = true;
@@ -644,6 +683,8 @@ void SimulationManager::close(void) {
     }
     // disable haptic calculations
     simContext.hapticsEnabled = false;
+    // softly ramp to zero to avoid torque discontinuity reflex
+    rampDeviceForceToZero(100);
 
     // remove all objects from the world
     removeAllObjects();
@@ -671,4 +712,20 @@ void SimulationManager::close(void) {
     
     delete simContext.world;
     simContext.world = nullptr;    
+}
+
+void SimulationManager::rampDeviceForceToZero(int durationMs) {
+    if (!simContext.hapticDevice) return;
+
+    cVector3d currentForce;
+    simContext.hapticDevice->getForce(currentForce);
+
+    const int steps = std::max(1, durationMs / 5);
+    for (int i = 0; i < steps; ++i) {
+        double alpha = 1.0 - static_cast<double>(i + 1) / steps;
+        cVector3d f = alpha * currentForce;
+        simContext.hapticDevice->setForce(f);
+        cSleepMs(5);
+    }
+    simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
 }

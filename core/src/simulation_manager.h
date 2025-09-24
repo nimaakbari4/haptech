@@ -57,7 +57,7 @@ struct SimulationContext {
     // a virtual tool representing the haptic device in the scene
     cToolCursor* tool;
 
-    // Set of object IDs pending deletion (deferred deletion)
+    // Set of object IDs pending deletion (processed by graphics thread)
     std::set<std::string> pendingDelete;
 
     // flag to indicate if the haptic simulation currently running
@@ -144,6 +144,10 @@ public:
                                    double x, double y, double z, 
                                    double r, double g, double b,
                                    const std::map<std::string, double>& sizeParams);
+    
+    // ramp device force to zero over given milliseconds (exposed for server teardown)
+    static void rampDeviceForceToZero(int durationMs);
+
 private:
     // callback when the window display is resized
     static void windowSizeCallback(GLFWwindow* a_window, int a_width, int a_height);

@@ -164,6 +164,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
+    // ensure haptics is disabled and ramp forces to zero during teardown
+    SimulationManager::simContext.hapticsEnabled = false;
+    SimulationManager::rampDeviceForceToZero(150);
     std::cout << "[TRIAL] Trial ended: " << SimulationManager::trialContext.trialId << ", lasted " << SimulationManager::trialContext.time << "s" << std::endl;
 
     status->set_status(TrialStatus::COMPLETED);
