@@ -165,7 +165,6 @@ bool SimulationManager::run() {
     // create and configure the haptic tool
     createHapticTool();
 
-
     //--------------------------------------------------------------------------
     // WIDGETS
     //--------------------------------------------------------------------------
@@ -259,7 +258,7 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
-
+    
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {
         simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
@@ -331,16 +330,19 @@ bool SimulationManager::removeObject(std::string id) {
 
     bool success;
 
-    // Defer deletion: mark for removal and let graphics thread remove safely
-    auto it = simContext.objectMap.find(id);
-    if (it != simContext.objectMap.end()) {
-        simContext.pendingDelete.insert(id);
-        std::cout << "[DEBUG] Scheduled removal of object ID " << id << "." << std::endl;
-        success = true;
-    } else {
-        std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
-        success = false;
-    }
+	// Defer deletion: mark for removal and let graphics thread remove safely
+	auto it = simContext.objectMap.find(id);
+	if (it != simContext.objectMap.end() && it->second) {
+		cGenericObject* obj = it->second.get();
+		std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
+		obj->setLocalPos(10000, 10000, 10000);
+		simContext.pendingDelete.insert(id);
+		std::cout << "[DEBUG] Scheduled removal of object ID " << id << "." << std::endl;
+		success = true;
+	} else {
+		std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
+		success = false;
+	}
 
     return success;
 }
@@ -353,6 +355,7 @@ bool SimulationManager::removeAllObjects() {
 
     for (const auto& pair : simContext.objectMap) {
         simContext.pendingDelete.insert(pair.first);
+        removeObject(pair.first);
     }
 
     // All objects are now removed and deleted by unique_ptr
@@ -527,7 +530,7 @@ void SimulationManager::updateGraphics(void) {
     // place status text using framebuffer height
     simContext.statusText->setLocalPos(5, fbh - simContext.statusText->getHeight() - 5);
 
-    /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////destroyHaptic////
     // RENDER SCENE
     /////////////////////////////////////////////////////////////////////
 
@@ -571,8 +574,8 @@ void SimulationManager::updateHaptics(void) {
                 if (it != simContext.objectMap.end()) {
                     // Detach and destroy immediately after this frame
                     cGenericObject* obj = it->second.get();
-                    simContext.world->removeChild(obj);
-                    simContext.objectMap.erase(it);
+                    //simContext.world->removeChild(obj);
+                    //simContext.objectMap.erase(it);
                     std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
                     deletedAny = true;
                 }
@@ -584,14 +587,14 @@ void SimulationManager::updateHaptics(void) {
                 simContext.hapticsEnabled = false;
                 
                 // Force zero force immediately
-                if (simContext.hapticDevice) {
-                    simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
-                }
+                //if (simContext.hapticDevice) {
+                    //simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+                //}
                 
                 // Completely destroy and recreate the tool to clear all internal state
-                destroyHapticTool();
+                //destroyHapticTool();
                 cSleepMs(10); // Brief pause to ensure cleanup
-                createHapticTool();
+                //createHapticTool();
                 
                 std::cout << "[DEBUG] Rebuilt haptic tool after object deletion." << std::endl;
             }
@@ -625,11 +628,8 @@ void SimulationManager::updateHaptics(void) {
             simContext.tool->applyToDevice();
         } else {
             // haptics disabled or objects were deleted: actively drive zero force
-            if (simContext.hapticDevice) {
-                simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
-            }
             // avoid busy spinning when disabled or after deletions
-            cSleepMs(200);
+            cSleepMs(10);
         }
 
         // update haptic loop frequency

@@ -45,6 +45,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // add objects (hard coded for now, load from config info later)
     // SimulationManager::reset();
+    SimulationManager::simContext.objectMap.clear();
 
     // Change the background color to a light blue
     if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
