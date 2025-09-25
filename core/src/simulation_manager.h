@@ -149,6 +149,10 @@ public:
     static void rampDeviceForceToZero(int durationMs);
 
 private:
+    // haptic tool management
+    static void createHapticTool();
+    static void destroyHapticTool();
+    
     // callback when the window display is resized
     static void windowSizeCallback(GLFWwindow* a_window, int a_width, int a_height);
 

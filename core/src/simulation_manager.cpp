@@ -162,29 +162,8 @@ bool SimulationManager::run() {
     // retrieve information about the current haptic device
     cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
 
-    // create a tool (cursor) and insert into the world
-    simContext.tool = new cToolCursor(simContext.world);
-    simContext.world->addChild(simContext.tool);
-
-    // connect the haptic device to the virtual tool
-    simContext.tool->setHapticDevice(simContext.hapticDevice);
-
-    // define a larger radius for the virtual tool (display + contact)
-    simContext.tool->setRadius(0.05);
-    simContext.tool->setRadiusDisplay(0.05);
-    // show proxy/goal spheres for visibility
-    simContext.tool->setShowContactPoints(true, true);
-
-    // map the physical workspace of the haptic device to a larger virtual workspace.
-    simContext.tool->setWorkspaceRadius(1.0);
-
-    // haptic forces are enabled only if small forces are first sent to the device;
-    // this mode avoids the force spike that occurs when the application starts when 
-    // the tool is located inside an object for instance. 
-    simContext.tool->setWaitForSmallForce(true);
-
-    // start the haptic tool
-    simContext.tool->start();
+    // create and configure the haptic tool
+    createHapticTool();
 
 
     //--------------------------------------------------------------------------
@@ -522,28 +501,6 @@ void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scanc
 void SimulationManager::updateGraphics(void) {
     // No queued additions path
     // Process any pending deletions when haptics are disabled (safe point)
-    bool deletedAny = false;
-    if (!simContext.pendingDelete.empty() && !simContext.hapticsEnabled) {
-        // Ensure all prior GL commands are complete before destroying geometry
-        glFinish();
-        for (const auto& id : simContext.pendingDelete) {
-            auto it = simContext.objectMap.find(id);
-            if (it != simContext.objectMap.end()) {
-                // Detach and destroy immediately after this frame
-                cGenericObject* obj = it->second.get();
-                simContext.world->removeChild(obj);
-                simContext.objectMap.erase(it);
-                std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
-                deletedAny = true;
-            }
-        }
-        simContext.pendingDelete.clear();
-        // After deletion, give GL a frame to settle and skip rendering this cycle
-        if (deletedAny) {
-            glFinish();
-            return;
-        }
-    }
 
     /////////////////////////////////////////////////////////////////////
     // UPDATE WIDGETS
@@ -606,7 +563,55 @@ void SimulationManager::updateHaptics(void) {
     std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
 
     while (simContext.simulationRunning) {
-        if (simContext.hapticsEnabled) {
+        bool deletedAny = false;
+
+        if (!simContext.pendingDelete.empty()) {
+            for (const auto& id : simContext.pendingDelete) {
+                auto it = simContext.objectMap.find(id);
+                if (it != simContext.objectMap.end()) {
+                    // Detach and destroy immediately after this frame
+                    cGenericObject* obj = it->second.get();
+                    simContext.world->removeChild(obj);
+                    simContext.objectMap.erase(it);
+                    std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
+                    deletedAny = true;
+                }
+            }
+            
+            // If we deleted any objects, completely rebuild the haptic tool
+            if (deletedAny) {
+                // Disable haptics during rebuild
+                simContext.hapticsEnabled = false;
+                
+                // Force zero force immediately
+                if (simContext.hapticDevice) {
+                    simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+                }
+                
+                // Completely destroy and recreate the tool to clear all internal state
+                destroyHapticTool();
+                cSleepMs(10); // Brief pause to ensure cleanup
+                createHapticTool();
+                
+                std::cout << "[DEBUG] Rebuilt haptic tool after object deletion." << std::endl;
+            }
+
+            simContext.pendingDelete.clear();
+        }
+        
+        // Re-enable haptics after a brief delay following tool rebuild
+        static int disableFramesRemaining = 0;
+        if (!simContext.hapticsEnabled && deletedAny) {
+            disableFramesRemaining = 2; // Skip 2 haptic frames to ensure tool is fully initialized
+        } else if (!simContext.hapticsEnabled && disableFramesRemaining > 0) {
+            disableFramesRemaining--;
+            if (disableFramesRemaining == 0) {
+                simContext.hapticsEnabled = true;
+                std::cout << "[DEBUG] Re-enabled haptics after tool rebuild." << std::endl;
+            }
+        }
+
+        if (!deletedAny && simContext.hapticsEnabled) {
             // update world transforms
             simContext.world->computeGlobalPositions(true);
 
@@ -616,18 +621,15 @@ void SimulationManager::updateHaptics(void) {
             // compute interaction forces
             simContext.tool->computeInteractionForces();
 
-            auto hapticPoint = simContext.tool->getHapticPoint(0);
-            (void)hapticPoint; // values used only for debug prints
-
             // apply computed forces
             simContext.tool->applyToDevice();
         } else {
-            // haptics disabled: actively drive zero force and skip applyToDevice()
+            // haptics disabled or objects were deleted: actively drive zero force
             if (simContext.hapticDevice) {
                 simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
             }
-            // avoid busy spinning when disabled
-            cSleepMs(2);
+            // avoid busy spinning when disabled or after deletions
+            cSleepMs(200);
         }
 
         // update haptic loop frequency
@@ -677,12 +679,9 @@ void SimulationManager::dataPollingThread() {
 
 // this function closes the application
 void SimulationManager::close(void) {
-    // reset tool and proxy to avoid dangling references
-    if (simContext.tool) {
-        simContext.tool->initialize();
-    }
     // disable haptic calculations
     simContext.hapticsEnabled = false;
+    
     // softly ramp to zero to avoid torque discontinuity reflex
     rampDeviceForceToZero(100);
 
@@ -695,8 +694,8 @@ void SimulationManager::close(void) {
     // wait for graphics and haptics loops to terminate
     while (!simContext.simulationFinished) { cSleepMs(100); }
 
-    // free resources
-    simContext.tool->stop();
+    // destroy haptic tool cleanly
+    destroyHapticTool();
     
     delete simContext.hapticsThread;
     simContext.hapticsThread = nullptr;
@@ -728,4 +727,62 @@ void SimulationManager::rampDeviceForceToZero(int durationMs) {
         cSleepMs(5);
     }
     simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+}
+
+void SimulationManager::createHapticTool() {
+    if (!simContext.handler || !simContext.world) {
+        std::cout << "[ERROR] Cannot create haptic tool: handler or world is null." << std::endl;
+        return;
+    }
+
+    // create a tool (cursor) and insert into the world
+    simContext.tool = new cToolCursor(simContext.world);
+    simContext.world->addChild(simContext.tool);
+
+    // connect the haptic device to the virtual tool
+    simContext.tool->setHapticDevice(simContext.hapticDevice);
+
+    // define a larger radius for the virtual tool (display + contact)
+    simContext.tool->setRadius(0.05);
+    simContext.tool->setRadiusDisplay(0.05);
+    // show proxy/goal spheres for visibility
+    // simContext.tool->setShowContactPoints(true, true);
+
+    // map the physical workspace of the haptic device to a larger virtual workspace.
+    simContext.tool->setWorkspaceRadius(1.0);
+
+    // haptic forces are enabled only if small forces are first sent to the device;
+    // this mode avoids the force spike that occurs when the application starts when 
+    // the tool is located inside an object for instance. 
+    simContext.tool->setWaitForSmallForce(true);
+
+    // start the haptic tool
+    simContext.tool->start();
+    
+    std::cout << "[DEBUG] Created and started new haptic tool." << std::endl;
+}
+
+void SimulationManager::destroyHapticTool() {
+    if (!simContext.tool) {
+        return;
+    }
+
+    // Stop the tool first
+    simContext.tool->stop();
+    
+    // Remove from world
+    if (simContext.world) {
+        simContext.world->removeChild(simContext.tool);
+    }
+    
+    // Delete the tool
+    delete simContext.tool;
+    simContext.tool = nullptr;
+    
+    // Force zero on device
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    }
+    
+    std::cout << "[DEBUG] Destroyed haptic tool." << std::endl;
 }
