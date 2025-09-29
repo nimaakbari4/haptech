@@ -45,6 +45,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // add objects (hard coded for now, load from config info later)
     // SimulationManager::reset();
+    // Remove all objects in the object map from the world
+    for (auto& pair : SimulationManager::simContext.objectMap) {
+        if (pair.second) {
+            SimulationManager::simContext.world->removeChild(pair.second.get());
+        }
+    }
+    
     SimulationManager::simContext.objectMap.clear();
 
     // Change the background color to a light blue
