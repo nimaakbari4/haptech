@@ -15,10 +15,11 @@
 #include <grpcpp/support/method_handler.h>
 #include <grpcpp/impl/rpc_service_method.h>
 #include <grpcpp/support/server_callback.h>
-#include <grpcpp/impl/codegen/server_callback_handlers.h>
+#include <grpcpp/impl/server_callback_handlers.h>
 #include <grpcpp/server_context.h>
 #include <grpcpp/impl/service_type.h>
 #include <grpcpp/support/sync_stream.h>
+#include <grpcpp/ports_def.inc>
 
 static const char* FrankaTrialService_method_names[] = {
   "/FrankaTrialService/RunTrial",
@@ -27,22 +28,15 @@ static const char* FrankaTrialService_method_names[] = {
 std::unique_ptr< FrankaTrialService::Stub> FrankaTrialService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
   (void)options;
   std::unique_ptr< FrankaTrialService::Stub> stub(new FrankaTrialService::Stub(channel, options));
-  std::unique_ptr< FrankaTrialService::Stub> stub(new FrankaTrialService::Stub(channel, options));
   return stub;
 }
 
-FrankaTrialService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
-  : channel_(channel), rpcmethod_RunTrial_(FrankaTrialService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
 FrankaTrialService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_RunTrial_(FrankaTrialService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   {}
 
 ::grpc::ClientReader< ::TrialResponseStream>* FrankaTrialService::Stub::RunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request) {
   return ::grpc::internal::ClientReaderFactory< ::TrialResponseStream>::Create(channel_.get(), rpcmethod_RunTrial_, context, request);
-}
-
-void FrankaTrialService::Stub::async::RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) {
-  ::grpc::internal::ClientCallbackReaderFactory< ::TrialResponseStream>::Create(stub_->channel_.get(), stub_->rpcmethod_RunTrial_, context, request, reactor);
 }
 
 void FrankaTrialService::Stub::async::RunTrial(::grpc::ClientContext* context, const ::TrialRequest* request, ::grpc::ClientReadReactor< ::TrialResponseStream>* reactor) {
@@ -62,12 +56,6 @@ FrankaTrialService::Service::Service() {
       FrankaTrialService_method_names[0],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
       new ::grpc::internal::ServerStreamingHandler< FrankaTrialService::Service, ::TrialRequest, ::TrialResponseStream>(
-          [](FrankaTrialService::Service* service,
-             ::grpc::ServerContext* ctx,
-             const ::TrialRequest* req,
-             ::grpc::ServerWriter<::TrialResponseStream>* writer) {
-               return service->RunTrial(ctx, req, writer);
-             }, this)));
           [](FrankaTrialService::Service* service,
              ::grpc::ServerContext* ctx,
              const ::TrialRequest* req,

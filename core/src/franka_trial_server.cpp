@@ -9,6 +9,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
 
+    std::cout << "[SERVER] simContext address: " << &SimulationManager::simContext << std::endl;
+
     // ensure simulation is running (allow brief startup lag)
     if (!SimulationManager::simContext.simulationRunning) {
         const double timeoutSec = 2.0;
@@ -16,6 +18,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
             cSleepMs(10);
         }
+
+        std::cout << "[DEBUG] [server] simulationRunning: " << SimulationManager::simContext.simulationRunning << std::endl;
+
         if (!SimulationManager::simContext.simulationRunning) {
             std::cout << "[ERROR] Simulation is not running." << std::endl;
 
@@ -39,7 +44,15 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
 
     // add objects (hard coded for now, load from config info later)
-    SimulationManager::reset();
+    // SimulationManager::reset();
+    // Remove all objects in the object map from the world
+    for (auto& pair : SimulationManager::simContext.objectMap) {
+        if (pair.second) {
+            SimulationManager::simContext.world->removeChild(pair.second.get());
+        }
+    }
+    
+    SimulationManager::simContext.objectMap.clear();
 
     // Change the background color to a light blue
     if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
@@ -171,6 +184,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
+    // ensure haptics is disabled and ramp forces to zero during teardown
+    SimulationManager::simContext.hapticsEnabled = false;
+    SimulationManager::rampDeviceForceToZero(150);
     std::cout << "[TRIAL] Trial ended: " << SimulationManager::trialContext.trialId << ", lasted " << SimulationManager::trialContext.time << "s" << std::endl;
 
     status->set_status(TrialStatus::COMPLETED);

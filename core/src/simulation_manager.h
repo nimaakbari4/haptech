@@ -6,12 +6,13 @@
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
+#include <set>
 
 using namespace chai3d;
 
-#define DATA_POLL_FREQUENCY 10 // Hz
-
 struct SimulationContext {
+    // flag to enable/disable haptic calculations
+    bool hapticsEnabled = true;
     // stereo Mode
     /*
         C_STEREO_DISABLED:            Stereo is disabled 
@@ -34,7 +35,7 @@ struct SimulationContext {
     cCamera* camera;
 
     // map object ID's to pointers to the actual objects
-    std::unordered_map<std::string, cGenericObject*> objectMap;
+    std::unordered_map<std::string, std::unique_ptr<cGenericObject>> objectMap;
 
     // a light source to illuminate the objects in the world
     cDirectionalLight *light;
@@ -54,10 +55,11 @@ struct SimulationContext {
     // a virtual tool representing the haptic device in the scene
     cToolCursor* tool;
 
-    
+    // Set of object IDs pending deletion (processed by graphics thread)
+    std::set<std::string> pendingDelete;
 
     // flag to indicate if the haptic simulation currently running
-    bool simulationRunning = false;
+    bool simulationRunning = true;
 
     // flag to indicate if the haptic simulation has terminated
     bool simulationFinished = false;
@@ -91,7 +93,7 @@ struct SimulationContext {
 
     bool debug = false;
 
-    
+
 };
 
 struct TrialContext {
@@ -139,9 +141,16 @@ public:
     static bool addObjectFromConfig(const std::string& id, const std::string& type, 
                                    double x, double y, double z, 
                                    double r, double g, double b,
-                                   const std::map<std::string, double>& sizeParams,
-                                   const std::string& filePath = "");
+                                   const std::map<std::string, double>& sizeParams);
+    
+    // ramp device force to zero over given milliseconds (exposed for server teardown)
+    static void rampDeviceForceToZero(int durationMs);
+
 private:
+    // haptic tool management
+    static void createHapticTool();
+    static void destroyHapticTool();
+    
     // callback when the window display is resized
     static void windowSizeCallback(GLFWwindow* a_window, int a_width, int a_height);
 

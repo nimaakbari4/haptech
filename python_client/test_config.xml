@@ -1,4 +1,9 @@
 <TrialConfig>
+  <HomePosition>
+    <Position x="0.0" y="0.0" z="0.0"/>
+    <Tolerance>0.01</Tolerance>
+  </HomePosition>
+
   <!-- Trial End Conditions -->
   <EndConditions>
     <Condition type="time" value="10.0" result="failure" />
@@ -23,28 +28,18 @@
 
   <!-- Test Objects -->
   <Objects>
-    <!-- Red sphere -->
-    <Object id="test_sphere" type="sphere">
+    <Object id="test_box" type="box">
       <Position x="0.0" y="0.0" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size radius="0.1"/>
+      <Orientation roll="45" pitch="45" yaw="0"/>
+      <Size width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
 
-    <!-- Blue box -->
-    <Object id="test_box" type="box">
-      <Position x="0.2" y="0.0" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size width="0.05" height="0.05" depth="0.05"/>
-      <Color r="0.0" g="0.0" b="1.0"/>
-    </Object>
-
-    <!-- Green cylinder -->
-    <Object id="test_cylinder" type="cylinder">
-      <Position x="-0.2" y="0.0" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size radius="0.05" height="0.1"/>
-      <Color r="0.0" g="1.0" b="0.0"/>
+    <Object id="boxy" type="box">
+      <Position x="0.1" y="0.1" z="0.1"/>
+      <Orientation roll="45" pitch="45" yaw="0"/>
+      <Size width="0.1" height="0.3" depth="0.1"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
   </Objects>
 </TrialConfig>
