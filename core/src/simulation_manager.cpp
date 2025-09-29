@@ -3,6 +3,9 @@
 #include <map>
 #include <algorithm>
 
+#define DATA_POLL_FREQUENCY 1000 // Hz
+#define HAPTICS_LOOP_FREQUENCY 1000 // Hz
+
 SimulationContext SimulationManager::simContext;
 TrialContext SimulationManager::trialContext;
 
@@ -584,7 +587,7 @@ void SimulationManager::updateHaptics(void) {
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
 
-        cSleepMs(1);
+        cSleepMs(1000 / HAPTICS_LOOP_FREQUENCY);
     }
 
     simContext.simulationFinished = true;

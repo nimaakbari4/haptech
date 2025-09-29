@@ -10,8 +10,6 @@
 
 using namespace chai3d;
 
-#define DATA_POLL_FREQUENCY 10 // Hz
-
 struct SimulationContext {
     // flag to enable/disable haptic calculations
     bool hapticsEnabled = true;
