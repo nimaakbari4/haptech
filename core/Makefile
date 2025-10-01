@@ -26,7 +26,13 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I/usr/include \
 	-I/usr/local/include \
 	-I/usr/include/eigen3 \
-	-DLINUX -Wno-deprecated -std=c++17 -m64 -fsigned-char -O3
+	-DLINUX -Wno-deprecated -std=c++17 -m64 -fsigned-char
+
+# Enable debug info if requested: make DEBUG=1
+ifeq ($(DEBUG),1)
+  CXXFLAGS := $(filter-out -O3,$(CXXFLAGS))
+  CXXFLAGS += -O0 -g -fno-omit-frame-pointer -DDEBUG
+endif
 
 LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(GLFW_BUILD_DIR) \

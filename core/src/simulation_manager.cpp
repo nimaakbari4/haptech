@@ -11,6 +11,7 @@ bool SimulationManager::run() {
     // INITIALIZATION
     //--------------------------------------------------------------------------
 
+    std::cout << "[SimulationManager] simContext address: " << &simContext << std::endl;
     std::cout << std::endl;
     std::cout << "-----------------------------------" << std::endl;
     std::cout << "CHAI3D" << std::endl;
@@ -161,30 +162,8 @@ bool SimulationManager::run() {
     // retrieve information about the current haptic device
     cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
 
-    // create a tool (cursor) and insert into the world
-    simContext.tool = new cToolCursor(simContext.world);
-    simContext.world->addChild(simContext.tool);
-
-    // connect the haptic device to the virtual tool
-    simContext.tool->setHapticDevice(simContext.hapticDevice);
-
-    // define a larger radius for the virtual tool (display + contact)
-    simContext.tool->setRadius(0.05);
-    simContext.tool->setRadiusDisplay(0.05);
-    // show proxy/goal spheres for visibility
-    simContext.tool->setShowContactPoints(true, true);
-
-    // map the physical workspace of the haptic device to a larger virtual workspace.
-    simContext.tool->setWorkspaceRadius(1.0);
-
-    // haptic forces are enabled only if small forces are first sent to the device;
-    // this mode avoids the force spike that occurs when the application starts when 
-    // the tool is located inside an object for instance. 
-    simContext.tool->setWaitForSmallForce(true);
-
-    // start the haptic tool
-    simContext.tool->start();
-
+    // create and configure the haptic tool
+    createHapticTool();
 
     //--------------------------------------------------------------------------
     // WIDGETS
@@ -216,6 +195,7 @@ bool SimulationManager::run() {
     simContext.dataThread = new cThread();
     simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
 
+    simContext.simulationRunning = true;
     // setup callback when application exits
     atexit(close);
 
@@ -266,8 +246,30 @@ bool SimulationManager::reset() {
         return false;
     }
 
+    // disable haptic calculations
+    simContext.hapticsEnabled = false;
+
+    // Clear tool state to drop any contacts before removing objects
+    if (simContext.tool) {
+        simContext.tool->initialize();
+    }
+
+    cSleepMs(100);
+
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+    
+    // ensure device sees zero force while haptics are disabled
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    }
+
+    // allow one or two frames for deferred deletion to flush
+    cSleepMs(100);
+
+    // re-enable haptics for next trial
+    simContext.hapticsEnabled = true;
+
     return true;
 }
 
@@ -299,7 +301,7 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x,
         return false;
     }
 
-    // Add the object into the world
+    // Add the object into the world immediately
     simContext.world->addChild(obj);
     obj->setLocalPos(x, y, z);
 
@@ -313,8 +315,8 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x,
     material->setStiffness(maxStiffness);
     obj->setMaterial(material);
 
-    // Add the object to the map
-    simContext.objectMap[id] = obj;
+    // Add the object to the map using unique_ptr
+    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
     std::cout << "[DEBUG] Added object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
 
     return true;
@@ -328,19 +330,17 @@ bool SimulationManager::removeObject(std::string id) {
 
     bool success;
 
-    // Remove the object from the world
-    auto it = simContext.objectMap.find(id);
-    if (it != simContext.objectMap.end()) {
-        cGenericObject* obj = it->second;
-        simContext.world->removeChild(obj);
-        delete obj;
-        simContext.objectMap.erase(it);
-        std::cout << "[DEBUG] Removed object with ID " << id << "." << std::endl;
-        success = true;
-    } else {
-        std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
-        success = false;
-    }
+	// Defer deletion: mark for removal and let graphics thread remove safely
+	auto it = simContext.objectMap.find(id);
+	if (it != simContext.objectMap.end() && it->second) {
+		cGenericObject* obj = it->second.get();
+		std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
+		obj->setLocalPos(10000, 10000, 10000);
+		success = true;
+	} else {
+		std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
+		success = false;
+	}
 
     return success;
 }
@@ -351,50 +351,41 @@ bool SimulationManager::removeAllObjects() {
         return false;
     }
 
-    std::vector<std::string> ids;
     for (const auto& pair : simContext.objectMap) {
-        ids.push_back(pair.first);
+        removeObject(pair.first);
     }
 
-    for (const auto& id : ids) {
-        removeObject(id);
-    }
-
+    // All objects are now removed and deleted by unique_ptr
     std::cout << "[DEBUG] Removed all objects." << std::endl;
     return true;
 }
 
 bool SimulationManager::addSphere(std::string id, double radius, double x, double y, double z) {
-    cMesh* sphere = new cMesh();
-    cCreateSphere(sphere, radius);
+    std::unique_ptr<cMesh> sphere = std::make_unique<cMesh>();
+    cCreateSphere(sphere.get(), radius);
     sphere->createAABBCollisionDetector(radius);
 
-    return addObject(id, sphere, x, y, z);
+    return addObject(id, sphere.release(), x, y, z);
 }
 
-// If creating a custom object, you need to create a cMesh object and then add it to the world
-// You can then add the object to the map and return true
-// The object will be added to the world and the map will be updated
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
                                            double x, double y, double z, 
                                            double r, double g, double b,
-                                           const std::map<std::string, double>& sizeParams,
-                                           const std::string& filePath) {
+                                           const std::map<std::string, double>& sizeParams) {
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
     }
 
-    cMesh* mesh = new cMesh();
+    std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
     
     if (type == "sphere") {
         auto radiusIt = sizeParams.find("radius");
         if (radiusIt == sizeParams.end()) {
             std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateSphere(mesh, radiusIt->second);
+        cCreateSphere(mesh.get(), radiusIt->second);
         mesh->createAABBCollisionDetector(radiusIt->second);
     }
     else if (type == "box") {
@@ -404,10 +395,9 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
             std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateBox(mesh, widthIt->second, heightIt->second, depthIt->second);
+        cCreateBox(mesh.get(), widthIt->second, heightIt->second, depthIt->second);
         double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
         mesh->createAABBCollisionDetector(maxDim);
     }
@@ -417,46 +407,19 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
             std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
-            delete mesh;
             return false;
         }
-        cCreateCylinder(mesh, radiusIt->second, heightIt->second);
+        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
         double maxDim = std::max(radiusIt->second, heightIt->second);
         mesh->createAABBCollisionDetector(maxDim);
     }
     else if (type == "custom") {
-        // Try to load custom mesh from file
-        if (!filePath.empty()) {
-            std::cout << "[DEBUG] Loading custom object from: " << filePath << std::endl;
-            
-            // Create different shapes based on file name for now
-            if (filePath.find("square") != std::string::npos) {
-                // Create a box (square) for square.obj
-                cCreateBox(mesh, 0.04, 0.04, 0.02);
-                mesh->createAABBCollisionDetector(0.04);
-                std::cout << "[DEBUG] Created square placeholder" << std::endl;
-            } else if (filePath.find("cube") != std::string::npos) {
-                // Create a cube for cube.obj
-                cCreateBox(mesh, 0.03, 0.03, 0.03);
-                mesh->createAABBCollisionDetector(0.03);
-                std::cout << "[DEBUG] Created cube placeholder" << std::endl;
-            } else {
-                // Default to sphere for other files
-                cCreateSphere(mesh, 0.02);
-                mesh->createAABBCollisionDetector(0.02);
-                std::cout << "[DEBUG] Created sphere placeholder" << std::endl;
-            }
-            
-            std::cout << "[WARNING] Custom mesh loading not implemented. Using shape placeholder." << std::endl;
-        } else {
-            std::cout << "[ERROR] Custom object requires 'file_path' parameter." << std::endl;
-            delete mesh;
-            return false;
-        }
+        // Temporarily skip custom objects
+        std::cout << "[INFO] Skipping custom object '" << id << "' for now." << std::endl;
+        return true;
     }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;
-        delete mesh;
         return false;
     }
 
@@ -465,7 +428,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
     mesh->m_material->m_diffuse.set(r, g, b);
     mesh->m_material->m_specular.set(r, g, b);
 
-    return addObject(id, mesh, x, y, z);
+    return addObject(id, mesh.release(), x, y, z);
 }
 
 // PRIVATE CALLBACKS //
@@ -536,6 +499,9 @@ void SimulationManager::keyCallback(GLFWwindow* a_window, int a_key, int a_scanc
 
 // this function renders the scene
 void SimulationManager::updateGraphics(void) {
+    // No queued additions path
+    // Process any pending deletions when haptics are disabled (safe point)
+
     /////////////////////////////////////////////////////////////////////
     // UPDATE WIDGETS
     /////////////////////////////////////////////////////////////////////
@@ -561,12 +527,16 @@ void SimulationManager::updateGraphics(void) {
     // place status text using framebuffer height
     simContext.statusText->setLocalPos(5, fbh - simContext.statusText->getHeight() - 5);
 
-    /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////destroyHaptic////
     // RENDER SCENE
     /////////////////////////////////////////////////////////////////////
 
     // update shadow maps (if any)
-    simContext.world->updateShadowMaps(false, simContext.mirroredDisplay);
+    if (!trialContext.trialRunning) {
+        // during teardown/idle, skip shadow map updates to avoid touching deleted geometry
+    } else {
+        simContext.world->updateShadowMaps(false, simContext.mirroredDisplay);
+    }
 
     // render world using framebuffer dimensions to fill the window
     simContext.camera->renderView(fbw, fbh);
@@ -574,18 +544,31 @@ void SimulationManager::updateGraphics(void) {
     // wait until all GL commands are completed
     glFinish();
 
+    // No deferred garbage mechanism
+
     // check for any OpenGL errors
     GLenum err;
     err = glGetError();
-    if (err != GL_NO_ERROR) std::cout << "Error:  %s\n" << gluErrorString(err);
+    if (err != GL_NO_ERROR) {
+        const GLubyte* msg = gluErrorString(err);
+        std::cout << "OpenGL error: " << (msg ? reinterpret_cast<const char*>(msg) : "unknown") << std::endl;
+    }
 }
 
 // this function contains the main haptics simulation loop
 void SimulationManager::updateHaptics(void) {
-    simContext.simulationRunning  = true;
+    simContext.simulationRunning = true;
     simContext.simulationFinished = false;
 
+    std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
+
     while (simContext.simulationRunning) {
+        if (!simContext.hapticsEnabled) {
+            // wait until haptics is enabled
+            cSleepMs(100);
+            continue;
+        }
+
         // update world transforms
         simContext.world->computeGlobalPositions(true);
 
@@ -595,19 +578,18 @@ void SimulationManager::updateHaptics(void) {
         // compute interaction forces
         simContext.tool->computeInteractionForces();
 
-        auto hapticPoint = simContext.tool->getHapticPoint(0);
-        cVector3d proxyPos = hapticPoint->getGlobalPosProxy();
-        cVector3d computedForce = hapticPoint->getLastComputedForce();
-        
-
-        // apply forces
+        // apply computed forces
         simContext.tool->applyToDevice();
 
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
+
+        cSleepMs(1000 / HAPTICS_LOOP_FREQUENCY);
     }
 
     simContext.simulationFinished = true;
+
+    std::cout << "Haptics thread terminated, simRunning = " << simContext.simulationRunning << std::endl;
 }
 
 void SimulationManager::dataPollingThread() {
@@ -645,6 +627,12 @@ void SimulationManager::dataPollingThread() {
 
 // this function closes the application
 void SimulationManager::close(void) {
+    // disable haptic calculations
+    simContext.hapticsEnabled = false;
+    
+    // softly ramp to zero to avoid torque discontinuity reflex
+    rampDeviceForceToZero(100);
+
     // remove all objects from the world
     removeAllObjects();
 
@@ -654,8 +642,8 @@ void SimulationManager::close(void) {
     // wait for graphics and haptics loops to terminate
     while (!simContext.simulationFinished) { cSleepMs(100); }
 
-    // free resources
-    simContext.tool->stop();
+    // destroy haptic tool cleanly
+    destroyHapticTool();
     
     delete simContext.hapticsThread;
     simContext.hapticsThread = nullptr;
@@ -671,4 +659,78 @@ void SimulationManager::close(void) {
     
     delete simContext.world;
     simContext.world = nullptr;    
+}
+
+void SimulationManager::rampDeviceForceToZero(int durationMs) {
+    if (!simContext.hapticDevice) return;
+
+    cVector3d currentForce;
+    simContext.hapticDevice->getForce(currentForce);
+
+    const int steps = std::max(1, durationMs / 5);
+    for (int i = 0; i < steps; ++i) {
+        double alpha = 1.0 - static_cast<double>(i + 1) / steps;
+        cVector3d f = alpha * currentForce;
+        simContext.hapticDevice->setForce(f);
+        cSleepMs(5);
+    }
+    simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+}
+
+void SimulationManager::createHapticTool() {
+    if (!simContext.handler || !simContext.world) {
+        std::cout << "[ERROR] Cannot create haptic tool: handler or world is null." << std::endl;
+        return;
+    }
+
+    // create a tool (cursor) and insert into the world
+    simContext.tool = new cToolCursor(simContext.world);
+    simContext.world->addChild(simContext.tool);
+
+    // connect the haptic device to the virtual tool
+    simContext.tool->setHapticDevice(simContext.hapticDevice);
+
+    // define a larger radius for the virtual tool (display + contact)
+    simContext.tool->setRadius(0.05);
+    simContext.tool->setRadiusDisplay(0.05);
+    // show proxy/goal spheres for visibility
+    // simContext.tool->setShowContactPoints(true, true);
+
+    // map the physical workspace of the haptic device to a larger virtual workspace.
+    simContext.tool->setWorkspaceRadius(1.0);
+
+    // haptic forces are enabled only if small forces are first sent to the device;
+    // this mode avoids the force spike that occurs when the application starts when 
+    // the tool is located inside an object for instance. 
+    simContext.tool->setWaitForSmallForce(true);
+
+    // start the haptic tool
+    simContext.tool->start();
+    
+    std::cout << "[DEBUG] Created and started new haptic tool." << std::endl;
+}
+
+void SimulationManager::destroyHapticTool() {
+    if (!simContext.tool) {
+        return;
+    }
+
+    // Stop the tool first
+    simContext.tool->stop();
+    
+    // Remove from world
+    if (simContext.world) {
+        simContext.world->removeChild(simContext.tool);
+    }
+    
+    // Delete the tool
+    delete simContext.tool;
+    simContext.tool = nullptr;
+    
+    // Force zero on device
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    }
+    
+    std::cout << "[DEBUG] Destroyed haptic tool." << std::endl;
 }

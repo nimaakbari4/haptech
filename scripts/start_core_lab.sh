@@ -1,0 +1,1 @@
+taskset -c 6,7 /home/haptech/Desktop/haptech/core/bin/core
