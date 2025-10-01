@@ -99,7 +99,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         
         if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
                                                    obj.position().x(), obj.position().y(), obj.position().z(),
-                                                   r, g, b, sizeParams, filePath)) {
+                                                   r, g, b, sizeParams)) {
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::ERROR);
             status->set_message("Something went wrong loading object: " + obj.id());

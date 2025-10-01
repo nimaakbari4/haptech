@@ -1,7 +1,9 @@
+#pragma once
 #ifndef SIMULATION_MANAGER_H
 #define SIMULATION_MANAGER_H
+#define DATA_POLL_FREQUENCY 1000 // Hz
+#define HAPTICS_LOOP_FREQUENCY 1000 // Hz
 
-#pragma once
 #include "chai3d.h"
 #include <GLFW/glfw3.h>
 #include <mutex>

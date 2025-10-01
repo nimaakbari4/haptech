@@ -3,9 +3,6 @@
 #include <map>
 #include <algorithm>
 
-#define DATA_POLL_FREQUENCY 1000 // Hz
-#define HAPTICS_LOOP_FREQUENCY 1000 // Hz
-
 SimulationContext SimulationManager::simContext;
 TrialContext SimulationManager::trialContext;
 
