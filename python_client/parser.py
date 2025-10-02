@@ -59,15 +59,22 @@ class SceneSettings:
     camera: Camera
 
 @dataclass
+class ObjectParameter:
+    key: str
+    value: str
+
+@dataclass
 class ObjectConfig:
     id: str
     type: str
     position: Position
-    orientation: Position
-    size: dict
+    orientation: Position  # roll, pitch, yaw in degrees
     color: Optional[BackgroundColor] = None
-    file: Optional[str] = None
-    scale: Optional[Position] = None
+    params: List[ObjectParameter] = None
+    
+    def __post_init__(self):
+        if self.params is None:
+            self.params = []
 
 @dataclass
 class TrialConfig:
@@ -140,25 +147,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
     for obj in root.find("Objects").findall("Object"):
         position    = Position.from_elem(obj.find("Position"))
         orientation = Position.from_elem(obj.find("Orientation"))
-
-        size_elem = obj.find("Size")
-        if size_elem is not None:
-            size = {k: float(v) for k, v in size_elem.attrib.items()}
-        else:
-           size = {}
         
-        # Handle custom objects - add file path and scale to size dict
-        if obj.get("type") == "custom":
-            file_elem = obj.find("File")
-            if file_elem is not None:
-                size["file_path"] = file_elem.text
-            
-            scale_elem = obj.find("Scale")
-            if scale_elem is not None:
-                size["scale_x"] = float(scale_elem.get("x", 1.0))
-                size["scale_y"] = float(scale_elem.get("y", 1.0))
-                size["scale_z"] = float(scale_elem.get("z", 1.0))
-
+        # Convert color
         color_elem = obj.find("Color")
         color = (
             BackgroundColor(
@@ -169,24 +159,23 @@ def xml_parser(xml_path: str) -> TrialConfig:
             if color_elem is not None
             else None
         )
-
-        file = obj.findtext("File")
-
-        scale_elem = obj.find("Scale")
-        if scale_elem is not None:
-            scale = Position.from_elem(scale_elem) 
-        else:
-            scale = None
+        
+        # Convert all parameters from the Parameters XML element
+        params = []
+        
+        # Handle the new Parameters element
+        params_elem = obj.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
 
         objs.append(ObjectConfig(
             id          = obj.get("id"),
             type        = obj.get("type"),
             position    = position,
             orientation = orientation,
-            size        = size,
             color       = color,
-            file        = file,
-            scale       = scale
+            params      = params
         ))
 
     return TrialConfig(
@@ -227,7 +216,8 @@ if __name__ == "__main__":
         print(f" • [{obj.type}] {obj.id}")
         print("    Position:",    obj.position)
         print("    Orientation:", obj.orientation)
-        print("    Size:",        obj.size)
         if obj.color:    print("    Color:", obj.color)
-        if obj.file:     print("    File:",  obj.file)
-        if obj.scale:    print("    Scale:", obj.scale)
+        if obj.params:
+            print("    Parameters:")
+            for param in obj.params:
+                print(f"      {param.key}: {param.value}")

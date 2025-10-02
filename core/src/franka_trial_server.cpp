@@ -65,33 +65,10 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // Add objects from the request configuration
     for (const auto& obj : request->objects()) {
-        std::map<std::string, double> sizeParams;
+        std::map<std::string, std::string> params;
         
-        // Extract size parameters based on object type
-        if (obj.type() == "sphere" && obj.has_sphere()) {
-            sizeParams["radius"] = obj.sphere().radius();
-        } else if (obj.type() == "box" && obj.has_box()) {
-            sizeParams["width"] = obj.box().width();
-            sizeParams["height"] = obj.box().height();
-            sizeParams["depth"] = obj.box().depth();
-        } else if (obj.type() == "cylinder" && obj.has_cylinder()) {
-            sizeParams["radius"] = obj.cylinder().radius();
-            sizeParams["height"] = obj.cylinder().height();
-        } else if (obj.type() == "spring" && obj.has_cylinder()) {
-            // Spring object parameters
-            sizeParams["radius"] = obj.cylinder().radius();
-            sizeParams["height"] = obj.cylinder().height();
-        } else if (obj.type() == "cup" && obj.has_cylinder()) {
-            // Cup object parameters
-            sizeParams["outer_radius"] = obj.cylinder().radius();
-            sizeParams["height"] = obj.cylinder().height();
-        } else if (obj.type() == "custom" && obj.has_custom()) {
-            // For custom objects, we'll use the file path and scale
-            // Note: We need to handle file_path separately since it's a string, not double
-            // For now, we'll just set the scale parameters
-            sizeParams["scale_x"] = obj.custom().scale().x();
-            sizeParams["scale_y"] = obj.custom().scale().y();
-            sizeParams["scale_z"] = obj.custom().scale().z();
+        for (const auto& param : obj.params()) {
+            params[param.key()] = param.value();
         }
         
         // Get color values
@@ -99,26 +76,14 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         double g = obj.has_color() ? obj.color().g() : 1.0;
         double b = obj.has_color() ? obj.color().b() : 1.0;
         
-        // Add the object
-        std::string filePath = "";
-        if (obj.type() == "custom" && obj.has_custom()) {
-            filePath = obj.custom().file_path();
-        }
-        
-        std::cout << "[SERVER] Creating object: " << obj.id() << " type: " << obj.type() 
-                  << " pos: (" << obj.position().x() << ", " << obj.position().y() << ", " << obj.position().z() << ")" << std::endl;
-        
         if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
                                                    obj.position().x(), obj.position().y(), obj.position().z(),
-                                                   r, g, b, sizeParams)) {
-            std::cout << "[ERROR] Failed to create object: " << obj.id() << std::endl;
+                                                   r, g, b, params)) {
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::ERROR);
             status->set_message("Something went wrong loading object: " + obj.id());
             writer->Write(statusMsg);
             return grpc::Status::OK;
-        } else {
-            std::cout << "[SERVER] Successfully created object: " << obj.id() << std::endl;
         }
     }
 
@@ -198,7 +163,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             }
         }
 
-        // Debug output removed
+        if (SimulationManager::simContext.debug) {
+            std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
+        }
 
         double dt = clock.getCurrentTimeSeconds();
         clock.reset();

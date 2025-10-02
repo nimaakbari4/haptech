@@ -373,9 +373,7 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
                                            double x, double y, double z, 
                                            double r, double g, double b,
-                                           const std::map<std::string, double>& sizeParams) {
-    std::cout << "[DEBUG] addObjectFromConfig called: " << id << " type: " << type << std::endl;
-    
+                                           const std::map<std::string, std::string>& params) {
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
@@ -387,7 +385,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         auto customObj = CustomObjectRegistry::createObject(type);
         if (customObj) {
-            cGenericObject* chaiObj = customObj->createObject(sizeParams, x, y, z, r, g, b);
+            cGenericObject* chaiObj = customObj->createObject(params, x, y, z, r, g, b);
             if (chaiObj) {
                 // Add to world and object map
                 simContext.world->addChild(chaiObj);
@@ -404,90 +402,62 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
     std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
     
     if (type == "sphere") {
-        auto radiusIt = sizeParams.find("radius");
-        if (radiusIt == sizeParams.end()) {
+        auto radiusIt = params.find("radius");
+        if (radiusIt == params.end()) {
             std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
             return false;
         }
-        cCreateSphere(mesh.get(), radiusIt->second);
-        mesh->createAABBCollisionDetector(radiusIt->second);
+        double radius = std::stod(radiusIt->second);
+        cCreateSphere(mesh.get(), radius);
+        mesh->createAABBCollisionDetector(radius);
     }
     else if (type == "box") {
-        auto widthIt = sizeParams.find("width");
-        auto heightIt = sizeParams.find("height");
-        auto depthIt = sizeParams.find("depth");
+        auto widthIt = params.find("width");
+        auto heightIt = params.find("height");
+        auto depthIt = params.find("depth");
         
-        if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
+        if (widthIt == params.end() || heightIt == params.end() || depthIt == params.end()) {
             std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
             return false;
         }
-        cCreateBox(mesh.get(), widthIt->second, heightIt->second, depthIt->second);
-        double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
+        double width = std::stod(widthIt->second);
+        double height = std::stod(heightIt->second);
+        double depth = std::stod(depthIt->second);
+        cCreateBox(mesh.get(), width, height, depth);
+        double maxDim = std::max({width, height, depth});
         mesh->createAABBCollisionDetector(maxDim);
     }
     else if (type == "cylinder") {
-        auto radiusIt = sizeParams.find("radius");
-        auto heightIt = sizeParams.find("height");
-        
-        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+        auto radiusIt = params.find("radius");
+        auto heightIt = params.find("height");
+
+        if (radiusIt == params.end() || heightIt == params.end()) {
             std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
             return false;
         }
-        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
-        double maxDim = std::max(radiusIt->second, heightIt->second);
+        double radius = std::stod(radiusIt->second);
+        double height = std::stod(heightIt->second);
+        cCreateCylinder(mesh.get(), radius, height);
+        double maxDim = std::max(radius, height);
         mesh->createAABBCollisionDetector(maxDim);
     }
     else if (type == "ball") {
         // Custom ball object with bounciness
-        auto radiusIt = sizeParams.find("radius");
-        if (radiusIt == sizeParams.end()) {
+        auto radiusIt = params.find("radius");
+        if (radiusIt == params.end()) {
             std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
             return false;
         }
-        cCreateSphere(mesh.get(), radiusIt->second);
-        mesh->createAABBCollisionDetector(radiusIt->second);
+        double radius = std::stod(radiusIt->second);
+        cCreateSphere(mesh.get(), radius);
+        mesh->createAABBCollisionDetector(radius);
         
         // Set bounciness if provided
-        auto bouncinessIt = sizeParams.find("bounciness");
-        if (bouncinessIt != sizeParams.end()) {
-            double bounciness = bouncinessIt->second;
+        auto bouncinessIt = params.find("bounciness");
+        if (bouncinessIt != params.end()) {
+            double bounciness = std::stod(bouncinessIt->second);
             mesh->m_material->setDamping(50.0 * (1.0 - bounciness)); // Less damping = more bouncy
         }
-    }
-    else if (type == "cup") {
-        // Custom cup object
-        auto outerRadiusIt = sizeParams.find("outer_radius");
-        auto heightIt = sizeParams.find("height");
-        
-        if (outerRadiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
-            std::cout << "[ERROR] Cup requires 'outer_radius' and 'height' parameters." << std::endl;
-            return false;
-        }
-        cCreateCylinder(mesh.get(), outerRadiusIt->second, heightIt->second);
-        mesh->createAABBCollisionDetector(outerRadiusIt->second);
-    }
-    else if (type == "spring") {
-        // Custom spring object
-        auto radiusIt = sizeParams.find("radius");
-        auto heightIt = sizeParams.find("height");
-        auto stiffnessIt = sizeParams.find("stiffness");
-        
-        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
-            std::cout << "[ERROR] Spring requires 'radius' and 'height' parameters." << std::endl;
-            return false;
-        }
-        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
-        mesh->createAABBCollisionDetector(radiusIt->second);
-        
-        // Set stiffness if provided
-        if (stiffnessIt != sizeParams.end()) {
-            mesh->m_material->setStiffness(stiffnessIt->second);
-        }
-    }
-    else if (type == "custom") {
-        // Temporarily skip custom objects
-        std::cout << "[INFO] Skipping custom object '" << id << "' for now." << std::endl;
-        return true;
     }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;

@@ -60,30 +60,10 @@ message Object {
     Vector3 position = 3;
     Vector3 orientation = 4;  // roll, pitch, yaw in degrees
     Color color = 5;
-    oneof object_data {
-        Sphere sphere = 6;
-        Box box = 7;
-        Cylinder cylinder = 8;
-        Custom custom = 9;
-    }
+    repeated ObjectParameter params = 6;
 }
 
-message Sphere {
-    double radius = 1;
-}
-
-message Box {
-    double width = 1;
-    double height = 2;
-    double depth = 3;
-}
-
-message Cylinder {
-    double radius = 1;
-    double height = 2;
-}
-
-message Custom {
-    string file_path = 1;
-    Vector3 scale = 2;
+message ObjectParameter {
+    string key = 1;
+    string value = 2;
 }

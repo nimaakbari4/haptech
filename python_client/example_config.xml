@@ -44,40 +44,38 @@
     <Object id="cursor" type="sphere">
       <Position x="0.0" y="0.0" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size radius="0.01"/>
       <Color r="1.0" g="0.0" b="0.0"/>
+      <Parameters radius="0.01"/>
     </Object>
 
     <Object id="target" type="box">
       <Position x="0.1" y="0.2" z="0.3"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Size width="0.02" height="0.02" depth="0.02"/>
       <Color r="0.0" g="1.0" b="0.0"/>
+      <Parameters width="0.02" height="0.02" depth="0.02"/>
     </Object>
 
     <Object id="boundary" type="cylinder">
       <Position x="0.0" y="0.0" z="0.0"/>
       <Orientation roll="90" pitch="0" yaw="0"/>
-      <Size radius="0.5" height="0.01"/>
+      <Parameters radius="0.5" height="0.01"/>
       <Color r="0.5" g="0.5" b="0.5"/>
     </Object>
 
     <!-- Example of a custom square -->
     <Object id="custom_square" type="custom">
-      <File>models/square.obj</File>
       <Position x="0.1" y="0.1" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Scale x="0.5" y="0.5" z="0.1"/>
       <Color r="0.8" g="0.2" b="0.2"/>
+      <Parameters file="models/square.obj" scale_x="0.5" scale_y="0.5" scale_z="0.1"/>
     </Object>
     
     <!-- Another custom object -->
     <Object id="custom_cube" type="custom">
-      <File>models/cube.obj</File>
       <Position x="-0.1" y="0.1" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="45"/>
-      <Scale x="0.3" y="0.3" z="0.3"/>
       <Color r="0.2" g="0.8" b="0.2"/>
+      <Parameters file="models/cube.obj" scale_x="0.3" scale_y="0.3" scale_z="0.3"/>
     </Object>
   </Objects>
 </TrialConfig>

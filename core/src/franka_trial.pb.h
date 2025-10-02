@@ -48,31 +48,22 @@ struct TableStruct_franka_5ftrial_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[8]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_franka_5ftrial_2eproto;
-class Box;
-class BoxDefaultTypeInternal;
-extern BoxDefaultTypeInternal _Box_default_instance_;
 class Color;
 class ColorDefaultTypeInternal;
 extern ColorDefaultTypeInternal _Color_default_instance_;
-class Custom;
-class CustomDefaultTypeInternal;
-extern CustomDefaultTypeInternal _Custom_default_instance_;
-class Cylinder;
-class CylinderDefaultTypeInternal;
-extern CylinderDefaultTypeInternal _Cylinder_default_instance_;
 class Object;
 class ObjectDefaultTypeInternal;
 extern ObjectDefaultTypeInternal _Object_default_instance_;
-class Sphere;
-class SphereDefaultTypeInternal;
-extern SphereDefaultTypeInternal _Sphere_default_instance_;
+class ObjectParameter;
+class ObjectParameterDefaultTypeInternal;
+extern ObjectParameterDefaultTypeInternal _ObjectParameter_default_instance_;
 class TrialDataPoint;
 class TrialDataPointDefaultTypeInternal;
 extern TrialDataPointDefaultTypeInternal _TrialDataPoint_default_instance_;
@@ -89,12 +80,9 @@ class Vector3;
 class Vector3DefaultTypeInternal;
 extern Vector3DefaultTypeInternal _Vector3_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Box* Arena::CreateMaybeMessage<::Box>(Arena*);
 template<> ::Color* Arena::CreateMaybeMessage<::Color>(Arena*);
-template<> ::Custom* Arena::CreateMaybeMessage<::Custom>(Arena*);
-template<> ::Cylinder* Arena::CreateMaybeMessage<::Cylinder>(Arena*);
 template<> ::Object* Arena::CreateMaybeMessage<::Object>(Arena*);
-template<> ::Sphere* Arena::CreateMaybeMessage<::Sphere>(Arena*);
+template<> ::ObjectParameter* Arena::CreateMaybeMessage<::ObjectParameter>(Arena*);
 template<> ::TrialDataPoint* Arena::CreateMaybeMessage<::TrialDataPoint>(Arena*);
 template<> ::TrialRequest* Arena::CreateMaybeMessage<::TrialRequest>(Arena*);
 template<> ::TrialResponseStream* Arena::CreateMaybeMessage<::TrialResponseStream>(Arena*);
@@ -1213,14 +1201,6 @@ class Object PROTOBUF_FINAL :
   }
   static const Object& default_instance();
 
-  enum ObjectDataCase {
-    kSphere = 6,
-    kBox = 7,
-    kCylinder = 8,
-    kCustom = 9,
-    OBJECT_DATA_NOT_SET = 0,
-  };
-
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
   static inline const Object* internal_default_instance() {
     return reinterpret_cast<const Object*>(
@@ -1298,16 +1278,31 @@ class Object PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kParamsFieldNumber = 6,
     kIdFieldNumber = 1,
     kTypeFieldNumber = 2,
     kPositionFieldNumber = 3,
     kOrientationFieldNumber = 4,
     kColorFieldNumber = 5,
-    kSphereFieldNumber = 6,
-    kBoxFieldNumber = 7,
-    kCylinderFieldNumber = 8,
-    kCustomFieldNumber = 9,
   };
+  // repeated .ObjectParameter params = 6;
+  int params_size() const;
+  private:
+  int _internal_params_size() const;
+  public:
+  void clear_params();
+  ::ObjectParameter* mutable_params(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >*
+      mutable_params();
+  private:
+  const ::ObjectParameter& _internal_params(int index) const;
+  ::ObjectParameter* _internal_add_params();
+  public:
+  const ::ObjectParameter& params(int index) const;
+  ::ObjectParameter* add_params();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >&
+      params() const;
+
   // string id = 1;
   void clear_id();
   const std::string& id() const;
@@ -1412,130 +1407,41 @@ class Object PROTOBUF_FINAL :
       ::Color* color);
   ::Color* unsafe_arena_release_color();
 
-  // .Sphere sphere = 6;
-  bool has_sphere() const;
-  private:
-  bool _internal_has_sphere() const;
-  public:
-  void clear_sphere();
-  const ::Sphere& sphere() const;
-  ::Sphere* release_sphere();
-  ::Sphere* mutable_sphere();
-  void set_allocated_sphere(::Sphere* sphere);
-  private:
-  const ::Sphere& _internal_sphere() const;
-  ::Sphere* _internal_mutable_sphere();
-  public:
-  void unsafe_arena_set_allocated_sphere(
-      ::Sphere* sphere);
-  ::Sphere* unsafe_arena_release_sphere();
-
-  // .Box box = 7;
-  bool has_box() const;
-  private:
-  bool _internal_has_box() const;
-  public:
-  void clear_box();
-  const ::Box& box() const;
-  ::Box* release_box();
-  ::Box* mutable_box();
-  void set_allocated_box(::Box* box);
-  private:
-  const ::Box& _internal_box() const;
-  ::Box* _internal_mutable_box();
-  public:
-  void unsafe_arena_set_allocated_box(
-      ::Box* box);
-  ::Box* unsafe_arena_release_box();
-
-  // .Cylinder cylinder = 8;
-  bool has_cylinder() const;
-  private:
-  bool _internal_has_cylinder() const;
-  public:
-  void clear_cylinder();
-  const ::Cylinder& cylinder() const;
-  ::Cylinder* release_cylinder();
-  ::Cylinder* mutable_cylinder();
-  void set_allocated_cylinder(::Cylinder* cylinder);
-  private:
-  const ::Cylinder& _internal_cylinder() const;
-  ::Cylinder* _internal_mutable_cylinder();
-  public:
-  void unsafe_arena_set_allocated_cylinder(
-      ::Cylinder* cylinder);
-  ::Cylinder* unsafe_arena_release_cylinder();
-
-  // .Custom custom = 9;
-  bool has_custom() const;
-  private:
-  bool _internal_has_custom() const;
-  public:
-  void clear_custom();
-  const ::Custom& custom() const;
-  ::Custom* release_custom();
-  ::Custom* mutable_custom();
-  void set_allocated_custom(::Custom* custom);
-  private:
-  const ::Custom& _internal_custom() const;
-  ::Custom* _internal_mutable_custom();
-  public:
-  void unsafe_arena_set_allocated_custom(
-      ::Custom* custom);
-  ::Custom* unsafe_arena_release_custom();
-
-  void clear_object_data();
-  ObjectDataCase object_data_case() const;
   // @@protoc_insertion_point(class_scope:Object)
  private:
   class _Internal;
-  void set_has_sphere();
-  void set_has_box();
-  void set_has_cylinder();
-  void set_has_custom();
-
-  inline bool has_object_data() const;
-  inline void clear_has_object_data();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter > params_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr type_;
   ::Vector3* position_;
   ::Vector3* orientation_;
   ::Color* color_;
-  union ObjectDataUnion {
-    ObjectDataUnion() {}
-    ::Sphere* sphere_;
-    ::Box* box_;
-    ::Cylinder* cylinder_;
-    ::Custom* custom_;
-  } object_data_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 _oneof_case_[1];
-
   friend struct ::TableStruct_franka_5ftrial_2eproto;
 };
 // -------------------------------------------------------------------
 
-class Sphere PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Sphere) */ {
+class ObjectParameter PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:ObjectParameter) */ {
  public:
-  inline Sphere() : Sphere(nullptr) {};
-  virtual ~Sphere();
+  inline ObjectParameter() : ObjectParameter(nullptr) {};
+  virtual ~ObjectParameter();
 
-  Sphere(const Sphere& from);
-  Sphere(Sphere&& from) noexcept
-    : Sphere() {
+  ObjectParameter(const ObjectParameter& from);
+  ObjectParameter(ObjectParameter&& from) noexcept
+    : ObjectParameter() {
     *this = ::std::move(from);
   }
 
-  inline Sphere& operator=(const Sphere& from) {
+  inline ObjectParameter& operator=(const ObjectParameter& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Sphere& operator=(Sphere&& from) noexcept {
+  inline ObjectParameter& operator=(ObjectParameter&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -1553,20 +1459,20 @@ class Sphere PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const Sphere& default_instance();
+  static const ObjectParameter& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Sphere* internal_default_instance() {
-    return reinterpret_cast<const Sphere*>(
-               &_Sphere_default_instance_);
+  static inline const ObjectParameter* internal_default_instance() {
+    return reinterpret_cast<const ObjectParameter*>(
+               &_ObjectParameter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     7;
 
-  friend void swap(Sphere& a, Sphere& b) {
+  friend void swap(ObjectParameter& a, ObjectParameter& b) {
     a.Swap(&b);
   }
-  inline void Swap(Sphere* other) {
+  inline void Swap(ObjectParameter* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -1574,7 +1480,7 @@ class Sphere PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Sphere* other) {
+  void UnsafeArenaSwap(ObjectParameter* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -1582,17 +1488,17 @@ class Sphere PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline Sphere* New() const final {
-    return CreateMaybeMessage<Sphere>(nullptr);
+  inline ObjectParameter* New() const final {
+    return CreateMaybeMessage<ObjectParameter>(nullptr);
   }
 
-  Sphere* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Sphere>(arena);
+  ObjectParameter* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ObjectParameter>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Sphere& from);
-  void MergeFrom(const Sphere& from);
+  void CopyFrom(const ObjectParameter& from);
+  void MergeFrom(const ObjectParameter& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1606,13 +1512,13 @@ class Sphere PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Sphere* other);
+  void InternalSwap(ObjectParameter* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Sphere";
+    return "ObjectParameter";
   }
   protected:
-  explicit Sphere(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit ObjectParameter(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -1632,505 +1538,68 @@ class Sphere PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kRadiusFieldNumber = 1,
+    kKeyFieldNumber = 1,
+    kValueFieldNumber = 2,
   };
-  // double radius = 1;
-  void clear_radius();
-  double radius() const;
-  void set_radius(double value);
-  private:
-  double _internal_radius() const;
-  void _internal_set_radius(double value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Sphere)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  double radius_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_franka_5ftrial_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Box PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Box) */ {
- public:
-  inline Box() : Box(nullptr) {};
-  virtual ~Box();
-
-  Box(const Box& from);
-  Box(Box&& from) noexcept
-    : Box() {
-    *this = ::std::move(from);
-  }
-
-  inline Box& operator=(const Box& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Box& operator=(Box&& from) noexcept {
-    if (GetArena() == from.GetArena()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Box& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Box* internal_default_instance() {
-    return reinterpret_cast<const Box*>(
-               &_Box_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    8;
-
-  friend void swap(Box& a, Box& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Box* other) {
-    if (other == this) return;
-    if (GetArena() == other->GetArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Box* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetArena() == other->GetArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Box* New() const final {
-    return CreateMaybeMessage<Box>(nullptr);
-  }
-
-  Box* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Box>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Box& from);
-  void MergeFrom(const Box& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Box* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Box";
-  }
-  protected:
-  explicit Box(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_franka_5ftrial_2eproto);
-    return ::descriptor_table_franka_5ftrial_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kWidthFieldNumber = 1,
-    kHeightFieldNumber = 2,
-    kDepthFieldNumber = 3,
-  };
-  // double width = 1;
-  void clear_width();
-  double width() const;
-  void set_width(double value);
-  private:
-  double _internal_width() const;
-  void _internal_set_width(double value);
-  public:
-
-  // double height = 2;
-  void clear_height();
-  double height() const;
-  void set_height(double value);
-  private:
-  double _internal_height() const;
-  void _internal_set_height(double value);
-  public:
-
-  // double depth = 3;
-  void clear_depth();
-  double depth() const;
-  void set_depth(double value);
-  private:
-  double _internal_depth() const;
-  void _internal_set_depth(double value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Box)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  double width_;
-  double height_;
-  double depth_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_franka_5ftrial_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Cylinder PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Cylinder) */ {
- public:
-  inline Cylinder() : Cylinder(nullptr) {};
-  virtual ~Cylinder();
-
-  Cylinder(const Cylinder& from);
-  Cylinder(Cylinder&& from) noexcept
-    : Cylinder() {
-    *this = ::std::move(from);
-  }
-
-  inline Cylinder& operator=(const Cylinder& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Cylinder& operator=(Cylinder&& from) noexcept {
-    if (GetArena() == from.GetArena()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Cylinder& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Cylinder* internal_default_instance() {
-    return reinterpret_cast<const Cylinder*>(
-               &_Cylinder_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    9;
-
-  friend void swap(Cylinder& a, Cylinder& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Cylinder* other) {
-    if (other == this) return;
-    if (GetArena() == other->GetArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Cylinder* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetArena() == other->GetArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Cylinder* New() const final {
-    return CreateMaybeMessage<Cylinder>(nullptr);
-  }
-
-  Cylinder* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Cylinder>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Cylinder& from);
-  void MergeFrom(const Cylinder& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Cylinder* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Cylinder";
-  }
-  protected:
-  explicit Cylinder(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_franka_5ftrial_2eproto);
-    return ::descriptor_table_franka_5ftrial_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kRadiusFieldNumber = 1,
-    kHeightFieldNumber = 2,
-  };
-  // double radius = 1;
-  void clear_radius();
-  double radius() const;
-  void set_radius(double value);
-  private:
-  double _internal_radius() const;
-  void _internal_set_radius(double value);
-  public:
-
-  // double height = 2;
-  void clear_height();
-  double height() const;
-  void set_height(double value);
-  private:
-  double _internal_height() const;
-  void _internal_set_height(double value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Cylinder)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  double radius_;
-  double height_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_franka_5ftrial_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Custom PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Custom) */ {
- public:
-  inline Custom() : Custom(nullptr) {};
-  virtual ~Custom();
-
-  Custom(const Custom& from);
-  Custom(Custom&& from) noexcept
-    : Custom() {
-    *this = ::std::move(from);
-  }
-
-  inline Custom& operator=(const Custom& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Custom& operator=(Custom&& from) noexcept {
-    if (GetArena() == from.GetArena()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const Custom& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Custom* internal_default_instance() {
-    return reinterpret_cast<const Custom*>(
-               &_Custom_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    10;
-
-  friend void swap(Custom& a, Custom& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Custom* other) {
-    if (other == this) return;
-    if (GetArena() == other->GetArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Custom* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetArena() == other->GetArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Custom* New() const final {
-    return CreateMaybeMessage<Custom>(nullptr);
-  }
-
-  Custom* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Custom>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const Custom& from);
-  void MergeFrom(const Custom& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Custom* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Custom";
-  }
-  protected:
-  explicit Custom(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_franka_5ftrial_2eproto);
-    return ::descriptor_table_franka_5ftrial_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kFilePathFieldNumber = 1,
-    kScaleFieldNumber = 2,
-  };
-  // string file_path = 1;
-  void clear_file_path();
-  const std::string& file_path() const;
-  void set_file_path(const std::string& value);
-  void set_file_path(std::string&& value);
-  void set_file_path(const char* value);
-  void set_file_path(const char* value, size_t size);
-  std::string* mutable_file_path();
-  std::string* release_file_path();
-  void set_allocated_file_path(std::string* file_path);
+  // string key = 1;
+  void clear_key();
+  const std::string& key() const;
+  void set_key(const std::string& value);
+  void set_key(std::string&& value);
+  void set_key(const char* value);
+  void set_key(const char* value, size_t size);
+  std::string* mutable_key();
+  std::string* release_key();
+  void set_allocated_key(std::string* key);
   GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
   "    string fields are deprecated and will be removed in a"
   "    future release.")
-  std::string* unsafe_arena_release_file_path();
+  std::string* unsafe_arena_release_key();
   GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
   "    string fields are deprecated and will be removed in a"
   "    future release.")
-  void unsafe_arena_set_allocated_file_path(
-      std::string* file_path);
+  void unsafe_arena_set_allocated_key(
+      std::string* key);
   private:
-  const std::string& _internal_file_path() const;
-  void _internal_set_file_path(const std::string& value);
-  std::string* _internal_mutable_file_path();
+  const std::string& _internal_key() const;
+  void _internal_set_key(const std::string& value);
+  std::string* _internal_mutable_key();
   public:
 
-  // .Vector3 scale = 2;
-  bool has_scale() const;
+  // string value = 2;
+  void clear_value();
+  const std::string& value() const;
+  void set_value(const std::string& value);
+  void set_value(std::string&& value);
+  void set_value(const char* value);
+  void set_value(const char* value, size_t size);
+  std::string* mutable_value();
+  std::string* release_value();
+  void set_allocated_value(std::string* value);
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  std::string* unsafe_arena_release_value();
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  void unsafe_arena_set_allocated_value(
+      std::string* value);
   private:
-  bool _internal_has_scale() const;
+  const std::string& _internal_value() const;
+  void _internal_set_value(const std::string& value);
+  std::string* _internal_mutable_value();
   public:
-  void clear_scale();
-  const ::Vector3& scale() const;
-  ::Vector3* release_scale();
-  ::Vector3* mutable_scale();
-  void set_allocated_scale(::Vector3* scale);
-  private:
-  const ::Vector3& _internal_scale() const;
-  ::Vector3* _internal_mutable_scale();
-  public:
-  void unsafe_arena_set_allocated_scale(
-      ::Vector3* scale);
-  ::Vector3* unsafe_arena_release_scale();
 
-  // @@protoc_insertion_point(class_scope:Custom)
+  // @@protoc_insertion_point(class_scope:ObjectParameter)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr file_path_;
-  ::Vector3* scale_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr value_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_franka_5ftrial_2eproto;
 };
@@ -3353,614 +2822,214 @@ inline void Object::set_allocated_color(::Color* color) {
   // @@protoc_insertion_point(field_set_allocated:Object.color)
 }
 
-// .Sphere sphere = 6;
-inline bool Object::_internal_has_sphere() const {
-  return object_data_case() == kSphere;
+// repeated .ObjectParameter params = 6;
+inline int Object::_internal_params_size() const {
+  return params_.size();
 }
-inline bool Object::has_sphere() const {
-  return _internal_has_sphere();
+inline int Object::params_size() const {
+  return _internal_params_size();
 }
-inline void Object::set_has_sphere() {
-  _oneof_case_[0] = kSphere;
+inline void Object::clear_params() {
+  params_.Clear();
 }
-inline void Object::clear_sphere() {
-  if (_internal_has_sphere()) {
-    if (GetArena() == nullptr) {
-      delete object_data_.sphere_;
-    }
-    clear_has_object_data();
-  }
+inline ::ObjectParameter* Object::mutable_params(int index) {
+  // @@protoc_insertion_point(field_mutable:Object.params)
+  return params_.Mutable(index);
 }
-inline ::Sphere* Object::release_sphere() {
-  // @@protoc_insertion_point(field_release:Object.sphere)
-  if (_internal_has_sphere()) {
-    clear_has_object_data();
-      ::Sphere* temp = object_data_.sphere_;
-    if (GetArena() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    object_data_.sphere_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >*
+Object::mutable_params() {
+  // @@protoc_insertion_point(field_mutable_list:Object.params)
+  return &params_;
 }
-inline const ::Sphere& Object::_internal_sphere() const {
-  return _internal_has_sphere()
-      ? *object_data_.sphere_
-      : *reinterpret_cast< ::Sphere*>(&::_Sphere_default_instance_);
+inline const ::ObjectParameter& Object::_internal_params(int index) const {
+  return params_.Get(index);
 }
-inline const ::Sphere& Object::sphere() const {
-  // @@protoc_insertion_point(field_get:Object.sphere)
-  return _internal_sphere();
+inline const ::ObjectParameter& Object::params(int index) const {
+  // @@protoc_insertion_point(field_get:Object.params)
+  return _internal_params(index);
 }
-inline ::Sphere* Object::unsafe_arena_release_sphere() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Object.sphere)
-  if (_internal_has_sphere()) {
-    clear_has_object_data();
-    ::Sphere* temp = object_data_.sphere_;
-    object_data_.sphere_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
+inline ::ObjectParameter* Object::_internal_add_params() {
+  return params_.Add();
 }
-inline void Object::unsafe_arena_set_allocated_sphere(::Sphere* sphere) {
-  clear_object_data();
-  if (sphere) {
-    set_has_sphere();
-    object_data_.sphere_ = sphere;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Object.sphere)
+inline ::ObjectParameter* Object::add_params() {
+  // @@protoc_insertion_point(field_add:Object.params)
+  return _internal_add_params();
 }
-inline ::Sphere* Object::_internal_mutable_sphere() {
-  if (!_internal_has_sphere()) {
-    clear_object_data();
-    set_has_sphere();
-    object_data_.sphere_ = CreateMaybeMessage< ::Sphere >(GetArena());
-  }
-  return object_data_.sphere_;
-}
-inline ::Sphere* Object::mutable_sphere() {
-  // @@protoc_insertion_point(field_mutable:Object.sphere)
-  return _internal_mutable_sphere();
-}
-
-// .Box box = 7;
-inline bool Object::_internal_has_box() const {
-  return object_data_case() == kBox;
-}
-inline bool Object::has_box() const {
-  return _internal_has_box();
-}
-inline void Object::set_has_box() {
-  _oneof_case_[0] = kBox;
-}
-inline void Object::clear_box() {
-  if (_internal_has_box()) {
-    if (GetArena() == nullptr) {
-      delete object_data_.box_;
-    }
-    clear_has_object_data();
-  }
-}
-inline ::Box* Object::release_box() {
-  // @@protoc_insertion_point(field_release:Object.box)
-  if (_internal_has_box()) {
-    clear_has_object_data();
-      ::Box* temp = object_data_.box_;
-    if (GetArena() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    object_data_.box_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline const ::Box& Object::_internal_box() const {
-  return _internal_has_box()
-      ? *object_data_.box_
-      : *reinterpret_cast< ::Box*>(&::_Box_default_instance_);
-}
-inline const ::Box& Object::box() const {
-  // @@protoc_insertion_point(field_get:Object.box)
-  return _internal_box();
-}
-inline ::Box* Object::unsafe_arena_release_box() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Object.box)
-  if (_internal_has_box()) {
-    clear_has_object_data();
-    ::Box* temp = object_data_.box_;
-    object_data_.box_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline void Object::unsafe_arena_set_allocated_box(::Box* box) {
-  clear_object_data();
-  if (box) {
-    set_has_box();
-    object_data_.box_ = box;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Object.box)
-}
-inline ::Box* Object::_internal_mutable_box() {
-  if (!_internal_has_box()) {
-    clear_object_data();
-    set_has_box();
-    object_data_.box_ = CreateMaybeMessage< ::Box >(GetArena());
-  }
-  return object_data_.box_;
-}
-inline ::Box* Object::mutable_box() {
-  // @@protoc_insertion_point(field_mutable:Object.box)
-  return _internal_mutable_box();
-}
-
-// .Cylinder cylinder = 8;
-inline bool Object::_internal_has_cylinder() const {
-  return object_data_case() == kCylinder;
-}
-inline bool Object::has_cylinder() const {
-  return _internal_has_cylinder();
-}
-inline void Object::set_has_cylinder() {
-  _oneof_case_[0] = kCylinder;
-}
-inline void Object::clear_cylinder() {
-  if (_internal_has_cylinder()) {
-    if (GetArena() == nullptr) {
-      delete object_data_.cylinder_;
-    }
-    clear_has_object_data();
-  }
-}
-inline ::Cylinder* Object::release_cylinder() {
-  // @@protoc_insertion_point(field_release:Object.cylinder)
-  if (_internal_has_cylinder()) {
-    clear_has_object_data();
-      ::Cylinder* temp = object_data_.cylinder_;
-    if (GetArena() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    object_data_.cylinder_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline const ::Cylinder& Object::_internal_cylinder() const {
-  return _internal_has_cylinder()
-      ? *object_data_.cylinder_
-      : *reinterpret_cast< ::Cylinder*>(&::_Cylinder_default_instance_);
-}
-inline const ::Cylinder& Object::cylinder() const {
-  // @@protoc_insertion_point(field_get:Object.cylinder)
-  return _internal_cylinder();
-}
-inline ::Cylinder* Object::unsafe_arena_release_cylinder() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Object.cylinder)
-  if (_internal_has_cylinder()) {
-    clear_has_object_data();
-    ::Cylinder* temp = object_data_.cylinder_;
-    object_data_.cylinder_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline void Object::unsafe_arena_set_allocated_cylinder(::Cylinder* cylinder) {
-  clear_object_data();
-  if (cylinder) {
-    set_has_cylinder();
-    object_data_.cylinder_ = cylinder;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Object.cylinder)
-}
-inline ::Cylinder* Object::_internal_mutable_cylinder() {
-  if (!_internal_has_cylinder()) {
-    clear_object_data();
-    set_has_cylinder();
-    object_data_.cylinder_ = CreateMaybeMessage< ::Cylinder >(GetArena());
-  }
-  return object_data_.cylinder_;
-}
-inline ::Cylinder* Object::mutable_cylinder() {
-  // @@protoc_insertion_point(field_mutable:Object.cylinder)
-  return _internal_mutable_cylinder();
-}
-
-// .Custom custom = 9;
-inline bool Object::_internal_has_custom() const {
-  return object_data_case() == kCustom;
-}
-inline bool Object::has_custom() const {
-  return _internal_has_custom();
-}
-inline void Object::set_has_custom() {
-  _oneof_case_[0] = kCustom;
-}
-inline void Object::clear_custom() {
-  if (_internal_has_custom()) {
-    if (GetArena() == nullptr) {
-      delete object_data_.custom_;
-    }
-    clear_has_object_data();
-  }
-}
-inline ::Custom* Object::release_custom() {
-  // @@protoc_insertion_point(field_release:Object.custom)
-  if (_internal_has_custom()) {
-    clear_has_object_data();
-      ::Custom* temp = object_data_.custom_;
-    if (GetArena() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    object_data_.custom_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline const ::Custom& Object::_internal_custom() const {
-  return _internal_has_custom()
-      ? *object_data_.custom_
-      : *reinterpret_cast< ::Custom*>(&::_Custom_default_instance_);
-}
-inline const ::Custom& Object::custom() const {
-  // @@protoc_insertion_point(field_get:Object.custom)
-  return _internal_custom();
-}
-inline ::Custom* Object::unsafe_arena_release_custom() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Object.custom)
-  if (_internal_has_custom()) {
-    clear_has_object_data();
-    ::Custom* temp = object_data_.custom_;
-    object_data_.custom_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline void Object::unsafe_arena_set_allocated_custom(::Custom* custom) {
-  clear_object_data();
-  if (custom) {
-    set_has_custom();
-    object_data_.custom_ = custom;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Object.custom)
-}
-inline ::Custom* Object::_internal_mutable_custom() {
-  if (!_internal_has_custom()) {
-    clear_object_data();
-    set_has_custom();
-    object_data_.custom_ = CreateMaybeMessage< ::Custom >(GetArena());
-  }
-  return object_data_.custom_;
-}
-inline ::Custom* Object::mutable_custom() {
-  // @@protoc_insertion_point(field_mutable:Object.custom)
-  return _internal_mutable_custom();
-}
-
-inline bool Object::has_object_data() const {
-  return object_data_case() != OBJECT_DATA_NOT_SET;
-}
-inline void Object::clear_has_object_data() {
-  _oneof_case_[0] = OBJECT_DATA_NOT_SET;
-}
-inline Object::ObjectDataCase Object::object_data_case() const {
-  return Object::ObjectDataCase(_oneof_case_[0]);
-}
-// -------------------------------------------------------------------
-
-// Sphere
-
-// double radius = 1;
-inline void Sphere::clear_radius() {
-  radius_ = 0;
-}
-inline double Sphere::_internal_radius() const {
-  return radius_;
-}
-inline double Sphere::radius() const {
-  // @@protoc_insertion_point(field_get:Sphere.radius)
-  return _internal_radius();
-}
-inline void Sphere::_internal_set_radius(double value) {
-  
-  radius_ = value;
-}
-inline void Sphere::set_radius(double value) {
-  _internal_set_radius(value);
-  // @@protoc_insertion_point(field_set:Sphere.radius)
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >&
+Object::params() const {
+  // @@protoc_insertion_point(field_list:Object.params)
+  return params_;
 }
 
 // -------------------------------------------------------------------
 
-// Box
+// ObjectParameter
 
-// double width = 1;
-inline void Box::clear_width() {
-  width_ = 0;
+// string key = 1;
+inline void ObjectParameter::clear_key() {
+  key_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline double Box::_internal_width() const {
-  return width_;
+inline const std::string& ObjectParameter::key() const {
+  // @@protoc_insertion_point(field_get:ObjectParameter.key)
+  return _internal_key();
 }
-inline double Box::width() const {
-  // @@protoc_insertion_point(field_get:Box.width)
-  return _internal_width();
+inline void ObjectParameter::set_key(const std::string& value) {
+  _internal_set_key(value);
+  // @@protoc_insertion_point(field_set:ObjectParameter.key)
 }
-inline void Box::_internal_set_width(double value) {
+inline std::string* ObjectParameter::mutable_key() {
+  // @@protoc_insertion_point(field_mutable:ObjectParameter.key)
+  return _internal_mutable_key();
+}
+inline const std::string& ObjectParameter::_internal_key() const {
+  return key_.Get();
+}
+inline void ObjectParameter::_internal_set_key(const std::string& value) {
   
-  width_ = value;
+  key_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
 }
-inline void Box::set_width(double value) {
-  _internal_set_width(value);
-  // @@protoc_insertion_point(field_set:Box.width)
-}
-
-// double height = 2;
-inline void Box::clear_height() {
-  height_ = 0;
-}
-inline double Box::_internal_height() const {
-  return height_;
-}
-inline double Box::height() const {
-  // @@protoc_insertion_point(field_get:Box.height)
-  return _internal_height();
-}
-inline void Box::_internal_set_height(double value) {
+inline void ObjectParameter::set_key(std::string&& value) {
   
-  height_ = value;
-}
-inline void Box::set_height(double value) {
-  _internal_set_height(value);
-  // @@protoc_insertion_point(field_set:Box.height)
-}
-
-// double depth = 3;
-inline void Box::clear_depth() {
-  depth_ = 0;
-}
-inline double Box::_internal_depth() const {
-  return depth_;
-}
-inline double Box::depth() const {
-  // @@protoc_insertion_point(field_get:Box.depth)
-  return _internal_depth();
-}
-inline void Box::_internal_set_depth(double value) {
-  
-  depth_ = value;
-}
-inline void Box::set_depth(double value) {
-  _internal_set_depth(value);
-  // @@protoc_insertion_point(field_set:Box.depth)
-}
-
-// -------------------------------------------------------------------
-
-// Cylinder
-
-// double radius = 1;
-inline void Cylinder::clear_radius() {
-  radius_ = 0;
-}
-inline double Cylinder::_internal_radius() const {
-  return radius_;
-}
-inline double Cylinder::radius() const {
-  // @@protoc_insertion_point(field_get:Cylinder.radius)
-  return _internal_radius();
-}
-inline void Cylinder::_internal_set_radius(double value) {
-  
-  radius_ = value;
-}
-inline void Cylinder::set_radius(double value) {
-  _internal_set_radius(value);
-  // @@protoc_insertion_point(field_set:Cylinder.radius)
-}
-
-// double height = 2;
-inline void Cylinder::clear_height() {
-  height_ = 0;
-}
-inline double Cylinder::_internal_height() const {
-  return height_;
-}
-inline double Cylinder::height() const {
-  // @@protoc_insertion_point(field_get:Cylinder.height)
-  return _internal_height();
-}
-inline void Cylinder::_internal_set_height(double value) {
-  
-  height_ = value;
-}
-inline void Cylinder::set_height(double value) {
-  _internal_set_height(value);
-  // @@protoc_insertion_point(field_set:Cylinder.height)
-}
-
-// -------------------------------------------------------------------
-
-// Custom
-
-// string file_path = 1;
-inline void Custom::clear_file_path() {
-  file_path_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-}
-inline const std::string& Custom::file_path() const {
-  // @@protoc_insertion_point(field_get:Custom.file_path)
-  return _internal_file_path();
-}
-inline void Custom::set_file_path(const std::string& value) {
-  _internal_set_file_path(value);
-  // @@protoc_insertion_point(field_set:Custom.file_path)
-}
-inline std::string* Custom::mutable_file_path() {
-  // @@protoc_insertion_point(field_mutable:Custom.file_path)
-  return _internal_mutable_file_path();
-}
-inline const std::string& Custom::_internal_file_path() const {
-  return file_path_.Get();
-}
-inline void Custom::_internal_set_file_path(const std::string& value) {
-  
-  file_path_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
-}
-inline void Custom::set_file_path(std::string&& value) {
-  
-  file_path_.Set(
+  key_.Set(
     &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:Custom.file_path)
+  // @@protoc_insertion_point(field_set_rvalue:ObjectParameter.key)
 }
-inline void Custom::set_file_path(const char* value) {
+inline void ObjectParameter::set_key(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
-  file_path_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+  key_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
               GetArena());
-  // @@protoc_insertion_point(field_set_char:Custom.file_path)
+  // @@protoc_insertion_point(field_set_char:ObjectParameter.key)
 }
-inline void Custom::set_file_path(const char* value,
+inline void ObjectParameter::set_key(const char* value,
     size_t size) {
   
-  file_path_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+  key_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:Custom.file_path)
+  // @@protoc_insertion_point(field_set_pointer:ObjectParameter.key)
 }
-inline std::string* Custom::_internal_mutable_file_path() {
+inline std::string* ObjectParameter::_internal_mutable_key() {
   
-  return file_path_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  return key_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline std::string* Custom::release_file_path() {
-  // @@protoc_insertion_point(field_release:Custom.file_path)
-  return file_path_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+inline std::string* ObjectParameter::release_key() {
+  // @@protoc_insertion_point(field_release:ObjectParameter.key)
+  return key_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void Custom::set_allocated_file_path(std::string* file_path) {
-  if (file_path != nullptr) {
+inline void ObjectParameter::set_allocated_key(std::string* key) {
+  if (key != nullptr) {
     
   } else {
     
   }
-  file_path_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), file_path,
+  key_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), key,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:Custom.file_path)
+  // @@protoc_insertion_point(field_set_allocated:ObjectParameter.key)
 }
-inline std::string* Custom::unsafe_arena_release_file_path() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:Custom.file_path)
+inline std::string* ObjectParameter::unsafe_arena_release_key() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:ObjectParameter.key)
   GOOGLE_DCHECK(GetArena() != nullptr);
   
-  return file_path_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+  return key_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       GetArena());
 }
-inline void Custom::unsafe_arena_set_allocated_file_path(
-    std::string* file_path) {
+inline void ObjectParameter::unsafe_arena_set_allocated_key(
+    std::string* key) {
   GOOGLE_DCHECK(GetArena() != nullptr);
-  if (file_path != nullptr) {
+  if (key != nullptr) {
     
   } else {
     
   }
-  file_path_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      file_path, GetArena());
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Custom.file_path)
+  key_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      key, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:ObjectParameter.key)
 }
 
-// .Vector3 scale = 2;
-inline bool Custom::_internal_has_scale() const {
-  return this != internal_default_instance() && scale_ != nullptr;
+// string value = 2;
+inline void ObjectParameter::clear_value() {
+  value_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline bool Custom::has_scale() const {
-  return _internal_has_scale();
+inline const std::string& ObjectParameter::value() const {
+  // @@protoc_insertion_point(field_get:ObjectParameter.value)
+  return _internal_value();
 }
-inline void Custom::clear_scale() {
-  if (GetArena() == nullptr && scale_ != nullptr) {
-    delete scale_;
-  }
-  scale_ = nullptr;
+inline void ObjectParameter::set_value(const std::string& value) {
+  _internal_set_value(value);
+  // @@protoc_insertion_point(field_set:ObjectParameter.value)
 }
-inline const ::Vector3& Custom::_internal_scale() const {
-  const ::Vector3* p = scale_;
-  return p != nullptr ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
+inline std::string* ObjectParameter::mutable_value() {
+  // @@protoc_insertion_point(field_mutable:ObjectParameter.value)
+  return _internal_mutable_value();
 }
-inline const ::Vector3& Custom::scale() const {
-  // @@protoc_insertion_point(field_get:Custom.scale)
-  return _internal_scale();
+inline const std::string& ObjectParameter::_internal_value() const {
+  return value_.Get();
 }
-inline void Custom::unsafe_arena_set_allocated_scale(
-    ::Vector3* scale) {
-  if (GetArena() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(scale_);
-  }
-  scale_ = scale;
-  if (scale) {
+inline void ObjectParameter::_internal_set_value(const std::string& value) {
+  
+  value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void ObjectParameter::set_value(std::string&& value) {
+  
+  value_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:ObjectParameter.value)
+}
+inline void ObjectParameter::set_value(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:ObjectParameter.value)
+}
+inline void ObjectParameter::set_value(const char* value,
+    size_t size) {
+  
+  value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:ObjectParameter.value)
+}
+inline std::string* ObjectParameter::_internal_mutable_value() {
+  
+  return value_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* ObjectParameter::release_value() {
+  // @@protoc_insertion_point(field_release:ObjectParameter.value)
+  return value_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void ObjectParameter::set_allocated_value(std::string* value) {
+  if (value != nullptr) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Custom.scale)
+  value_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:ObjectParameter.value)
 }
-inline ::Vector3* Custom::release_scale() {
-  auto temp = unsafe_arena_release_scale();
-  if (GetArena() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-  return temp;
-}
-inline ::Vector3* Custom::unsafe_arena_release_scale() {
-  // @@protoc_insertion_point(field_release:Custom.scale)
+inline std::string* ObjectParameter::unsafe_arena_release_value() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:ObjectParameter.value)
+  GOOGLE_DCHECK(GetArena() != nullptr);
   
-  ::Vector3* temp = scale_;
-  scale_ = nullptr;
-  return temp;
+  return value_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      GetArena());
 }
-inline ::Vector3* Custom::_internal_mutable_scale() {
-  
-  if (scale_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArena());
-    scale_ = p;
-  }
-  return scale_;
-}
-inline ::Vector3* Custom::mutable_scale() {
-  // @@protoc_insertion_point(field_mutable:Custom.scale)
-  return _internal_mutable_scale();
-}
-inline void Custom::set_allocated_scale(::Vector3* scale) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  if (message_arena == nullptr) {
-    delete scale_;
-  }
-  if (scale) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(scale);
-    if (message_arena != submessage_arena) {
-      scale = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, scale, submessage_arena);
-    }
+inline void ObjectParameter::unsafe_arena_set_allocated_value(
+    std::string* value) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (value != nullptr) {
     
   } else {
     
   }
-  scale_ = scale;
-  // @@protoc_insertion_point(field_set_allocated:Custom.scale)
+  value_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      value, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:ObjectParameter.value)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

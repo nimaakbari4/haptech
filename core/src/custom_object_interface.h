@@ -23,7 +23,7 @@ public:
      * @param r,g,b Color
      * @return Created CHAI3D object
      */
-    virtual cGenericObject* createObject(const std::map<std::string, double>& params,
+    virtual cGenericObject* createObject(const std::map<std::string, std::string>& params,
                                         double x, double y, double z,
                                         double r, double g, double b) = 0;
     

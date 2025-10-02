@@ -1,7 +1,7 @@
 #include "cup_object.h"
 #include <iostream>
 
-cGenericObject* CupObject::createObject(const std::map<std::string, double>& params,
+cGenericObject* CupObject::createObject(const std::map<std::string, std::string>& params,
                                         double x, double y, double z,
                                         double r, double g, double b) {
     std::cout << "[CupObject] Creating half-ring cup with custom geometry!" << std::endl;
@@ -39,22 +39,22 @@ cGenericObject* CupObject::createObject(const std::map<std::string, double>& par
     return cup;
 }
 
-double CupObject::getInnerRadius(const std::map<std::string, double>& params) const {
+double CupObject::getInnerRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("inner_radius");
-    return (it != params.end()) ? it->second : 0.05; // Default inner radius
+    return (it != params.end()) ? std::stod(it->second) : 0.05; // Default inner radius
 }
 
-double CupObject::getOuterRadius(const std::map<std::string, double>& params) const {
+double CupObject::getOuterRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("outer_radius");
-    return (it != params.end()) ? it->second : 0.08; // Default outer radius
+    return (it != params.end()) ? std::stod(it->second) : 0.08; // Default outer radius
 }
 
-double CupObject::getHeight(const std::map<std::string, double>& params) const {
+double CupObject::getHeight(const std::map<std::string, std::string>& params) const {
     auto it = params.find("height");
-    return (it != params.end()) ? it->second : 0.1; // Default height
+    return (it != params.end()) ? std::stod(it->second) : 0.1; // Default height
 }
 
-double CupObject::getThickness(const std::map<std::string, double>& params) const {
+double CupObject::getThickness(const std::map<std::string, std::string>& params) const {
     auto it = params.find("thickness");
-    return (it != params.end()) ? it->second : 0.03; // Default thickness
+    return (it != params.end()) ? std::stod(it->second) : 0.03; // Default thickness
 }

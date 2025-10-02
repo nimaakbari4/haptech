@@ -143,7 +143,7 @@ public:
     static bool addObjectFromConfig(const std::string& id, const std::string& type, 
                                    double x, double y, double z, 
                                    double r, double g, double b,
-                                   const std::map<std::string, double>& sizeParams);
+                                   const std::map<std::string, std::string>& params);
     
     // ramp device force to zero over given milliseconds (exposed for server teardown)
     static void rampDeviceForceToZero(int durationMs);

@@ -26,25 +26,12 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: fl
                 obj_msg.color.g = obj.color.g
                 obj_msg.color.b = obj.color.b
             
-            # Set object-specific data based on type
-            if obj.type == "sphere" and "radius" in obj.size:
-                obj_msg.sphere.radius = obj.size["radius"]
-            elif obj.type == "box" and all(k in obj.size for k in ["width", "height", "depth"]):
-                obj_msg.box.width = obj.size["width"]
-                obj_msg.box.height = obj.size["height"]
-                obj_msg.box.depth = obj.size["depth"]
-            elif obj.type == "cylinder" and all(k in obj.size for k in ["radius", "height"]):
-                obj_msg.cylinder.radius = obj.size["radius"]
-                obj_msg.cylinder.height = obj.size["height"]
-            elif obj.type == "custom" and "file_path" in obj.size:
-                obj_msg.custom.file_path = obj.size["file_path"]
-                # Set scale if provided
-                if "scale_x" in obj.size:
-                    obj_msg.custom.scale.x = obj.size["scale_x"]
-                if "scale_y" in obj.size:
-                    obj_msg.custom.scale.y = obj.size["scale_y"]
-                if "scale_z" in obj.size:
-                    obj_msg.custom.scale.z = obj.size["scale_z"]
+            # Add all parameters from the params list
+            if obj.params:
+                for param in obj.params:
+                    param_msg = obj_msg.params.add()
+                    param_msg.key = param.key
+                    param_msg.value = param.value
     
     response_stream = stub.RunTrial(request)
     handle_stream(response_stream, output_csv_stream)

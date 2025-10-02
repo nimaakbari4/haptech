@@ -14,12 +14,9 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Box_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_Custom_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Cylinder_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<6> scc_info_Object_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Sphere_franka_5ftrial_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Object_franka_5ftrial_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialDataPoint_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TrialStatusUpdate_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Vector3_franka_5ftrial_2eproto;
@@ -52,41 +49,11 @@ class Vector3DefaultTypeInternal {
 class ObjectDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Object> _instance;
-  const ::Sphere* sphere_;
-  const ::Box* box_;
-  const ::Cylinder* cylinder_;
-  const ::Custom* custom_;
 } _Object_default_instance_;
-class SphereDefaultTypeInternal {
+class ObjectParameterDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Sphere> _instance;
-} _Sphere_default_instance_;
-class BoxDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Box> _instance;
-} _Box_default_instance_;
-class CylinderDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Cylinder> _instance;
-} _Cylinder_default_instance_;
-class CustomDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Custom> _instance;
-} _Custom_default_instance_;
-static void InitDefaultsscc_info_Box_franka_5ftrial_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_Box_default_instance_;
-    new (ptr) ::Box();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::Box::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Box_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Box_franka_5ftrial_2eproto}, {}};
-
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ObjectParameter> _instance;
+} _ObjectParameter_default_instance_;
 static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -101,35 +68,6 @@ static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Color_franka_5ftrial_2eproto}, {}};
 
-static void InitDefaultsscc_info_Custom_franka_5ftrial_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_Custom_default_instance_;
-    new (ptr) ::Custom();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::Custom::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_Custom_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_Custom_franka_5ftrial_2eproto}, {
-      &scc_info_Vector3_franka_5ftrial_2eproto.base,}};
-
-static void InitDefaultsscc_info_Cylinder_franka_5ftrial_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_Cylinder_default_instance_;
-    new (ptr) ::Cylinder();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::Cylinder::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Cylinder_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Cylinder_franka_5ftrial_2eproto}, {}};
-
 static void InitDefaultsscc_info_Object_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -141,28 +79,25 @@ static void InitDefaultsscc_info_Object_franka_5ftrial_2eproto() {
   ::Object::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<6> scc_info_Object_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 6, 0, InitDefaultsscc_info_Object_franka_5ftrial_2eproto}, {
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Object_franka_5ftrial_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 3, 0, InitDefaultsscc_info_Object_franka_5ftrial_2eproto}, {
       &scc_info_Vector3_franka_5ftrial_2eproto.base,
       &scc_info_Color_franka_5ftrial_2eproto.base,
-      &scc_info_Sphere_franka_5ftrial_2eproto.base,
-      &scc_info_Box_franka_5ftrial_2eproto.base,
-      &scc_info_Cylinder_franka_5ftrial_2eproto.base,
-      &scc_info_Custom_franka_5ftrial_2eproto.base,}};
+      &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,}};
 
-static void InitDefaultsscc_info_Sphere_franka_5ftrial_2eproto() {
+static void InitDefaultsscc_info_ObjectParameter_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::_Sphere_default_instance_;
-    new (ptr) ::Sphere();
+    void* ptr = &::_ObjectParameter_default_instance_;
+    new (ptr) ::ObjectParameter();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::Sphere::InitAsDefaultInstance();
+  ::ObjectParameter::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Sphere_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Sphere_franka_5ftrial_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ObjectParameter_franka_5ftrial_2eproto}, {}};
 
 static void InitDefaultsscc_info_TrialDataPoint_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -238,7 +173,7 @@ static void InitDefaultsscc_info_Vector3_franka_5ftrial_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Vector3_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Vector3_franka_5ftrial_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_franka_5ftrial_2eproto[11];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_franka_5ftrial_2eproto[8];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_franka_5ftrial_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_franka_5ftrial_2eproto = nullptr;
 
@@ -294,46 +229,21 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_franka_5ftrial_2eproto::offset
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Object, _internal_metadata_),
   ~0u,  // no _extensions_
-  PROTOBUF_FIELD_OFFSET(::Object, _oneof_case_[0]),
+  ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::Object, id_),
   PROTOBUF_FIELD_OFFSET(::Object, type_),
   PROTOBUF_FIELD_OFFSET(::Object, position_),
   PROTOBUF_FIELD_OFFSET(::Object, orientation_),
   PROTOBUF_FIELD_OFFSET(::Object, color_),
-  offsetof(::ObjectDefaultTypeInternal, sphere_),
-  offsetof(::ObjectDefaultTypeInternal, box_),
-  offsetof(::ObjectDefaultTypeInternal, cylinder_),
-  offsetof(::ObjectDefaultTypeInternal, custom_),
-  PROTOBUF_FIELD_OFFSET(::Object, object_data_),
+  PROTOBUF_FIELD_OFFSET(::Object, params_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Sphere, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ObjectParameter, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Sphere, radius_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Box, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Box, width_),
-  PROTOBUF_FIELD_OFFSET(::Box, height_),
-  PROTOBUF_FIELD_OFFSET(::Box, depth_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Cylinder, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Cylinder, radius_),
-  PROTOBUF_FIELD_OFFSET(::Cylinder, height_),
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Custom, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::Custom, file_path_),
-  PROTOBUF_FIELD_OFFSET(::Custom, scale_),
+  PROTOBUF_FIELD_OFFSET(::ObjectParameter, key_),
+  PROTOBUF_FIELD_OFFSET(::ObjectParameter, value_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::TrialRequest)},
@@ -343,10 +253,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 32, -1, sizeof(::Color)},
   { 40, -1, sizeof(::Vector3)},
   { 48, -1, sizeof(::Object)},
-  { 63, -1, sizeof(::Sphere)},
-  { 69, -1, sizeof(::Box)},
-  { 77, -1, sizeof(::Cylinder)},
-  { 84, -1, sizeof(::Custom)},
+  { 59, -1, sizeof(::ObjectParameter)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -357,10 +264,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Color_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Vector3_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Object_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Sphere_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Box_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Cylinder_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Custom_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ObjectParameter_default_instance_),
 };
 
 const char descriptor_table_protodef_franka_5ftrial_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -376,31 +280,22 @@ const char descriptor_table_protodef_franka_5ftrial_2eproto[] PROTOBUF_SECTION_V
   "\n\rproxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force"
   "\030\004 \001(\0132\010.Vector3\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001"
   "g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001"
-  "\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"\355\001\n\006Object\022\n\n\002id\030"
+  "\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"\226\001\n\006Object\022\n\n\002id\030"
   "\001 \001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010position\030\003 \001(\0132\010."
   "Vector3\022\035\n\013orientation\030\004 \001(\0132\010.Vector3\022\025"
-  "\n\005color\030\005 \001(\0132\006.Color\022\031\n\006sphere\030\006 \001(\0132\007."
-  "SphereH\000\022\023\n\003box\030\007 \001(\0132\004.BoxH\000\022\035\n\010cylinde"
-  "r\030\010 \001(\0132\t.CylinderH\000\022\031\n\006custom\030\t \001(\0132\007.C"
-  "ustomH\000B\r\n\013object_data\"\030\n\006Sphere\022\016\n\006radi"
-  "us\030\001 \001(\001\"3\n\003Box\022\r\n\005width\030\001 \001(\001\022\016\n\006height"
-  "\030\002 \001(\001\022\r\n\005depth\030\003 \001(\001\"*\n\010Cylinder\022\016\n\006rad"
-  "ius\030\001 \001(\001\022\016\n\006height\030\002 \001(\001\"4\n\006Custom\022\021\n\tf"
-  "ile_path\030\001 \001(\t\022\027\n\005scale\030\002 \001(\0132\010.Vector3*"
-  "4\n\013TrialStatus\022\013\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r"
-  "\n\tCOMPLETED\020\0022G\n\022FrankaTrialService\0221\n\010R"
-  "unTrial\022\r.TrialRequest\032\024.TrialResponseSt"
-  "ream0\001b\006proto3"
+  "\n\005color\030\005 \001(\0132\006.Color\022 \n\006params\030\006 \003(\0132\020."
+  "ObjectParameter\"-\n\017ObjectParameter\022\013\n\003ke"
+  "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t*4\n\013TrialStatus\022\013\n"
+  "\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n\022"
+  "FrankaTrialService\0221\n\010RunTrial\022\r.TrialRe"
+  "quest\032\024.TrialResponseStream0\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_franka_5ftrial_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[11] = {
-  &scc_info_Box_franka_5ftrial_2eproto.base,
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[8] = {
   &scc_info_Color_franka_5ftrial_2eproto.base,
-  &scc_info_Custom_franka_5ftrial_2eproto.base,
-  &scc_info_Cylinder_franka_5ftrial_2eproto.base,
   &scc_info_Object_franka_5ftrial_2eproto.base,
-  &scc_info_Sphere_franka_5ftrial_2eproto.base,
+  &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,
   &scc_info_TrialDataPoint_franka_5ftrial_2eproto.base,
   &scc_info_TrialRequest_franka_5ftrial_2eproto.base,
   &scc_info_TrialResponseStream_franka_5ftrial_2eproto.base,
@@ -409,10 +304,10 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_fra
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_franka_5ftrial_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_franka_5ftrial_2eproto = {
-  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 1054,
-  &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 11, 0,
+  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 837,
+  &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 8, 0,
   schemas, file_default_instances, TableStruct_franka_5ftrial_2eproto::offsets,
-  file_level_metadata_franka_5ftrial_2eproto, 11, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
+  file_level_metadata_franka_5ftrial_2eproto, 8, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -2091,24 +1986,12 @@ void Object::InitAsDefaultInstance() {
       ::Vector3::internal_default_instance());
   ::_Object_default_instance_._instance.get_mutable()->color_ = const_cast< ::Color*>(
       ::Color::internal_default_instance());
-  ::_Object_default_instance_.sphere_ = const_cast< ::Sphere*>(
-      ::Sphere::internal_default_instance());
-  ::_Object_default_instance_.box_ = const_cast< ::Box*>(
-      ::Box::internal_default_instance());
-  ::_Object_default_instance_.cylinder_ = const_cast< ::Cylinder*>(
-      ::Cylinder::internal_default_instance());
-  ::_Object_default_instance_.custom_ = const_cast< ::Custom*>(
-      ::Custom::internal_default_instance());
 }
 class Object::_Internal {
  public:
   static const ::Vector3& position(const Object* msg);
   static const ::Vector3& orientation(const Object* msg);
   static const ::Color& color(const Object* msg);
-  static const ::Sphere& sphere(const Object* msg);
-  static const ::Box& box(const Object* msg);
-  static const ::Cylinder& cylinder(const Object* msg);
-  static const ::Custom& custom(const Object* msg);
 };
 
 const ::Vector3&
@@ -2123,90 +2006,16 @@ const ::Color&
 Object::_Internal::color(const Object* msg) {
   return *msg->color_;
 }
-const ::Sphere&
-Object::_Internal::sphere(const Object* msg) {
-  return *msg->object_data_.sphere_;
-}
-const ::Box&
-Object::_Internal::box(const Object* msg) {
-  return *msg->object_data_.box_;
-}
-const ::Cylinder&
-Object::_Internal::cylinder(const Object* msg) {
-  return *msg->object_data_.cylinder_;
-}
-const ::Custom&
-Object::_Internal::custom(const Object* msg) {
-  return *msg->object_data_.custom_;
-}
-void Object::set_allocated_sphere(::Sphere* sphere) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  clear_object_data();
-  if (sphere) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(sphere);
-    if (message_arena != submessage_arena) {
-      sphere = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, sphere, submessage_arena);
-    }
-    set_has_sphere();
-    object_data_.sphere_ = sphere;
-  }
-  // @@protoc_insertion_point(field_set_allocated:Object.sphere)
-}
-void Object::set_allocated_box(::Box* box) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  clear_object_data();
-  if (box) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(box);
-    if (message_arena != submessage_arena) {
-      box = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, box, submessage_arena);
-    }
-    set_has_box();
-    object_data_.box_ = box;
-  }
-  // @@protoc_insertion_point(field_set_allocated:Object.box)
-}
-void Object::set_allocated_cylinder(::Cylinder* cylinder) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  clear_object_data();
-  if (cylinder) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(cylinder);
-    if (message_arena != submessage_arena) {
-      cylinder = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, cylinder, submessage_arena);
-    }
-    set_has_cylinder();
-    object_data_.cylinder_ = cylinder;
-  }
-  // @@protoc_insertion_point(field_set_allocated:Object.cylinder)
-}
-void Object::set_allocated_custom(::Custom* custom) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
-  clear_object_data();
-  if (custom) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(custom);
-    if (message_arena != submessage_arena) {
-      custom = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, custom, submessage_arena);
-    }
-    set_has_custom();
-    object_data_.custom_ = custom;
-  }
-  // @@protoc_insertion_point(field_set_allocated:Object.custom)
-}
 Object::Object(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  params_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
   // @@protoc_insertion_point(arena_constructor:Object)
 }
 Object::Object(const Object& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      params_(from.params_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_id().empty()) {
@@ -2233,28 +2042,6 @@ Object::Object(const Object& from)
   } else {
     color_ = nullptr;
   }
-  clear_has_object_data();
-  switch (from.object_data_case()) {
-    case kSphere: {
-      _internal_mutable_sphere()->::Sphere::MergeFrom(from._internal_sphere());
-      break;
-    }
-    case kBox: {
-      _internal_mutable_box()->::Box::MergeFrom(from._internal_box());
-      break;
-    }
-    case kCylinder: {
-      _internal_mutable_cylinder()->::Cylinder::MergeFrom(from._internal_cylinder());
-      break;
-    }
-    case kCustom: {
-      _internal_mutable_custom()->::Custom::MergeFrom(from._internal_custom());
-      break;
-    }
-    case OBJECT_DATA_NOT_SET: {
-      break;
-    }
-  }
   // @@protoc_insertion_point(copy_constructor:Object)
 }
 
@@ -2265,7 +2052,6 @@ void Object::SharedCtor() {
   ::memset(&position_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&color_) -
       reinterpret_cast<char*>(&position_)) + sizeof(color_));
-  clear_has_object_data();
 }
 
 Object::~Object() {
@@ -2281,9 +2067,6 @@ void Object::SharedDtor() {
   if (this != internal_default_instance()) delete position_;
   if (this != internal_default_instance()) delete orientation_;
   if (this != internal_default_instance()) delete color_;
-  if (has_object_data()) {
-    clear_object_data();
-  }
 }
 
 void Object::ArenaDtor(void* object) {
@@ -2301,47 +2084,13 @@ const Object& Object::default_instance() {
 }
 
 
-void Object::clear_object_data() {
-// @@protoc_insertion_point(one_of_clear_start:Object)
-  switch (object_data_case()) {
-    case kSphere: {
-      if (GetArena() == nullptr) {
-        delete object_data_.sphere_;
-      }
-      break;
-    }
-    case kBox: {
-      if (GetArena() == nullptr) {
-        delete object_data_.box_;
-      }
-      break;
-    }
-    case kCylinder: {
-      if (GetArena() == nullptr) {
-        delete object_data_.cylinder_;
-      }
-      break;
-    }
-    case kCustom: {
-      if (GetArena() == nullptr) {
-        delete object_data_.custom_;
-      }
-      break;
-    }
-    case OBJECT_DATA_NOT_SET: {
-      break;
-    }
-  }
-  _oneof_case_[0] = OBJECT_DATA_NOT_SET;
-}
-
-
 void Object::Clear() {
 // @@protoc_insertion_point(message_clear_start:Object)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  params_.Clear();
   id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   type_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   if (GetArena() == nullptr && position_ != nullptr) {
@@ -2356,7 +2105,6 @@ void Object::Clear() {
     delete color_;
   }
   color_ = nullptr;
-  clear_object_data();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2407,32 +2155,16 @@ const char* Object::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::int
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // .Sphere sphere = 6;
+      // repeated .ObjectParameter params = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
-          ptr = ctx->ParseMessage(_internal_mutable_sphere(), ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // .Box box = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
-          ptr = ctx->ParseMessage(_internal_mutable_box(), ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // .Cylinder cylinder = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 66)) {
-          ptr = ctx->ParseMessage(_internal_mutable_cylinder(), ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // .Custom custom = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 74)) {
-          ptr = ctx->ParseMessage(_internal_mutable_custom(), ptr);
-          CHK_(ptr);
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_params(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<50>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -2507,36 +2239,12 @@ failure:
         5, _Internal::color(this), target, stream);
   }
 
-  // .Sphere sphere = 6;
-  if (_internal_has_sphere()) {
+  // repeated .ObjectParameter params = 6;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_params_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        6, _Internal::sphere(this), target, stream);
-  }
-
-  // .Box box = 7;
-  if (_internal_has_box()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        7, _Internal::box(this), target, stream);
-  }
-
-  // .Cylinder cylinder = 8;
-  if (_internal_has_cylinder()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        8, _Internal::cylinder(this), target, stream);
-  }
-
-  // .Custom custom = 9;
-  if (_internal_has_custom()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        9, _Internal::custom(this), target, stream);
+      InternalWriteMessage(6, this->_internal_params(i), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2554,6 +2262,13 @@ size_t Object::ByteSizeLong() const {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // repeated .ObjectParameter params = 6;
+  total_size += 1UL * this->_internal_params_size();
+  for (const auto& msg : this->params_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
 
   // string id = 1;
   if (this->id().size() > 0) {
@@ -2590,39 +2305,6 @@ size_t Object::ByteSizeLong() const {
         *color_);
   }
 
-  switch (object_data_case()) {
-    // .Sphere sphere = 6;
-    case kSphere: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *object_data_.sphere_);
-      break;
-    }
-    // .Box box = 7;
-    case kBox: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *object_data_.box_);
-      break;
-    }
-    // .Cylinder cylinder = 8;
-    case kCylinder: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *object_data_.cylinder_);
-      break;
-    }
-    // .Custom custom = 9;
-    case kCustom: {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *object_data_.custom_);
-      break;
-    }
-    case OBJECT_DATA_NOT_SET: {
-      break;
-    }
-  }
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
         _internal_metadata_, total_size, &_cached_size_);
@@ -2654,6 +2336,7 @@ void Object::MergeFrom(const Object& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  params_.MergeFrom(from.params_);
   if (from.id().size() > 0) {
     _internal_set_id(from._internal_id());
   }
@@ -2668,27 +2351,6 @@ void Object::MergeFrom(const Object& from) {
   }
   if (from.has_color()) {
     _internal_mutable_color()->::Color::MergeFrom(from._internal_color());
-  }
-  switch (from.object_data_case()) {
-    case kSphere: {
-      _internal_mutable_sphere()->::Sphere::MergeFrom(from._internal_sphere());
-      break;
-    }
-    case kBox: {
-      _internal_mutable_box()->::Box::MergeFrom(from._internal_box());
-      break;
-    }
-    case kCylinder: {
-      _internal_mutable_cylinder()->::Cylinder::MergeFrom(from._internal_cylinder());
-      break;
-    }
-    case kCustom: {
-      _internal_mutable_custom()->::Custom::MergeFrom(from._internal_custom());
-      break;
-    }
-    case OBJECT_DATA_NOT_SET: {
-      break;
-    }
   }
 }
 
@@ -2713,6 +2375,7 @@ bool Object::IsInitialized() const {
 void Object::InternalSwap(Object* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  params_.InternalSwap(&other->params_);
   id_.Swap(&other->id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   type_.Swap(&other->type_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
@@ -2721,8 +2384,6 @@ void Object::InternalSwap(Object* other) {
       - PROTOBUF_FIELD_OFFSET(Object, position_)>(
           reinterpret_cast<char*>(&position_),
           reinterpret_cast<char*>(&other->position_));
-  swap(object_data_, other->object_data_);
-  swap(_oneof_case_[0], other->_oneof_case_[0]);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Object::GetMetadata() const {
@@ -2732,759 +2393,79 @@ void Object::InternalSwap(Object* other) {
 
 // ===================================================================
 
-void Sphere::InitAsDefaultInstance() {
+void ObjectParameter::InitAsDefaultInstance() {
 }
-class Sphere::_Internal {
+class ObjectParameter::_Internal {
  public:
 };
 
-Sphere::Sphere(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+ObjectParameter::ObjectParameter(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:Sphere)
+  // @@protoc_insertion_point(arena_constructor:ObjectParameter)
 }
-Sphere::Sphere(const Sphere& from)
+ObjectParameter::ObjectParameter(const ObjectParameter& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  radius_ = from.radius_;
-  // @@protoc_insertion_point(copy_constructor:Sphere)
-}
-
-void Sphere::SharedCtor() {
-  radius_ = 0;
-}
-
-Sphere::~Sphere() {
-  // @@protoc_insertion_point(destructor:Sphere)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void Sphere::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void Sphere::ArenaDtor(void* object) {
-  Sphere* _this = reinterpret_cast< Sphere* >(object);
-  (void)_this;
-}
-void Sphere::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void Sphere::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const Sphere& Sphere::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Sphere_franka_5ftrial_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void Sphere::Clear() {
-// @@protoc_insertion_point(message_clear_start:Sphere)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  radius_ = 0;
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* Sphere::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // double radius = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
-          radius_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* Sphere::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Sphere)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double radius = 1;
-  if (!(this->radius() <= 0 && this->radius() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_radius(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:Sphere)
-  return target;
-}
-
-size_t Sphere::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Sphere)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // double radius = 1;
-  if (!(this->radius() <= 0 && this->radius() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void Sphere::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:Sphere)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Sphere* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Sphere>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Sphere)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:Sphere)
-    MergeFrom(*source);
-  }
-}
-
-void Sphere::MergeFrom(const Sphere& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Sphere)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (!(from.radius() <= 0 && from.radius() >= 0)) {
-    _internal_set_radius(from._internal_radius());
-  }
-}
-
-void Sphere::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:Sphere)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void Sphere::CopyFrom(const Sphere& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Sphere)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Sphere::IsInitialized() const {
-  return true;
-}
-
-void Sphere::InternalSwap(Sphere* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  swap(radius_, other->radius_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata Sphere::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-void Box::InitAsDefaultInstance() {
-}
-class Box::_Internal {
- public:
-};
-
-Box::Box(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:Box)
-}
-Box::Box(const Box& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&width_, &from.width_,
-    static_cast<size_t>(reinterpret_cast<char*>(&depth_) -
-    reinterpret_cast<char*>(&width_)) + sizeof(depth_));
-  // @@protoc_insertion_point(copy_constructor:Box)
-}
-
-void Box::SharedCtor() {
-  ::memset(&width_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&depth_) -
-      reinterpret_cast<char*>(&width_)) + sizeof(depth_));
-}
-
-Box::~Box() {
-  // @@protoc_insertion_point(destructor:Box)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void Box::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void Box::ArenaDtor(void* object) {
-  Box* _this = reinterpret_cast< Box* >(object);
-  (void)_this;
-}
-void Box::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void Box::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const Box& Box::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Box_franka_5ftrial_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void Box::Clear() {
-// @@protoc_insertion_point(message_clear_start:Box)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  ::memset(&width_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&depth_) -
-      reinterpret_cast<char*>(&width_)) + sizeof(depth_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* Box::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // double width = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
-          width_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      // double height = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
-          height_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      // double depth = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 25)) {
-          depth_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* Box::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Box)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double width = 1;
-  if (!(this->width() <= 0 && this->width() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_width(), target);
-  }
-
-  // double height = 2;
-  if (!(this->height() <= 0 && this->height() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_height(), target);
-  }
-
-  // double depth = 3;
-  if (!(this->depth() <= 0 && this->depth() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(3, this->_internal_depth(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:Box)
-  return target;
-}
-
-size_t Box::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Box)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // double width = 1;
-  if (!(this->width() <= 0 && this->width() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  // double height = 2;
-  if (!(this->height() <= 0 && this->height() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  // double depth = 3;
-  if (!(this->depth() <= 0 && this->depth() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void Box::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:Box)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Box* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Box>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Box)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:Box)
-    MergeFrom(*source);
-  }
-}
-
-void Box::MergeFrom(const Box& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Box)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (!(from.width() <= 0 && from.width() >= 0)) {
-    _internal_set_width(from._internal_width());
-  }
-  if (!(from.height() <= 0 && from.height() >= 0)) {
-    _internal_set_height(from._internal_height());
-  }
-  if (!(from.depth() <= 0 && from.depth() >= 0)) {
-    _internal_set_depth(from._internal_depth());
-  }
-}
-
-void Box::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:Box)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void Box::CopyFrom(const Box& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Box)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Box::IsInitialized() const {
-  return true;
-}
-
-void Box::InternalSwap(Box* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Box, depth_)
-      + sizeof(Box::depth_)
-      - PROTOBUF_FIELD_OFFSET(Box, width_)>(
-          reinterpret_cast<char*>(&width_),
-          reinterpret_cast<char*>(&other->width_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata Box::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-void Cylinder::InitAsDefaultInstance() {
-}
-class Cylinder::_Internal {
- public:
-};
-
-Cylinder::Cylinder(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:Cylinder)
-}
-Cylinder::Cylinder(const Cylinder& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&radius_, &from.radius_,
-    static_cast<size_t>(reinterpret_cast<char*>(&height_) -
-    reinterpret_cast<char*>(&radius_)) + sizeof(height_));
-  // @@protoc_insertion_point(copy_constructor:Cylinder)
-}
-
-void Cylinder::SharedCtor() {
-  ::memset(&radius_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&height_) -
-      reinterpret_cast<char*>(&radius_)) + sizeof(height_));
-}
-
-Cylinder::~Cylinder() {
-  // @@protoc_insertion_point(destructor:Cylinder)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void Cylinder::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void Cylinder::ArenaDtor(void* object) {
-  Cylinder* _this = reinterpret_cast< Cylinder* >(object);
-  (void)_this;
-}
-void Cylinder::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void Cylinder::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const Cylinder& Cylinder::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Cylinder_franka_5ftrial_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void Cylinder::Clear() {
-// @@protoc_insertion_point(message_clear_start:Cylinder)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  ::memset(&radius_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&height_) -
-      reinterpret_cast<char*>(&radius_)) + sizeof(height_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* Cylinder::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // double radius = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 9)) {
-          radius_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      // double height = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
-          height_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* Cylinder::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Cylinder)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // double radius = 1;
-  if (!(this->radius() <= 0 && this->radius() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_radius(), target);
-  }
-
-  // double height = 2;
-  if (!(this->height() <= 0 && this->height() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_height(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:Cylinder)
-  return target;
-}
-
-size_t Cylinder::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Cylinder)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // double radius = 1;
-  if (!(this->radius() <= 0 && this->radius() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  // double height = 2;
-  if (!(this->height() <= 0 && this->height() >= 0)) {
-    total_size += 1 + 8;
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void Cylinder::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:Cylinder)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Cylinder* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Cylinder>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Cylinder)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:Cylinder)
-    MergeFrom(*source);
-  }
-}
-
-void Cylinder::MergeFrom(const Cylinder& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Cylinder)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (!(from.radius() <= 0 && from.radius() >= 0)) {
-    _internal_set_radius(from._internal_radius());
-  }
-  if (!(from.height() <= 0 && from.height() >= 0)) {
-    _internal_set_height(from._internal_height());
-  }
-}
-
-void Cylinder::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:Cylinder)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void Cylinder::CopyFrom(const Cylinder& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Cylinder)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool Cylinder::IsInitialized() const {
-  return true;
-}
-
-void Cylinder::InternalSwap(Cylinder* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Cylinder, height_)
-      + sizeof(Cylinder::height_)
-      - PROTOBUF_FIELD_OFFSET(Cylinder, radius_)>(
-          reinterpret_cast<char*>(&radius_),
-          reinterpret_cast<char*>(&other->radius_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata Cylinder::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
-
-// ===================================================================
-
-void Custom::InitAsDefaultInstance() {
-  ::_Custom_default_instance_._instance.get_mutable()->scale_ = const_cast< ::Vector3*>(
-      ::Vector3::internal_default_instance());
-}
-class Custom::_Internal {
- public:
-  static const ::Vector3& scale(const Custom* msg);
-};
-
-const ::Vector3&
-Custom::_Internal::scale(const Custom* msg) {
-  return *msg->scale_;
-}
-Custom::Custom(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:Custom)
-}
-Custom::Custom(const Custom& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  file_path_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_file_path().empty()) {
-    file_path_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_file_path(),
+  key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_key().empty()) {
+    key_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_key(),
       GetArena());
   }
-  if (from._internal_has_scale()) {
-    scale_ = new ::Vector3(*from.scale_);
-  } else {
-    scale_ = nullptr;
+  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_value().empty()) {
+    value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_value(),
+      GetArena());
   }
-  // @@protoc_insertion_point(copy_constructor:Custom)
+  // @@protoc_insertion_point(copy_constructor:ObjectParameter)
 }
 
-void Custom::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Custom_franka_5ftrial_2eproto.base);
-  file_path_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  scale_ = nullptr;
+void ObjectParameter::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ObjectParameter_franka_5ftrial_2eproto.base);
+  key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-Custom::~Custom() {
-  // @@protoc_insertion_point(destructor:Custom)
+ObjectParameter::~ObjectParameter() {
+  // @@protoc_insertion_point(destructor:ObjectParameter)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void Custom::SharedDtor() {
+void ObjectParameter::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
-  file_path_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (this != internal_default_instance()) delete scale_;
+  key_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  value_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void Custom::ArenaDtor(void* object) {
-  Custom* _this = reinterpret_cast< Custom* >(object);
+void ObjectParameter::ArenaDtor(void* object) {
+  ObjectParameter* _this = reinterpret_cast< ObjectParameter* >(object);
   (void)_this;
 }
-void Custom::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void ObjectParameter::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void Custom::SetCachedSize(int size) const {
+void ObjectParameter::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const Custom& Custom::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Custom_franka_5ftrial_2eproto.base);
+const ObjectParameter& ObjectParameter::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ObjectParameter_franka_5ftrial_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void Custom::Clear() {
-// @@protoc_insertion_point(message_clear_start:Custom)
+void ObjectParameter::Clear() {
+// @@protoc_insertion_point(message_clear_start:ObjectParameter)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  file_path_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  if (GetArena() == nullptr && scale_ != nullptr) {
-    delete scale_;
-  }
-  scale_ = nullptr;
+  key_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  value_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* Custom::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* ObjectParameter::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
@@ -3492,19 +2473,21 @@ const char* Custom::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::int
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     CHK_(ptr);
     switch (tag >> 3) {
-      // string file_path = 1;
+      // string key = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_file_path();
+          auto str = _internal_mutable_key();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Custom.file_path"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "ObjectParameter.key"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // .Vector3 scale = 2;
+      // string value = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_scale(), ptr);
+          auto str = _internal_mutable_value();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "ObjectParameter.value"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -3530,58 +2513,60 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Custom::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* ObjectParameter::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Custom)
+  // @@protoc_insertion_point(serialize_to_array_start:ObjectParameter)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string file_path = 1;
-  if (this->file_path().size() > 0) {
+  // string key = 1;
+  if (this->key().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_file_path().data(), static_cast<int>(this->_internal_file_path().length()),
+      this->_internal_key().data(), static_cast<int>(this->_internal_key().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Custom.file_path");
+      "ObjectParameter.key");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_file_path(), target);
+        1, this->_internal_key(), target);
   }
 
-  // .Vector3 scale = 2;
-  if (this->has_scale()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        2, _Internal::scale(this), target, stream);
+  // string value = 2;
+  if (this->value().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "ObjectParameter.value");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_value(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Custom)
+  // @@protoc_insertion_point(serialize_to_array_end:ObjectParameter)
   return target;
 }
 
-size_t Custom::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Custom)
+size_t ObjectParameter::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:ObjectParameter)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string file_path = 1;
-  if (this->file_path().size() > 0) {
+  // string key = 1;
+  if (this->key().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_file_path());
+        this->_internal_key());
   }
 
-  // .Vector3 scale = 2;
-  if (this->has_scale()) {
+  // string value = 2;
+  if (this->value().size() > 0) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *scale_);
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_value());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -3593,62 +2578,62 @@ size_t Custom::ByteSizeLong() const {
   return total_size;
 }
 
-void Custom::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:Custom)
+void ObjectParameter::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:ObjectParameter)
   GOOGLE_DCHECK_NE(&from, this);
-  const Custom* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Custom>(
+  const ObjectParameter* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ObjectParameter>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:Custom)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ObjectParameter)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:Custom)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ObjectParameter)
     MergeFrom(*source);
   }
 }
 
-void Custom::MergeFrom(const Custom& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Custom)
+void ObjectParameter::MergeFrom(const ObjectParameter& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:ObjectParameter)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.file_path().size() > 0) {
-    _internal_set_file_path(from._internal_file_path());
+  if (from.key().size() > 0) {
+    _internal_set_key(from._internal_key());
   }
-  if (from.has_scale()) {
-    _internal_mutable_scale()->::Vector3::MergeFrom(from._internal_scale());
+  if (from.value().size() > 0) {
+    _internal_set_value(from._internal_value());
   }
 }
 
-void Custom::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:Custom)
+void ObjectParameter::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:ObjectParameter)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void Custom::CopyFrom(const Custom& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Custom)
+void ObjectParameter::CopyFrom(const ObjectParameter& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:ObjectParameter)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool Custom::IsInitialized() const {
+bool ObjectParameter::IsInitialized() const {
   return true;
 }
 
-void Custom::InternalSwap(Custom* other) {
+void ObjectParameter::InternalSwap(ObjectParameter* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  file_path_.Swap(&other->file_path_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  swap(scale_, other->scale_);
+  key_.Swap(&other->key_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  value_.Swap(&other->value_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata Custom::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata ObjectParameter::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -3676,17 +2661,8 @@ template<> PROTOBUF_NOINLINE ::Vector3* Arena::CreateMaybeMessage< ::Vector3 >(A
 template<> PROTOBUF_NOINLINE ::Object* Arena::CreateMaybeMessage< ::Object >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Object >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Sphere* Arena::CreateMaybeMessage< ::Sphere >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Sphere >(arena);
-}
-template<> PROTOBUF_NOINLINE ::Box* Arena::CreateMaybeMessage< ::Box >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Box >(arena);
-}
-template<> PROTOBUF_NOINLINE ::Cylinder* Arena::CreateMaybeMessage< ::Cylinder >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Cylinder >(arena);
-}
-template<> PROTOBUF_NOINLINE ::Custom* Arena::CreateMaybeMessage< ::Custom >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Custom >(arena);
+template<> PROTOBUF_NOINLINE ::ObjectParameter* Arena::CreateMaybeMessage< ::ObjectParameter >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::ObjectParameter >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

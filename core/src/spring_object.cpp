@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-cGenericObject* SpringObject::createObject(const std::map<std::string, double>& params,
+cGenericObject* SpringObject::createObject(const std::map<std::string, std::string>& params,
                                           double x, double y, double z,
                                           double r, double g, double b) {
     std::cout << "[SpringObject] Creating spring with custom physics!" << std::endl;
@@ -79,22 +79,22 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, double>& 
     return spring;
 }
 
-double SpringObject::getStiffness(const std::map<std::string, double>& params) const {
+double SpringObject::getStiffness(const std::map<std::string, std::string>& params) const {
     auto it = params.find("stiffness");
-    return (it != params.end()) ? it->second : 1000.0; // Default stiffness
+    return (it != params.end()) ? std::stod(it->second) : 1000.0; // Default stiffness
 }
 
-double SpringObject::getDamping(const std::map<std::string, double>& params) const {
+double SpringObject::getDamping(const std::map<std::string, std::string>& params) const {
     auto it = params.find("damping");
-    return (it != params.end()) ? it->second : 50.0; // Default damping
+    return (it != params.end()) ? std::stod(it->second) : 50.0; // Default damping
 }
 
-double SpringObject::getRadius(const std::map<std::string, double>& params) const {
+double SpringObject::getRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius");
-    return (it != params.end()) ? it->second : 0.02; // Default radius
+    return (it != params.end()) ? std::stod(it->second) : 0.02; // Default radius
 }
 
-double SpringObject::getHeight(const std::map<std::string, double>& params) const {
+double SpringObject::getHeight(const std::map<std::string, std::string>& params) const {
     auto it = params.find("height");
-    return (it != params.end()) ? it->second : 0.1; // Default height
+    return (it != params.end()) ? std::stod(it->second) : 0.1; // Default height
 }
