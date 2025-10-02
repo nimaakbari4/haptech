@@ -1,0 +1,55 @@
+<TrialConfig>
+  <HomePosition>
+    <Position x="0.0" y="0.0" z="0.0"/>
+    <Tolerance>0.01</Tolerance>
+  </HomePosition>
+
+  <EndConditions>
+    <Condition type="time" value="30.0" result="failure"/>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Test the researcher's custom objects!</StartMessage>
+    <SuccessMessage>Great job!</SuccessMessage>
+    <FailureMessage>Time's up. Try again!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <!-- Regular sphere for comparison - Bright Green (Left) -->
+    <Object id="regular_sphere" type="sphere">
+      <Position x="0.0" y="-0.5" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size radius="0.06"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
+
+    <!-- Researcher's Half-Circle Cup Object - Bright Red (Center) -->
+    <Object id="cup1" type="cup">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size outer_radius="0.15" height="0.12" inner_radius="0.10" thickness="0.08"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+    </Object>
+
+    <!-- Researcher's Helical Spring Object - Bright Yellow (Right) -->
+    <Object id="spring1" type="spring">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size radius="0.08" height="0.20" stiffness="2000.0" damping="100.0"/>
+      <Color r="1.0" g="1.0" b="0.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>

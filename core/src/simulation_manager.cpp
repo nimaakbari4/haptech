@@ -1,4 +1,6 @@
 #include "simulation_manager.h"
+#include "custom_object_interface.h"
+#include "researcher_objects_registry.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -372,11 +374,33 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                                            double x, double y, double z, 
                                            double r, double g, double b,
                                            const std::map<std::string, double>& sizeParams) {
+    std::cout << "[DEBUG] addObjectFromConfig called: " << id << " type: " << type << std::endl;
+    
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
     }
 
+    // First, try to create using custom object system
+    if (CustomObjectRegistry::isTypeRegistered(type)) {
+        std::cout << "[DEBUG] Creating custom object: " << type << std::endl;
+        
+        auto customObj = CustomObjectRegistry::createObject(type);
+        if (customObj) {
+            cGenericObject* chaiObj = customObj->createObject(sizeParams, x, y, z, r, g, b);
+            if (chaiObj) {
+                // Add to world and object map
+                simContext.world->addChild(chaiObj);
+                simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
+                return true;
+            }
+        }
+        std::cout << "[ERROR] Failed to create custom object: " << type << std::endl;
+        return false;
+    }
+
+    // Fall back to built-in object types
     std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
     
     if (type == "sphere") {
@@ -413,6 +437,53 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         double maxDim = std::max(radiusIt->second, heightIt->second);
         mesh->createAABBCollisionDetector(maxDim);
     }
+    else if (type == "ball") {
+        // Custom ball object with bounciness
+        auto radiusIt = sizeParams.find("radius");
+        if (radiusIt == sizeParams.end()) {
+            std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
+            return false;
+        }
+        cCreateSphere(mesh.get(), radiusIt->second);
+        mesh->createAABBCollisionDetector(radiusIt->second);
+        
+        // Set bounciness if provided
+        auto bouncinessIt = sizeParams.find("bounciness");
+        if (bouncinessIt != sizeParams.end()) {
+            double bounciness = bouncinessIt->second;
+            mesh->m_material->setDamping(50.0 * (1.0 - bounciness)); // Less damping = more bouncy
+        }
+    }
+    else if (type == "cup") {
+        // Custom cup object
+        auto outerRadiusIt = sizeParams.find("outer_radius");
+        auto heightIt = sizeParams.find("height");
+        
+        if (outerRadiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+            std::cout << "[ERROR] Cup requires 'outer_radius' and 'height' parameters." << std::endl;
+            return false;
+        }
+        cCreateCylinder(mesh.get(), outerRadiusIt->second, heightIt->second);
+        mesh->createAABBCollisionDetector(outerRadiusIt->second);
+    }
+    else if (type == "spring") {
+        // Custom spring object
+        auto radiusIt = sizeParams.find("radius");
+        auto heightIt = sizeParams.find("height");
+        auto stiffnessIt = sizeParams.find("stiffness");
+        
+        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+            std::cout << "[ERROR] Spring requires 'radius' and 'height' parameters." << std::endl;
+            return false;
+        }
+        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
+        mesh->createAABBCollisionDetector(radiusIt->second);
+        
+        // Set stiffness if provided
+        if (stiffnessIt != sizeParams.end()) {
+            mesh->m_material->setStiffness(stiffnessIt->second);
+        }
+    }
     else if (type == "custom") {
         // Temporarily skip custom objects
         std::cout << "[INFO] Skipping custom object '" << id << "' for now." << std::endl;
@@ -428,7 +499,10 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
     mesh->m_material->m_diffuse.set(r, g, b);
     mesh->m_material->m_specular.set(r, g, b);
 
-    return addObject(id, mesh.release(), x, y, z);
+    std::cout << "[DEBUG] About to call addObject for: " << id << std::endl;
+    bool result = addObject(id, mesh.release(), x, y, z);
+    std::cout << "[DEBUG] addObject result: " << (result ? "SUCCESS" : "FAILED") << std::endl;
+    return result;
 }
 
 // PRIVATE CALLBACKS //
@@ -609,13 +683,7 @@ void SimulationManager::dataPollingThread() {
                 cVector3d deviceForce;
                 simContext.hapticDevice->getForce(deviceForce);
                 
-                if (simContext.debug) {
-                    std::cout << "[DEBUG] t: " << trialContext.time
-                            << " | Device pos: " << devicePos
-                            << " | Proxy pos: " << proxyPos
-                            << " | Device force: " << deviceForce
-                            << " | Computed force: " << computedForce << std::endl;
-                }
+                // Debug output removed
             }
 
             cSleepMs(1000 / DATA_POLL_FREQUENCY);

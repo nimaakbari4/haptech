@@ -77,6 +77,14 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         } else if (obj.type() == "cylinder" && obj.has_cylinder()) {
             sizeParams["radius"] = obj.cylinder().radius();
             sizeParams["height"] = obj.cylinder().height();
+        } else if (obj.type() == "spring" && obj.has_cylinder()) {
+            // Spring object parameters
+            sizeParams["radius"] = obj.cylinder().radius();
+            sizeParams["height"] = obj.cylinder().height();
+        } else if (obj.type() == "cup" && obj.has_cylinder()) {
+            // Cup object parameters
+            sizeParams["outer_radius"] = obj.cylinder().radius();
+            sizeParams["height"] = obj.cylinder().height();
         } else if (obj.type() == "custom" && obj.has_custom()) {
             // For custom objects, we'll use the file path and scale
             // Note: We need to handle file_path separately since it's a string, not double
@@ -97,14 +105,20 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             filePath = obj.custom().file_path();
         }
         
+        std::cout << "[SERVER] Creating object: " << obj.id() << " type: " << obj.type() 
+                  << " pos: (" << obj.position().x() << ", " << obj.position().y() << ", " << obj.position().z() << ")" << std::endl;
+        
         if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
                                                    obj.position().x(), obj.position().y(), obj.position().z(),
                                                    r, g, b, sizeParams)) {
+            std::cout << "[ERROR] Failed to create object: " << obj.id() << std::endl;
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::ERROR);
             status->set_message("Something went wrong loading object: " + obj.id());
             writer->Write(statusMsg);
             return grpc::Status::OK;
+        } else {
+            std::cout << "[SERVER] Successfully created object: " << obj.id() << std::endl;
         }
     }
 
@@ -184,9 +198,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             }
         }
 
-        if (SimulationManager::simContext.debug) {
-            std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
-        }
+        // Debug output removed
 
         double dt = clock.getCurrentTimeSeconds();
         clock.reset();
