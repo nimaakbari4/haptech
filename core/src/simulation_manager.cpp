@@ -1,6 +1,6 @@
 #include "simulation_manager.h"
 #include "custom_object_interface.h"
-#include "researcher_objects_registry.h"
+#include "extensions_registry.h"
 #include <iostream>
 #include <map>
 #include <algorithm>

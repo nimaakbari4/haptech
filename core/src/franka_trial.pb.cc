@@ -15,6 +15,7 @@
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_EndCondition_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Object_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialDataPoint_franka_5ftrial_2eproto;
@@ -54,6 +55,10 @@ class ObjectParameterDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ObjectParameter> _instance;
 } _ObjectParameter_default_instance_;
+class EndConditionDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<EndCondition> _instance;
+} _EndCondition_default_instance_;
 static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -67,6 +72,21 @@ static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Color_franka_5ftrial_2eproto}, {}};
+
+static void InitDefaultsscc_info_EndCondition_franka_5ftrial_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_EndCondition_default_instance_;
+    new (ptr) ::EndCondition();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::EndCondition::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_EndCondition_franka_5ftrial_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_EndCondition_franka_5ftrial_2eproto}, {
+      &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,}};
 
 static void InitDefaultsscc_info_Object_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -125,9 +145,10 @@ static void InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto() {
   ::TrialRequest::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialRequest_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto}, {
-      &scc_info_Object_franka_5ftrial_2eproto.base,}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_TrialRequest_franka_5ftrial_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto}, {
+      &scc_info_Object_franka_5ftrial_2eproto.base,
+      &scc_info_EndCondition_franka_5ftrial_2eproto.base,}};
 
 static void InitDefaultsscc_info_TrialResponseStream_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -173,7 +194,7 @@ static void InitDefaultsscc_info_Vector3_franka_5ftrial_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Vector3_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Vector3_franka_5ftrial_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_franka_5ftrial_2eproto[8];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_franka_5ftrial_2eproto[9];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_franka_5ftrial_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_franka_5ftrial_2eproto = nullptr;
 
@@ -186,6 +207,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_franka_5ftrial_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::TrialRequest, trial_id_),
   PROTOBUF_FIELD_OFFSET(::TrialRequest, trialduration_),
   PROTOBUF_FIELD_OFFSET(::TrialRequest, objects_),
+  PROTOBUF_FIELD_OFFSET(::TrialRequest, endconditions_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::TrialResponseStream, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -244,16 +266,26 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_franka_5ftrial_2eproto::offset
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::ObjectParameter, key_),
   PROTOBUF_FIELD_OFFSET(::ObjectParameter, value_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::EndCondition, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::EndCondition, name_),
+  PROTOBUF_FIELD_OFFSET(::EndCondition, success_),
+  PROTOBUF_FIELD_OFFSET(::EndCondition, priority_),
+  PROTOBUF_FIELD_OFFSET(::EndCondition, params_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::TrialRequest)},
-  { 8, -1, sizeof(::TrialResponseStream)},
-  { 16, -1, sizeof(::TrialStatusUpdate)},
-  { 23, -1, sizeof(::TrialDataPoint)},
-  { 32, -1, sizeof(::Color)},
-  { 40, -1, sizeof(::Vector3)},
-  { 48, -1, sizeof(::Object)},
-  { 59, -1, sizeof(::ObjectParameter)},
+  { 9, -1, sizeof(::TrialResponseStream)},
+  { 17, -1, sizeof(::TrialStatusUpdate)},
+  { 24, -1, sizeof(::TrialDataPoint)},
+  { 33, -1, sizeof(::Color)},
+  { 41, -1, sizeof(::Vector3)},
+  { 49, -1, sizeof(::Object)},
+  { 60, -1, sizeof(::ObjectParameter)},
+  { 67, -1, sizeof(::EndCondition)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -265,35 +297,41 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Vector3_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Object_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ObjectParameter_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_EndCondition_default_instance_),
 };
 
 const char descriptor_table_protodef_franka_5ftrial_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\022franka_trial.proto\"Q\n\014TrialRequest\022\020\n\010"
+  "\n\022franka_trial.proto\"w\n\014TrialRequest\022\020\n\010"
   "trial_id\030\001 \001(\t\022\025\n\rtrialDuration\030\002 \001(\001\022\030\n"
-  "\007objects\030\003 \003(\0132\007.Object\"r\n\023TrialResponse"
-  "Stream\022*\n\014statusUpdate\030\001 \001(\0132\022.TrialStat"
-  "usUpdateH\000\022$\n\tdataPoint\030\002 \001(\0132\017.TrialDat"
-  "aPointH\000B\t\n\007payload\"B\n\021TrialStatusUpdate"
-  "\022\034\n\006status\030\001 \001(\0162\014.TrialStatus\022\017\n\007messag"
-  "e\030\002 \001(\t\"\177\n\016TrialDataPoint\022\021\n\ttimestamp\030\001"
-  " \001(\001\022 \n\016devicePosition\030\002 \001(\0132\010.Vector3\022\037"
-  "\n\rproxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force"
-  "\030\004 \001(\0132\010.Vector3\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001"
-  "g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001"
-  "\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"\226\001\n\006Object\022\n\n\002id\030"
-  "\001 \001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010position\030\003 \001(\0132\010."
-  "Vector3\022\035\n\013orientation\030\004 \001(\0132\010.Vector3\022\025"
-  "\n\005color\030\005 \001(\0132\006.Color\022 \n\006params\030\006 \003(\0132\020."
-  "ObjectParameter\"-\n\017ObjectParameter\022\013\n\003ke"
-  "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t*4\n\013TrialStatus\022\013\n"
-  "\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n\022"
-  "FrankaTrialService\0221\n\010RunTrial\022\r.TrialRe"
-  "quest\032\024.TrialResponseStream0\001b\006proto3"
+  "\007objects\030\003 \003(\0132\007.Object\022$\n\rendConditions"
+  "\030\004 \003(\0132\r.EndCondition\"r\n\023TrialResponseSt"
+  "ream\022*\n\014statusUpdate\030\001 \001(\0132\022.TrialStatus"
+  "UpdateH\000\022$\n\tdataPoint\030\002 \001(\0132\017.TrialDataP"
+  "ointH\000B\t\n\007payload\"B\n\021TrialStatusUpdate\022\034"
+  "\n\006status\030\001 \001(\0162\014.TrialStatus\022\017\n\007message\030"
+  "\002 \001(\t\"\177\n\016TrialDataPoint\022\021\n\ttimestamp\030\001 \001"
+  "(\001\022 \n\016devicePosition\030\002 \001(\0132\010.Vector3\022\037\n\r"
+  "proxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force\030\004"
+  " \001(\0132\010.Vector3\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030"
+  "\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t"
+  "\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"\226\001\n\006Object\022\n\n\002id\030\001 "
+  "\001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010position\030\003 \001(\0132\010.Ve"
+  "ctor3\022\035\n\013orientation\030\004 \001(\0132\010.Vector3\022\025\n\005"
+  "color\030\005 \001(\0132\006.Color\022 \n\006params\030\006 \003(\0132\020.Ob"
+  "jectParameter\"-\n\017ObjectParameter\022\013\n\003key\030"
+  "\001 \001(\t\022\r\n\005value\030\002 \001(\t\"a\n\014EndCondition\022\014\n\004"
+  "name\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\022\020\n\010priority\030"
+  "\003 \001(\005\022 \n\006params\030\004 \003(\0132\020.ObjectParameter*"
+  "4\n\013TrialStatus\022\013\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r"
+  "\n\tCOMPLETED\020\0022G\n\022FrankaTrialService\0221\n\010R"
+  "unTrial\022\r.TrialRequest\032\024.TrialResponseSt"
+  "ream0\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_franka_5ftrial_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[8] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[9] = {
   &scc_info_Color_franka_5ftrial_2eproto.base,
+  &scc_info_EndCondition_franka_5ftrial_2eproto.base,
   &scc_info_Object_franka_5ftrial_2eproto.base,
   &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,
   &scc_info_TrialDataPoint_franka_5ftrial_2eproto.base,
@@ -304,10 +342,10 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_fra
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_franka_5ftrial_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_franka_5ftrial_2eproto = {
-  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 837,
-  &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 8, 0,
+  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 974,
+  &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 9, 0,
   schemas, file_default_instances, TableStruct_franka_5ftrial_2eproto::offsets,
-  file_level_metadata_franka_5ftrial_2eproto, 8, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
+  file_level_metadata_franka_5ftrial_2eproto, 9, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -338,14 +376,16 @@ class TrialRequest::_Internal {
 
 TrialRequest::TrialRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  objects_(arena) {
+  objects_(arena),
+  endconditions_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
   // @@protoc_insertion_point(arena_constructor:TrialRequest)
 }
 TrialRequest::TrialRequest(const TrialRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      objects_(from.objects_) {
+      objects_(from.objects_),
+      endconditions_(from.endconditions_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   trial_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_trial_id().empty()) {
@@ -395,6 +435,7 @@ void TrialRequest::Clear() {
   (void) cached_has_bits;
 
   objects_.Clear();
+  endconditions_.Clear();
   trial_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   trialduration_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -434,6 +475,18 @@ const char* TrialRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+        } else goto handle_unusual;
+        continue;
+      // repeated .EndCondition endConditions = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_endconditions(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -488,6 +541,14 @@ failure:
       InternalWriteMessage(3, this->_internal_objects(i), target, stream);
   }
 
+  // repeated .EndCondition endConditions = 4;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_endconditions_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, this->_internal_endconditions(i), target, stream);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -507,6 +568,13 @@ size_t TrialRequest::ByteSizeLong() const {
   // repeated .Object objects = 3;
   total_size += 1UL * this->_internal_objects_size();
   for (const auto& msg : this->objects_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .EndCondition endConditions = 4;
+  total_size += 1UL * this->_internal_endconditions_size();
+  for (const auto& msg : this->endconditions_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -555,6 +623,7 @@ void TrialRequest::MergeFrom(const TrialRequest& from) {
   (void) cached_has_bits;
 
   objects_.MergeFrom(from.objects_);
+  endconditions_.MergeFrom(from.endconditions_);
   if (from.trial_id().size() > 0) {
     _internal_set_trial_id(from._internal_trial_id());
   }
@@ -585,6 +654,7 @@ void TrialRequest::InternalSwap(TrialRequest* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   objects_.InternalSwap(&other->objects_);
+  endconditions_.InternalSwap(&other->endconditions_);
   trial_id_.Swap(&other->trial_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   swap(trialduration_, other->trialduration_);
 }
@@ -2638,6 +2708,306 @@ void ObjectParameter::InternalSwap(ObjectParameter* other) {
 }
 
 
+// ===================================================================
+
+void EndCondition::InitAsDefaultInstance() {
+}
+class EndCondition::_Internal {
+ public:
+};
+
+EndCondition::EndCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+  params_(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:EndCondition)
+}
+EndCondition::EndCondition(const EndCondition& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      params_(from.params_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_name().empty()) {
+    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
+      GetArena());
+  }
+  ::memcpy(&success_, &from.success_,
+    static_cast<size_t>(reinterpret_cast<char*>(&priority_) -
+    reinterpret_cast<char*>(&success_)) + sizeof(priority_));
+  // @@protoc_insertion_point(copy_constructor:EndCondition)
+}
+
+void EndCondition::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_EndCondition_franka_5ftrial_2eproto.base);
+  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::memset(&success_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&priority_) -
+      reinterpret_cast<char*>(&success_)) + sizeof(priority_));
+}
+
+EndCondition::~EndCondition() {
+  // @@protoc_insertion_point(destructor:EndCondition)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void EndCondition::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void EndCondition::ArenaDtor(void* object) {
+  EndCondition* _this = reinterpret_cast< EndCondition* >(object);
+  (void)_this;
+}
+void EndCondition::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void EndCondition::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const EndCondition& EndCondition::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_EndCondition_franka_5ftrial_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void EndCondition::Clear() {
+// @@protoc_insertion_point(message_clear_start:EndCondition)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  params_.Clear();
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::memset(&success_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&priority_) -
+      reinterpret_cast<char*>(&success_)) + sizeof(priority_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* EndCondition::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "EndCondition.name"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // bool success = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 priority = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          priority_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // repeated .ObjectParameter params = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_params(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* EndCondition::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:EndCondition)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "EndCondition.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // bool success = 2;
+  if (this->success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(2, this->_internal_success(), target);
+  }
+
+  // int32 priority = 3;
+  if (this->priority() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_priority(), target);
+  }
+
+  // repeated .ObjectParameter params = 4;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_params_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(4, this->_internal_params(i), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:EndCondition)
+  return target;
+}
+
+size_t EndCondition::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:EndCondition)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .ObjectParameter params = 4;
+  total_size += 1UL * this->_internal_params_size();
+  for (const auto& msg : this->params_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_name());
+  }
+
+  // bool success = 2;
+  if (this->success() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // int32 priority = 3;
+  if (this->priority() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_priority());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void EndCondition::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:EndCondition)
+  GOOGLE_DCHECK_NE(&from, this);
+  const EndCondition* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<EndCondition>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:EndCondition)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:EndCondition)
+    MergeFrom(*source);
+  }
+}
+
+void EndCondition::MergeFrom(const EndCondition& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:EndCondition)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  params_.MergeFrom(from.params_);
+  if (from.name().size() > 0) {
+    _internal_set_name(from._internal_name());
+  }
+  if (from.success() != 0) {
+    _internal_set_success(from._internal_success());
+  }
+  if (from.priority() != 0) {
+    _internal_set_priority(from._internal_priority());
+  }
+}
+
+void EndCondition::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:EndCondition)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void EndCondition::CopyFrom(const EndCondition& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:EndCondition)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool EndCondition::IsInitialized() const {
+  return true;
+}
+
+void EndCondition::InternalSwap(EndCondition* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  params_.InternalSwap(&other->params_);
+  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(EndCondition, priority_)
+      + sizeof(EndCondition::priority_)
+      - PROTOBUF_FIELD_OFFSET(EndCondition, success_)>(
+          reinterpret_cast<char*>(&success_),
+          reinterpret_cast<char*>(&other->success_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata EndCondition::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::TrialRequest* Arena::CreateMaybeMessage< ::TrialRequest >(Arena* arena) {
@@ -2663,6 +3033,9 @@ template<> PROTOBUF_NOINLINE ::Object* Arena::CreateMaybeMessage< ::Object >(Are
 }
 template<> PROTOBUF_NOINLINE ::ObjectParameter* Arena::CreateMaybeMessage< ::ObjectParameter >(Arena* arena) {
   return Arena::CreateMessageInternal< ::ObjectParameter >(arena);
+}
+template<> PROTOBUF_NOINLINE ::EndCondition* Arena::CreateMaybeMessage< ::EndCondition >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::EndCondition >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

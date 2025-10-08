@@ -36,20 +36,26 @@
       <Parameters radius="0.06"/>
     </Object>
 
-    <!-- Researcher's Half-Circle Cup Object - Bright Red (Center) -->
-    <Object id="cup1" type="cup">
-      <Position x="0.0" y="0.0" z="0.0"/>
+    <Object id="big_box" type="box">
+      <Position x="0.05" y="0.05" z="0.2"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
-      <Color r="1.0" g="0.0" b="0.0"/>
-      <Parameters outer_radius="0.15" height="0.12" inner_radius="0.10" thickness="0.01"/>
-    </Object>
+      <Color r="0.0" g="1.0" b="0.0"/>
+      <Parameters width="0.5" height="0.2" depth="0.2"/>
+    </Object>    
 
     <!-- Researcher's Helical Spring Object - Bright Yellow (Right) -->
     <Object id="spring1" type="spring">
       <Position x="0.0" y="0.5" z="0.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="1.0" g="1.0" b="0.0"/>
-      <Parameters radius="0.08" height="0.20" stiffness="2000.0" damping="100.0"/>
+      <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
+    </Object>
+
+    <Object id="goal" type="box">
+      <Position x="0.0" y="0.2" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Parameters width="0.02" height="0.02" depth="0.02"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
     </Object>
   </Objects>
 </TrialConfig>
