@@ -1,10 +1,10 @@
 #ifndef EXTENSIONS_REGISTRY_H
 #define EXTENSIONS_REGISTRY_H
 
-#include "trial_end_condition.h"
-#include "custom_object_interface.h"
-#include "spring_object.h"
-#include "cup_object.h"
+#include "end_conditions/trial_end_condition.h"
+#include "objects/custom_object_interface.h"
+#include "objects/spring_object.h"
+#include "objects/cup_object.h"
 
 /**
  * Registry for extensions including custom objects and trial end conditions

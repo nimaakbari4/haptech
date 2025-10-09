@@ -5,6 +5,7 @@
 #define HAPTICS_LOOP_FREQUENCY 1000 // Hz
 
 #include "chai3d.h"
+#include "end_conditions/trial_end_condition.h"
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
@@ -103,8 +104,8 @@ struct TrialContext {
     double time = 0;
 
     std::string trialId = "";
-    double trialDuration = 0;
-    
+    std::vector<std::unique_ptr<TrialEndCondition>> endConditions;
+    std::unique_ptr<TrialEndCondition> endConditionMet;
 };
 
 // Singleton SimulationManager class
@@ -121,6 +122,10 @@ public:
 
     // sets debug mode
     static void setDebugMode(bool debug);
+
+    // checks trial end conditions - returns the one that was satisifed
+    // if it was true
+    static void checkEndConditions();
 
     // SCENE SETTINGS
     static bool reset();

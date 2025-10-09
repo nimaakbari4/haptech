@@ -2,10 +2,12 @@
 #define TRIAL_END_CONDITION_H
 
 #include "chai3d.h"
-#include "simulation_manager.h"
 #include <map>
 
 using namespace chai3d;
+
+// Forward declaration to avoid circular include
+class SimulationManager;
 
 class TrialEndCondition {
 public:

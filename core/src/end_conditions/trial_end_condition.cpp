@@ -1,4 +1,5 @@
 #include "trial_end_condition.h"
+#include "../simulation_manager.h"
 #include <iostream>
 
 // Define the static member variable

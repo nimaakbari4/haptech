@@ -5,7 +5,7 @@
   </HomePosition>
 
   <EndConditions>
-    <Condition type="time" value="30.0" result="failure"/>
+    <Condition type="time" value="60.0" result="failure"/>
   </EndConditions>
 
   <HUDText>

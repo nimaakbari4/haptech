@@ -87,10 +87,37 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         }
     }
 
+    // Add trial end conditions
+    SimulationManager::trialContext.endConditions.clear();
+    for (const auto& cond : request->endconditions()) {
+        std::map<std::string, std::string> params;
+        for (const auto& param : cond.params()) {
+            params[param.key()] = param.value();
+        }
+
+        std::unique_ptr<TrialEndCondition> condition = EndConditionRegistry::createCondition(cond.name(), params, cond.success(), cond.priority());
+
+        if (condition != nullptr) {
+            SimulationManager::trialContext.endConditions.push_back(std::move(condition));
+        } else {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Unknown end condition: " + cond.name());
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+    }
+
+    // Sort conditions by priority
+    std::sort(SimulationManager::trialContext.endConditions.begin(), SimulationManager::trialContext.endConditions.end(),
+        [](const std::unique_ptr<TrialEndCondition>& a, const std::unique_ptr<TrialEndCondition>& b) -> bool {
+            return a->priority > b->priority;
+    });
+
     // set trial context
     SimulationManager::trialContext.trialId = request->trial_id();
-    SimulationManager::trialContext.trialDuration = request->trialduration();
     SimulationManager::trialContext.time = 0.0;
+    SimulationManager::trialContext.endConditionMet = nullptr;
 
     // start trial
     std::cout << "[TRIAL] Trial started: " << request->trial_id() << " for " << request->trialduration() << "s" << std::endl;
@@ -121,9 +148,14 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     cVector3d retrievedComputedForce;
     cVector3d retrievedDevicePos;
 
-    // go until time limit reached or goal reached
-    bool reachedGoal = false;
-    while (SimulationManager::trialContext.time < SimulationManager::trialContext.trialDuration && !reachedGoal) {
+    // go until trial ends (end conditions are met)
+    while (SimulationManager::trialContext.endConditionMet == nullptr) {
+        SimulationManager::checkEndConditions();
+
+        if (SimulationManager::trialContext.endConditionMet != nullptr) {
+            break;
+        }
+        
         // get haptic point data
         retrievedProxyPos = hapticPoint->getGlobalPosProxy();
         retrievedComputedForce = hapticPoint->getLastComputedForce();
@@ -150,6 +182,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
         writer->Write(dataPointMsg);
 
+        /*
         // Check if cursor reached goal (look for goal object at x=0.5)
         auto goalIt = SimulationManager::simContext.objectMap.find("goal");
         if (goalIt != SimulationManager::simContext.objectMap.end()) {
@@ -162,6 +195,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
                 reachedGoal = true;
             }
         }
+        */
 
         if (SimulationManager::simContext.debug) {
             std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
@@ -176,18 +210,16 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
 
     // stop trial
-    SimulationManager::trialContext.trialRunning = false;
+    SimulationManager::trialContext.trialRunning == false;
     // ensure haptics is disabled and ramp forces to zero during teardown
     SimulationManager::simContext.hapticsEnabled = false;
     SimulationManager::rampDeviceForceToZero(150);
     std::cout << "[TRIAL] Trial ended: " << SimulationManager::trialContext.trialId << ", lasted " << SimulationManager::trialContext.time << "s" << std::endl;
 
     status->set_status(TrialStatus::COMPLETED);
-    if (reachedGoal) {
-        status->set_message("The trial was completed: goal reached!");
-    } else {
-        status->set_message("The trial was completed: time elapsed.");
-    }
+    status->set_message(SimulationManager::trialContext.endConditionMet != nullptr ? 
+                        "Trial completed: " + SimulationManager::trialContext.endConditionMet->getMessage() : 
+                        "Trial completed.");
     writer->Write(statusMsg);
 
     // reset environment
