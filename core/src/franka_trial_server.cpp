@@ -120,6 +120,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     cVector3d retrievedProxyPos;
     cVector3d retrievedComputedForce;
     cVector3d retrievedDevicePos;
+    cVector3d retrievedDeviceVel;
+    cVector3d retrievedDeviceAngVel;
+    cMatrix3d retrievedDeviceRot;
 
     // go until time limit reached or goal reached
     bool reachedGoal = false;
@@ -128,6 +131,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         retrievedProxyPos = hapticPoint->getGlobalPosProxy();
         retrievedComputedForce = hapticPoint->getLastComputedForce();
         retrievedDevicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
+        retrievedDeviceVel = SimulationManager::simContext.tool->getDeviceGlobalLinVel();
+        retrievedDeviceAngVel = SimulationManager::simContext.tool->getDeviceGlobalAngVel();
+        retrievedDeviceRot = SimulationManager::simContext.tool->getDeviceGlobalRot();
 
         TrialDataPoint* dataPoint = dataPointMsg.mutable_datapoint();
 
@@ -147,6 +153,41 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         force->set_x(retrievedComputedForce.x());
         force->set_y(retrievedComputedForce.y());
         force->set_z(retrievedComputedForce.z());
+
+        // Device kinematics
+        Vector3* devVel = dataPoint->mutable_devicevelocity();
+        devVel->set_x(retrievedDeviceVel.x());
+        devVel->set_y(retrievedDeviceVel.y());
+        devVel->set_z(retrievedDeviceVel.z());
+
+        Vector3* devAngVel = dataPoint->mutable_deviceangularvelocity();
+        devAngVel->set_x(retrievedDeviceAngVel.x());
+        devAngVel->set_y(retrievedDeviceAngVel.y());
+        devAngVel->set_z(retrievedDeviceAngVel.z());
+
+        // Orientation as quaternion
+        cQuaternion q; q.fromRotMat(retrievedDeviceRot);
+        Quaternion* devQuat = dataPoint->mutable_deviceorientation();
+        devQuat->set_x(q.x);
+        devQuat->set_y(q.y);
+        devQuat->set_z(q.z);
+        devQuat->set_w(q.w);
+
+        // Object states snapshot
+        for (const auto& kv : SimulationManager::simContext.objectMap) {
+            const std::string& oid = kv.first;
+            const std::unique_ptr<cGenericObject>& objPtr = kv.second;
+            if (!objPtr) continue;
+            ObjectState* os = dataPoint->add_objects();
+            os->set_id(oid);
+            cVector3d p = objPtr->getGlobalPos();
+            Vector3* osp = os->mutable_position();
+            osp->set_x(p.x()); osp->set_y(p.y()); osp->set_z(p.z());
+            cMatrix3d R = objPtr->getGlobalRot();
+            cQuaternion oq; oq.fromRotMat(R);
+            Quaternion* oso = os->mutable_orientation();
+            oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
+        }
 
         writer->Write(dataPointMsg);
 

@@ -55,6 +55,9 @@ def handle_data_point(data, output_csv_stream):
     device_pos = data.devicePosition
     proxy_pos = data.proxyPosition
     force = data.force
+    device_vel = data.deviceVelocity if data.HasField("deviceVelocity") else None
+    device_ang_vel = data.deviceAngularVelocity if data.HasField("deviceAngularVelocity") else None
+    device_quat = data.deviceOrientation if data.HasField("deviceOrientation") else None
 
     # Format vectors as [x, y, z]
     device_pos_str = f"[{device_pos.x:.4f}, {device_pos.y:.4f}, {device_pos.z:.4f}]"
@@ -66,10 +69,26 @@ def handle_data_point(data, output_csv_stream):
 
     # log to CSV file
     writer = csv.writer(output_csv_stream)
-    writer.writerow([
+    row = [
         timestamp,
         device_pos.x, device_pos.y, device_pos.z,
         proxy_pos.x, proxy_pos.y, proxy_pos.z,
-        force.x, force.y, force.z
-    ])
+        force.x, force.y, force.z,
+    ]
 
+    if device_vel:
+        row += [device_vel.x, device_vel.y, device_vel.z]
+    else:
+        row += ["", "", ""]
+
+    if device_ang_vel:
+        row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
+    else:
+        row += ["", "", ""]
+
+    if device_quat:
+        row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
+    else:
+        row += ["", "", "", ""]
+
+    writer.writerow(row)

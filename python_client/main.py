@@ -23,7 +23,15 @@ def main():
         raise "Invalid trial duration provided. Check your config file for a 'time' end condition."
     
     output_filestream = open(f"{trial_id}_results.csv", 'w')
-    output_filestream.write("t, Device Position, Proxy Position, Force\n")
+    output_filestream.write(
+        "t,"
+        "device_pos_x,device_pos_y,device_pos_z,"
+        "proxy_pos_x,proxy_pos_y,proxy_pos_z,"
+        "force_x,force_y,force_z,"
+        "device_vel_x,device_vel_y,device_vel_z,"
+        "device_ang_vel_x,device_ang_vel_y,device_ang_vel_z,"
+        "device_quat_x,device_quat_y,device_quat_z,device_quat_w\n"
+    )
 
     try:
         # connect to the server

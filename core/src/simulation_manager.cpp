@@ -194,8 +194,8 @@ bool SimulationManager::run() {
     simContext.hapticsThread->start(updateHaptics, CTHREAD_PRIORITY_HAPTICS);
 
     // start debug loop
-    simContext.dataThread = new cThread();
-    simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
+    // simContext.dataThread = new cThread();
+    // simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
 
     simContext.simulationRunning = true;
     // setup callback when application exits
