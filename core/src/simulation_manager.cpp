@@ -1,6 +1,6 @@
 #include "simulation_manager.h"
-#include "custom_object_interface.h"
-#include "researcher_objects_registry.h"
+#include "objects/custom_object_interface.h"
+#include "extensions_registry.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -240,6 +240,17 @@ void SimulationManager::setDebugMode(bool debug) {
     simContext.debug = debug;
 }
 
+void SimulationManager::checkEndConditions() {
+    if (trialContext.trialRunning && trialContext.endConditionMet == nullptr) {
+        for (auto& condition : trialContext.endConditions) {
+            if (condition->evaluate()) {
+                trialContext.endConditionMet = std::move(condition);
+                break;
+            }
+        }
+    }
+}
+
 // SIMULATION MANIPULATION //
 
 bool SimulationManager::reset() {
@@ -260,6 +271,7 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+    trialContext.endConditions.clear();
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {

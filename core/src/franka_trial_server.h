@@ -1,6 +1,7 @@
 #include <grpcpp/grpcpp.h>
 #include "franka_trial.grpc.pb.h"
 #include "simulation_manager.h"
+#include "trial_end_condition.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;

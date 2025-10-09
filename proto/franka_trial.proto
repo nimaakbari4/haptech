@@ -9,6 +9,7 @@ message TrialRequest {
     string trial_id = 1;
     double trialDuration = 2;
     repeated Object objects = 3;
+    repeated EndCondition endConditions = 4;
 }
 
 // Message structure for server responses (in a stream)
@@ -134,6 +135,13 @@ message Object {
 message ObjectParameter {
     string key = 1;
     string value = 2;
+}
+
+message EndCondition {
+    string name = 1;
+    bool success = 2;
+    int32 priority = 3;
+    repeated ObjectParameter params = 4;
 }
 
 // Runtime state of an object in the scene

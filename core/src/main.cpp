@@ -1,6 +1,6 @@
 #include "simulation_manager.h"
 #include "franka_trial_server.h"
-#include "researcher_objects_registry.h"
+#include "extensions_registry.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -10,8 +10,8 @@
 int main() {
     SimulationManager::setDebugMode(false);
     
-    // Register researcher custom object types
-    ResearcherObjectsRegistry::registerAllObjects();
+    // Register all extensions (custom objects, trial conditions, etc.)
+    ExtensionsRegistry::registerAllExtensions();
 
     // Launch test thread (so that simulation is on main thread)
     std::thread serverThread(runServer);
