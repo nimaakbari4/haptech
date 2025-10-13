@@ -1,4 +1,5 @@
 #include "simulation_manager.h"
+#include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
 #include "extensions_registry.h"
 #include <iostream>
@@ -733,18 +734,32 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    // create a tool (cursor) and insert into the world
-    simContext.tool = new cToolCursor(simContext.world);
+    // create a tool (mesh-based cursor) and insert into the world
+    
+
+    auto teapotMulti = new cMultiMesh();
+    {
+        cMesh* sub = teapotMulti->newMesh();
+        cCreateTeaPot(sub, 0.5, 10, cVector3d(0,0,0), cMatrix3d(0, 0, 0, C_EULER_ORDER_XYZ), cColorf(1, 0,0));
+        teapotMulti->m_material->setWhite();
+    }
+
+    auto boxMulti = new cMultiMesh();
+    {
+        cMesh* sub = boxMulti->newMesh();
+        cCreateBox(sub, 0.02, 0.02, 0.02);
+        boxMulti->m_material->setWhite();
+    }
+
+    // Instantiate cToolMesh with sampling and contact radius
+    const int sampleCount = 24;
+    const double contactRadius = 0.01;
+    simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
+
     simContext.world->addChild(simContext.tool);
 
     // connect the haptic device to the virtual tool
     simContext.tool->setHapticDevice(simContext.hapticDevice);
-
-    // define a larger radius for the virtual tool (display + contact)
-    simContext.tool->setRadius(0.05);
-    simContext.tool->setRadiusDisplay(0.05);
-    // show proxy/goal spheres for visibility
-    // simContext.tool->setShowContactPoints(true, true);
 
     // map the physical workspace of the haptic device to a larger virtual workspace.
     simContext.tool->setWorkspaceRadius(1.0);

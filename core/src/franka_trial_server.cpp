@@ -251,7 +251,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
 
     // stop trial
-    SimulationManager::trialContext.trialRunning == false;
+    SimulationManager::trialContext.trialRunning = false;
     // ensure haptics is disabled and ramp forces to zero during teardown
     SimulationManager::simContext.hapticsEnabled = false;
     SimulationManager::rampDeviceForceToZero(150);

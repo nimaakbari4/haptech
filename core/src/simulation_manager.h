@@ -56,7 +56,7 @@ struct SimulationContext {
     cLabel* statusText;
 
     // a virtual tool representing the haptic device in the scene
-    cToolCursor* tool;
+    cGenericTool* tool;
 
     // Set of object IDs pending deletion (processed by graphics thread)
     std::set<std::string> pendingDelete;
