@@ -6,7 +6,9 @@
 
   <EndConditions>
     <!-- Ends by time for now; we can add goal-reached end next -->
-    <Condition type="time" value="30.0" result="failure"/>
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="30.0"/>
+    </Condition>
   </EndConditions>
 
   <HUDText>

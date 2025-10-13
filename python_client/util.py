@@ -4,7 +4,7 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream, objects=None):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream, objects=None, end_conditions=None):
     request = pb2.TrialRequest(trial_id=trial_id, trialDuration=duration)
     
     # Add objects to the request if provided
@@ -32,6 +32,21 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: fl
                     param_msg = obj_msg.params.add()
                     param_msg.key = param.key
                     param_msg.value = param.value
+    
+    # Add end conditions to the request if provided
+    if end_conditions:
+        for condition in end_conditions:
+            # Create EndCondition message
+            end_cond_msg = request.endConditions.add()
+            end_cond_msg.name = condition.name
+            end_cond_msg.success = condition.success
+            end_cond_msg.priority = condition.priority
+            
+            # Add parameters
+            for param in condition.parameters:
+                param_msg = end_cond_msg.params.add()
+                param_msg.key = param.key
+                param_msg.value = param.value
     
     response_stream = stub.RunTrial(request)
     handle_stream(response_stream, output_csv_stream)
