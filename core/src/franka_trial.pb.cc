@@ -15,9 +15,9 @@
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_EndCondition_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Object_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialCondition_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialDataPoint_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TrialStatusUpdate_franka_5ftrial_2eproto;
 extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Vector3_franka_5ftrial_2eproto;
@@ -55,10 +55,10 @@ class ObjectParameterDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ObjectParameter> _instance;
 } _ObjectParameter_default_instance_;
-class EndConditionDefaultTypeInternal {
+class TrialConditionDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<EndCondition> _instance;
-} _EndCondition_default_instance_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<TrialCondition> _instance;
+} _TrialCondition_default_instance_;
 static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -72,21 +72,6 @@ static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Color_franka_5ftrial_2eproto}, {}};
-
-static void InitDefaultsscc_info_EndCondition_franka_5ftrial_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_EndCondition_default_instance_;
-    new (ptr) ::EndCondition();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::EndCondition::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_EndCondition_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_EndCondition_franka_5ftrial_2eproto}, {
-      &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,}};
 
 static void InitDefaultsscc_info_Object_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -119,6 +104,21 @@ static void InitDefaultsscc_info_ObjectParameter_franka_5ftrial_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ObjectParameter_franka_5ftrial_2eproto}, {}};
 
+static void InitDefaultsscc_info_TrialCondition_franka_5ftrial_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_TrialCondition_default_instance_;
+    new (ptr) ::TrialCondition();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::TrialCondition::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialCondition_franka_5ftrial_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_TrialCondition_franka_5ftrial_2eproto}, {
+      &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,}};
+
 static void InitDefaultsscc_info_TrialDataPoint_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -148,7 +148,7 @@ static void InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_TrialRequest_franka_5ftrial_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto}, {
       &scc_info_Object_franka_5ftrial_2eproto.base,
-      &scc_info_EndCondition_franka_5ftrial_2eproto.base,}};
+      &scc_info_TrialCondition_franka_5ftrial_2eproto.base,}};
 
 static void InitDefaultsscc_info_TrialResponseStream_franka_5ftrial_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -205,8 +205,8 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_franka_5ftrial_2eproto::offset
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::TrialRequest, trial_id_),
-  PROTOBUF_FIELD_OFFSET(::TrialRequest, trialduration_),
   PROTOBUF_FIELD_OFFSET(::TrialRequest, objects_),
+  PROTOBUF_FIELD_OFFSET(::TrialRequest, startconditions_),
   PROTOBUF_FIELD_OFFSET(::TrialRequest, endconditions_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::TrialResponseStream, _internal_metadata_),
@@ -267,14 +267,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_franka_5ftrial_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::ObjectParameter, key_),
   PROTOBUF_FIELD_OFFSET(::ObjectParameter, value_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::EndCondition, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::TrialCondition, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::EndCondition, name_),
-  PROTOBUF_FIELD_OFFSET(::EndCondition, success_),
-  PROTOBUF_FIELD_OFFSET(::EndCondition, priority_),
-  PROTOBUF_FIELD_OFFSET(::EndCondition, params_),
+  PROTOBUF_FIELD_OFFSET(::TrialCondition, name_),
+  PROTOBUF_FIELD_OFFSET(::TrialCondition, success_),
+  PROTOBUF_FIELD_OFFSET(::TrialCondition, priority_),
+  PROTOBUF_FIELD_OFFSET(::TrialCondition, params_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::TrialRequest)},
@@ -285,7 +285,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 41, -1, sizeof(::Vector3)},
   { 49, -1, sizeof(::Object)},
   { 60, -1, sizeof(::ObjectParameter)},
-  { 67, -1, sizeof(::EndCondition)},
+  { 67, -1, sizeof(::TrialCondition)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -297,43 +297,43 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Vector3_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Object_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ObjectParameter_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_EndCondition_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialCondition_default_instance_),
 };
 
 const char descriptor_table_protodef_franka_5ftrial_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\022franka_trial.proto\"w\n\014TrialRequest\022\020\n\010"
-  "trial_id\030\001 \001(\t\022\025\n\rtrialDuration\030\002 \001(\001\022\030\n"
-  "\007objects\030\003 \003(\0132\007.Object\022$\n\rendConditions"
-  "\030\004 \003(\0132\r.EndCondition\"r\n\023TrialResponseSt"
-  "ream\022*\n\014statusUpdate\030\001 \001(\0132\022.TrialStatus"
-  "UpdateH\000\022$\n\tdataPoint\030\002 \001(\0132\017.TrialDataP"
-  "ointH\000B\t\n\007payload\"B\n\021TrialStatusUpdate\022\034"
-  "\n\006status\030\001 \001(\0162\014.TrialStatus\022\017\n\007message\030"
-  "\002 \001(\t\"\177\n\016TrialDataPoint\022\021\n\ttimestamp\030\001 \001"
-  "(\001\022 \n\016devicePosition\030\002 \001(\0132\010.Vector3\022\037\n\r"
-  "proxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force\030\004"
-  " \001(\0132\010.Vector3\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030"
-  "\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t"
-  "\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"\226\001\n\006Object\022\n\n\002id\030\001 "
-  "\001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010position\030\003 \001(\0132\010.Ve"
-  "ctor3\022\035\n\013orientation\030\004 \001(\0132\010.Vector3\022\025\n\005"
-  "color\030\005 \001(\0132\006.Color\022 \n\006params\030\006 \003(\0132\020.Ob"
-  "jectParameter\"-\n\017ObjectParameter\022\013\n\003key\030"
-  "\001 \001(\t\022\r\n\005value\030\002 \001(\t\"a\n\014EndCondition\022\014\n\004"
-  "name\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\022\020\n\010priority\030"
-  "\003 \001(\005\022 \n\006params\030\004 \003(\0132\020.ObjectParameter*"
-  "4\n\013TrialStatus\022\013\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r"
-  "\n\tCOMPLETED\020\0022G\n\022FrankaTrialService\0221\n\010R"
-  "unTrial\022\r.TrialRequest\032\024.TrialResponseSt"
-  "ream0\001b\006proto3"
+  "\n\022franka_trial.proto\"\214\001\n\014TrialRequest\022\020\n"
+  "\010trial_id\030\001 \001(\t\022\030\n\007objects\030\002 \003(\0132\007.Objec"
+  "t\022(\n\017startConditions\030\003 \003(\0132\017.TrialCondit"
+  "ion\022&\n\rendConditions\030\004 \003(\0132\017.TrialCondit"
+  "ion\"r\n\023TrialResponseStream\022*\n\014statusUpda"
+  "te\030\001 \001(\0132\022.TrialStatusUpdateH\000\022$\n\tdataPo"
+  "int\030\002 \001(\0132\017.TrialDataPointH\000B\t\n\007payload\""
+  "B\n\021TrialStatusUpdate\022\034\n\006status\030\001 \001(\0162\014.T"
+  "rialStatus\022\017\n\007message\030\002 \001(\t\"\177\n\016TrialData"
+  "Point\022\021\n\ttimestamp\030\001 \001(\001\022 \n\016devicePositi"
+  "on\030\002 \001(\0132\010.Vector3\022\037\n\rproxyPosition\030\003 \001("
+  "\0132\010.Vector3\022\027\n\005force\030\004 \001(\0132\010.Vector3\"(\n\005"
+  "Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*"
+  "\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001"
+  "(\001\"\226\001\n\006Object\022\n\n\002id\030\001 \001(\t\022\014\n\004type\030\002 \001(\t\022"
+  "\032\n\010position\030\003 \001(\0132\010.Vector3\022\035\n\013orientati"
+  "on\030\004 \001(\0132\010.Vector3\022\025\n\005color\030\005 \001(\0132\006.Colo"
+  "r\022 \n\006params\030\006 \003(\0132\020.ObjectParameter\"-\n\017O"
+  "bjectParameter\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001"
+  "(\t\"c\n\016TrialCondition\022\014\n\004name\030\001 \001(\t\022\017\n\007su"
+  "ccess\030\002 \001(\010\022\020\n\010priority\030\003 \001(\005\022 \n\006params\030"
+  "\004 \003(\0132\020.ObjectParameter*4\n\013TrialStatus\022\013"
+  "\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n"
+  "\022FrankaTrialService\0221\n\010RunTrial\022\r.TrialR"
+  "equest\032\024.TrialResponseStream0\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_franka_5ftrial_2eproto_deps[1] = {
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[9] = {
   &scc_info_Color_franka_5ftrial_2eproto.base,
-  &scc_info_EndCondition_franka_5ftrial_2eproto.base,
   &scc_info_Object_franka_5ftrial_2eproto.base,
   &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,
+  &scc_info_TrialCondition_franka_5ftrial_2eproto.base,
   &scc_info_TrialDataPoint_franka_5ftrial_2eproto.base,
   &scc_info_TrialRequest_franka_5ftrial_2eproto.base,
   &scc_info_TrialResponseStream_franka_5ftrial_2eproto.base,
@@ -342,7 +342,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_fra
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_franka_5ftrial_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_franka_5ftrial_2eproto = {
-  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 974,
+  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 998,
   &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 9, 0,
   schemas, file_default_instances, TableStruct_franka_5ftrial_2eproto::offsets,
   file_level_metadata_franka_5ftrial_2eproto, 9, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
@@ -377,6 +377,7 @@ class TrialRequest::_Internal {
 TrialRequest::TrialRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena),
   objects_(arena),
+  startconditions_(arena),
   endconditions_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
@@ -385,6 +386,7 @@ TrialRequest::TrialRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 TrialRequest::TrialRequest(const TrialRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       objects_(from.objects_),
+      startconditions_(from.startconditions_),
       endconditions_(from.endconditions_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   trial_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -392,14 +394,12 @@ TrialRequest::TrialRequest(const TrialRequest& from)
     trial_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_trial_id(),
       GetArena());
   }
-  trialduration_ = from.trialduration_;
   // @@protoc_insertion_point(copy_constructor:TrialRequest)
 }
 
 void TrialRequest::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TrialRequest_franka_5ftrial_2eproto.base);
   trial_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  trialduration_ = 0;
 }
 
 TrialRequest::~TrialRequest() {
@@ -435,9 +435,9 @@ void TrialRequest::Clear() {
   (void) cached_has_bits;
 
   objects_.Clear();
+  startconditions_.Clear();
   endconditions_.Clear();
   trial_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  trialduration_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -458,26 +458,31 @@ const char* TrialRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // double trialDuration = 2;
+      // repeated .Object objects = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
-          trialduration_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else goto handle_unusual;
-        continue;
-      // repeated .Object objects = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_objects(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else goto handle_unusual;
+        continue;
+      // repeated .TrialCondition startConditions = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_startconditions(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else goto handle_unusual;
         continue;
-      // repeated .EndCondition endConditions = 4;
+      // repeated .TrialCondition endConditions = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
           ptr -= 1;
@@ -527,21 +532,23 @@ failure:
         1, this->_internal_trial_id(), target);
   }
 
-  // double trialDuration = 2;
-  if (!(this->trialduration() <= 0 && this->trialduration() >= 0)) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_trialduration(), target);
-  }
-
-  // repeated .Object objects = 3;
+  // repeated .Object objects = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_objects_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, this->_internal_objects(i), target, stream);
+      InternalWriteMessage(2, this->_internal_objects(i), target, stream);
   }
 
-  // repeated .EndCondition endConditions = 4;
+  // repeated .TrialCondition startConditions = 3;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->_internal_startconditions_size()); i < n; i++) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(3, this->_internal_startconditions(i), target, stream);
+  }
+
+  // repeated .TrialCondition endConditions = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_endconditions_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
@@ -565,14 +572,21 @@ size_t TrialRequest::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .Object objects = 3;
+  // repeated .Object objects = 2;
   total_size += 1UL * this->_internal_objects_size();
   for (const auto& msg : this->objects_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // repeated .EndCondition endConditions = 4;
+  // repeated .TrialCondition startConditions = 3;
+  total_size += 1UL * this->_internal_startconditions_size();
+  for (const auto& msg : this->startconditions_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .TrialCondition endConditions = 4;
   total_size += 1UL * this->_internal_endconditions_size();
   for (const auto& msg : this->endconditions_) {
     total_size +=
@@ -584,11 +598,6 @@ size_t TrialRequest::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_trial_id());
-  }
-
-  // double trialDuration = 2;
-  if (!(this->trialduration() <= 0 && this->trialduration() >= 0)) {
-    total_size += 1 + 8;
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -623,12 +632,10 @@ void TrialRequest::MergeFrom(const TrialRequest& from) {
   (void) cached_has_bits;
 
   objects_.MergeFrom(from.objects_);
+  startconditions_.MergeFrom(from.startconditions_);
   endconditions_.MergeFrom(from.endconditions_);
   if (from.trial_id().size() > 0) {
     _internal_set_trial_id(from._internal_trial_id());
-  }
-  if (!(from.trialduration() <= 0 && from.trialduration() >= 0)) {
-    _internal_set_trialduration(from._internal_trialduration());
   }
 }
 
@@ -654,9 +661,9 @@ void TrialRequest::InternalSwap(TrialRequest* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   objects_.InternalSwap(&other->objects_);
+  startconditions_.InternalSwap(&other->startconditions_);
   endconditions_.InternalSwap(&other->endconditions_);
   trial_id_.Swap(&other->trial_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  swap(trialduration_, other->trialduration_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata TrialRequest::GetMetadata() const {
@@ -2710,20 +2717,20 @@ void ObjectParameter::InternalSwap(ObjectParameter* other) {
 
 // ===================================================================
 
-void EndCondition::InitAsDefaultInstance() {
+void TrialCondition::InitAsDefaultInstance() {
 }
-class EndCondition::_Internal {
+class TrialCondition::_Internal {
  public:
 };
 
-EndCondition::EndCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+TrialCondition::TrialCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena),
   params_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:EndCondition)
+  // @@protoc_insertion_point(arena_constructor:TrialCondition)
 }
-EndCondition::EndCondition(const EndCondition& from)
+TrialCondition::TrialCondition(const TrialCondition& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       params_(from.params_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -2735,45 +2742,45 @@ EndCondition::EndCondition(const EndCondition& from)
   ::memcpy(&success_, &from.success_,
     static_cast<size_t>(reinterpret_cast<char*>(&priority_) -
     reinterpret_cast<char*>(&success_)) + sizeof(priority_));
-  // @@protoc_insertion_point(copy_constructor:EndCondition)
+  // @@protoc_insertion_point(copy_constructor:TrialCondition)
 }
 
-void EndCondition::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_EndCondition_franka_5ftrial_2eproto.base);
+void TrialCondition::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TrialCondition_franka_5ftrial_2eproto.base);
   name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&success_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&priority_) -
       reinterpret_cast<char*>(&success_)) + sizeof(priority_));
 }
 
-EndCondition::~EndCondition() {
-  // @@protoc_insertion_point(destructor:EndCondition)
+TrialCondition::~TrialCondition() {
+  // @@protoc_insertion_point(destructor:TrialCondition)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void EndCondition::SharedDtor() {
+void TrialCondition::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
   name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void EndCondition::ArenaDtor(void* object) {
-  EndCondition* _this = reinterpret_cast< EndCondition* >(object);
+void TrialCondition::ArenaDtor(void* object) {
+  TrialCondition* _this = reinterpret_cast< TrialCondition* >(object);
   (void)_this;
 }
-void EndCondition::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void TrialCondition::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void EndCondition::SetCachedSize(int size) const {
+void TrialCondition::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const EndCondition& EndCondition::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_EndCondition_franka_5ftrial_2eproto.base);
+const TrialCondition& TrialCondition::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_TrialCondition_franka_5ftrial_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void EndCondition::Clear() {
-// @@protoc_insertion_point(message_clear_start:EndCondition)
+void TrialCondition::Clear() {
+// @@protoc_insertion_point(message_clear_start:TrialCondition)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2786,7 +2793,7 @@ void EndCondition::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* EndCondition::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* TrialCondition::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
@@ -2799,7 +2806,7 @@ const char* EndCondition::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
           auto str = _internal_mutable_name();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "EndCondition.name"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "TrialCondition.name"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -2851,9 +2858,9 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* EndCondition::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* TrialCondition::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:EndCondition)
+  // @@protoc_insertion_point(serialize_to_array_start:TrialCondition)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2862,7 +2869,7 @@ failure:
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "EndCondition.name");
+      "TrialCondition.name");
     target = stream->WriteStringMaybeAliased(
         1, this->_internal_name(), target);
   }
@@ -2891,12 +2898,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:EndCondition)
+  // @@protoc_insertion_point(serialize_to_array_end:TrialCondition)
   return target;
 }
 
-size_t EndCondition::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:EndCondition)
+size_t TrialCondition::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:TrialCondition)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -2938,23 +2945,23 @@ size_t EndCondition::ByteSizeLong() const {
   return total_size;
 }
 
-void EndCondition::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:EndCondition)
+void TrialCondition::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:TrialCondition)
   GOOGLE_DCHECK_NE(&from, this);
-  const EndCondition* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<EndCondition>(
+  const TrialCondition* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<TrialCondition>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:EndCondition)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TrialCondition)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:EndCondition)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:TrialCondition)
     MergeFrom(*source);
   }
 }
 
-void EndCondition::MergeFrom(const EndCondition& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:EndCondition)
+void TrialCondition::MergeFrom(const TrialCondition& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:TrialCondition)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -2972,38 +2979,38 @@ void EndCondition::MergeFrom(const EndCondition& from) {
   }
 }
 
-void EndCondition::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:EndCondition)
+void TrialCondition::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:TrialCondition)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void EndCondition::CopyFrom(const EndCondition& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:EndCondition)
+void TrialCondition::CopyFrom(const TrialCondition& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:TrialCondition)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool EndCondition::IsInitialized() const {
+bool TrialCondition::IsInitialized() const {
   return true;
 }
 
-void EndCondition::InternalSwap(EndCondition* other) {
+void TrialCondition::InternalSwap(TrialCondition* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   params_.InternalSwap(&other->params_);
   name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EndCondition, priority_)
-      + sizeof(EndCondition::priority_)
-      - PROTOBUF_FIELD_OFFSET(EndCondition, success_)>(
+      PROTOBUF_FIELD_OFFSET(TrialCondition, priority_)
+      + sizeof(TrialCondition::priority_)
+      - PROTOBUF_FIELD_OFFSET(TrialCondition, success_)>(
           reinterpret_cast<char*>(&success_),
           reinterpret_cast<char*>(&other->success_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata EndCondition::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata TrialCondition::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -3034,8 +3041,8 @@ template<> PROTOBUF_NOINLINE ::Object* Arena::CreateMaybeMessage< ::Object >(Are
 template<> PROTOBUF_NOINLINE ::ObjectParameter* Arena::CreateMaybeMessage< ::ObjectParameter >(Arena* arena) {
   return Arena::CreateMessageInternal< ::ObjectParameter >(arena);
 }
-template<> PROTOBUF_NOINLINE ::EndCondition* Arena::CreateMaybeMessage< ::EndCondition >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::EndCondition >(arena);
+template<> PROTOBUF_NOINLINE ::TrialCondition* Arena::CreateMaybeMessage< ::TrialCondition >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::TrialCondition >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

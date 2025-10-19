@@ -1,14 +1,14 @@
 #ifndef POSITION_CONDITION_H
 #define POSITION_CONDITION_H
 
-#include "trial_end_condition.h"
+#include "trial_condition.h"
 
 /**
  * PositionCondition - A position-based trial end condition
  * Terminates the trial when the haptic device reaches a target position
  * Uses SimulationManager::simContext.tool for device position data
  */
-class PositionCondition : public TrialEndCondition {
+class PositionCondition : public TrialConditionInterface {
 private:
     double _targetX, _targetY, _targetZ;
     double _tolerance;

@@ -5,7 +5,7 @@
 
 PositionCondition::PositionCondition(std::map<std::string, std::string>& params,
                                    bool success, int priority)
-    : TrialEndCondition(params, success, priority), _targetX(0), _targetY(0), _targetZ(0), _tolerance(0.05) {
+    : TrialConditionInterface(params, success, priority), _targetX(0), _targetY(0), _targetZ(0), _tolerance(0.05) {
     
     // Parse target position
     auto x_it = params.find("target_x");

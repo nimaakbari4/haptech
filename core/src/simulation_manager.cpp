@@ -240,10 +240,28 @@ void SimulationManager::setDebugMode(bool debug) {
     simContext.debug = debug;
 }
 
+void SimulationManager::checkTrialConditions() {
+    checkStartConditions();
+    checkEndConditions();
+}
+
+void SimulationManager::checkStartConditions() {
+    if (trialContext.trialRunning && trialContext.startConditionMet == nullptr) {
+        for (size_t i = 0; i < trialContext.startConditions.size(); ++i) {
+            auto& condition = trialContext.startConditions[i];
+            if (condition && condition->evaluate()) {
+                trialContext.startConditionMet = std::move(condition);
+                break;
+            }
+        }
+    }
+}
+
 void SimulationManager::checkEndConditions() {
     if (trialContext.trialRunning && trialContext.endConditionMet == nullptr) {
-        for (auto& condition : trialContext.endConditions) {
-            if (condition->evaluate()) {
+        for (size_t i = 0; i < trialContext.endConditions.size(); ++i) {
+            auto& condition = trialContext.endConditions[i];
+            if (condition && condition->evaluate()) {
                 trialContext.endConditionMet = std::move(condition);
                 break;
             }
@@ -271,7 +289,10 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+    trialContext.startConditions.clear();
     trialContext.endConditions.clear();
+    trialContext.startConditionMet = nullptr;
+    trialContext.endConditionMet = nullptr;
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {

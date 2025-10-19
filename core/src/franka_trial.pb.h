@@ -58,15 +58,15 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class Color;
 class ColorDefaultTypeInternal;
 extern ColorDefaultTypeInternal _Color_default_instance_;
-class EndCondition;
-class EndConditionDefaultTypeInternal;
-extern EndConditionDefaultTypeInternal _EndCondition_default_instance_;
 class Object;
 class ObjectDefaultTypeInternal;
 extern ObjectDefaultTypeInternal _Object_default_instance_;
 class ObjectParameter;
 class ObjectParameterDefaultTypeInternal;
 extern ObjectParameterDefaultTypeInternal _ObjectParameter_default_instance_;
+class TrialCondition;
+class TrialConditionDefaultTypeInternal;
+extern TrialConditionDefaultTypeInternal _TrialCondition_default_instance_;
 class TrialDataPoint;
 class TrialDataPointDefaultTypeInternal;
 extern TrialDataPointDefaultTypeInternal _TrialDataPoint_default_instance_;
@@ -84,9 +84,9 @@ class Vector3DefaultTypeInternal;
 extern Vector3DefaultTypeInternal _Vector3_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Color* Arena::CreateMaybeMessage<::Color>(Arena*);
-template<> ::EndCondition* Arena::CreateMaybeMessage<::EndCondition>(Arena*);
 template<> ::Object* Arena::CreateMaybeMessage<::Object>(Arena*);
 template<> ::ObjectParameter* Arena::CreateMaybeMessage<::ObjectParameter>(Arena*);
+template<> ::TrialCondition* Arena::CreateMaybeMessage<::TrialCondition>(Arena*);
 template<> ::TrialDataPoint* Arena::CreateMaybeMessage<::TrialDataPoint>(Arena*);
 template<> ::TrialRequest* Arena::CreateMaybeMessage<::TrialRequest>(Arena*);
 template<> ::TrialResponseStream* Arena::CreateMaybeMessage<::TrialResponseStream>(Arena*);
@@ -235,12 +235,12 @@ class TrialRequest PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectsFieldNumber = 3,
+    kObjectsFieldNumber = 2,
+    kStartConditionsFieldNumber = 3,
     kEndConditionsFieldNumber = 4,
     kTrialIdFieldNumber = 1,
-    kTrialDurationFieldNumber = 2,
   };
-  // repeated .Object objects = 3;
+  // repeated .Object objects = 2;
   int objects_size() const;
   private:
   int _internal_objects_size() const;
@@ -258,22 +258,40 @@ class TrialRequest PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Object >&
       objects() const;
 
-  // repeated .EndCondition endConditions = 4;
+  // repeated .TrialCondition startConditions = 3;
+  int startconditions_size() const;
+  private:
+  int _internal_startconditions_size() const;
+  public:
+  void clear_startconditions();
+  ::TrialCondition* mutable_startconditions(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
+      mutable_startconditions();
+  private:
+  const ::TrialCondition& _internal_startconditions(int index) const;
+  ::TrialCondition* _internal_add_startconditions();
+  public:
+  const ::TrialCondition& startconditions(int index) const;
+  ::TrialCondition* add_startconditions();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
+      startconditions() const;
+
+  // repeated .TrialCondition endConditions = 4;
   int endconditions_size() const;
   private:
   int _internal_endconditions_size() const;
   public:
   void clear_endconditions();
-  ::EndCondition* mutable_endconditions(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::EndCondition >*
+  ::TrialCondition* mutable_endconditions(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
       mutable_endconditions();
   private:
-  const ::EndCondition& _internal_endconditions(int index) const;
-  ::EndCondition* _internal_add_endconditions();
+  const ::TrialCondition& _internal_endconditions(int index) const;
+  ::TrialCondition* _internal_add_endconditions();
   public:
-  const ::EndCondition& endconditions(int index) const;
-  ::EndCondition* add_endconditions();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::EndCondition >&
+  const ::TrialCondition& endconditions(int index) const;
+  ::TrialCondition* add_endconditions();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
       endconditions() const;
 
   // string trial_id = 1;
@@ -301,15 +319,6 @@ class TrialRequest PROTOBUF_FINAL :
   std::string* _internal_mutable_trial_id();
   public:
 
-  // double trialDuration = 2;
-  void clear_trialduration();
-  double trialduration() const;
-  void set_trialduration(double value);
-  private:
-  double _internal_trialduration() const;
-  void _internal_set_trialduration(double value);
-  public:
-
   // @@protoc_insertion_point(class_scope:TrialRequest)
  private:
   class _Internal;
@@ -318,9 +327,9 @@ class TrialRequest PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Object > objects_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::EndCondition > endconditions_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition > startconditions_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition > endconditions_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr trial_id_;
-  double trialduration_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_franka_5ftrial_2eproto;
 };
@@ -1629,23 +1638,23 @@ class ObjectParameter PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class EndCondition PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:EndCondition) */ {
+class TrialCondition PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:TrialCondition) */ {
  public:
-  inline EndCondition() : EndCondition(nullptr) {};
-  virtual ~EndCondition();
+  inline TrialCondition() : TrialCondition(nullptr) {};
+  virtual ~TrialCondition();
 
-  EndCondition(const EndCondition& from);
-  EndCondition(EndCondition&& from) noexcept
-    : EndCondition() {
+  TrialCondition(const TrialCondition& from);
+  TrialCondition(TrialCondition&& from) noexcept
+    : TrialCondition() {
     *this = ::std::move(from);
   }
 
-  inline EndCondition& operator=(const EndCondition& from) {
+  inline TrialCondition& operator=(const TrialCondition& from) {
     CopyFrom(from);
     return *this;
   }
-  inline EndCondition& operator=(EndCondition&& from) noexcept {
+  inline TrialCondition& operator=(TrialCondition&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -1663,20 +1672,20 @@ class EndCondition PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const EndCondition& default_instance();
+  static const TrialCondition& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const EndCondition* internal_default_instance() {
-    return reinterpret_cast<const EndCondition*>(
-               &_EndCondition_default_instance_);
+  static inline const TrialCondition* internal_default_instance() {
+    return reinterpret_cast<const TrialCondition*>(
+               &_TrialCondition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     8;
 
-  friend void swap(EndCondition& a, EndCondition& b) {
+  friend void swap(TrialCondition& a, TrialCondition& b) {
     a.Swap(&b);
   }
-  inline void Swap(EndCondition* other) {
+  inline void Swap(TrialCondition* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -1684,7 +1693,7 @@ class EndCondition PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(EndCondition* other) {
+  void UnsafeArenaSwap(TrialCondition* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -1692,17 +1701,17 @@ class EndCondition PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline EndCondition* New() const final {
-    return CreateMaybeMessage<EndCondition>(nullptr);
+  inline TrialCondition* New() const final {
+    return CreateMaybeMessage<TrialCondition>(nullptr);
   }
 
-  EndCondition* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<EndCondition>(arena);
+  TrialCondition* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<TrialCondition>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const EndCondition& from);
-  void MergeFrom(const EndCondition& from);
+  void CopyFrom(const TrialCondition& from);
+  void MergeFrom(const TrialCondition& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1716,13 +1725,13 @@ class EndCondition PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(EndCondition* other);
+  void InternalSwap(TrialCondition* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "EndCondition";
+    return "TrialCondition";
   }
   protected:
-  explicit EndCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit TrialCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -1808,7 +1817,7 @@ class EndCondition PROTOBUF_FINAL :
   void _internal_set_priority(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:EndCondition)
+  // @@protoc_insertion_point(class_scope:TrialCondition)
  private:
   class _Internal;
 
@@ -1914,27 +1923,7 @@ inline void TrialRequest::unsafe_arena_set_allocated_trial_id(
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:TrialRequest.trial_id)
 }
 
-// double trialDuration = 2;
-inline void TrialRequest::clear_trialduration() {
-  trialduration_ = 0;
-}
-inline double TrialRequest::_internal_trialduration() const {
-  return trialduration_;
-}
-inline double TrialRequest::trialduration() const {
-  // @@protoc_insertion_point(field_get:TrialRequest.trialDuration)
-  return _internal_trialduration();
-}
-inline void TrialRequest::_internal_set_trialduration(double value) {
-  
-  trialduration_ = value;
-}
-inline void TrialRequest::set_trialduration(double value) {
-  _internal_set_trialduration(value);
-  // @@protoc_insertion_point(field_set:TrialRequest.trialDuration)
-}
-
-// repeated .Object objects = 3;
+// repeated .Object objects = 2;
 inline int TrialRequest::_internal_objects_size() const {
   return objects_.size();
 }
@@ -1973,7 +1962,46 @@ TrialRequest::objects() const {
   return objects_;
 }
 
-// repeated .EndCondition endConditions = 4;
+// repeated .TrialCondition startConditions = 3;
+inline int TrialRequest::_internal_startconditions_size() const {
+  return startconditions_.size();
+}
+inline int TrialRequest::startconditions_size() const {
+  return _internal_startconditions_size();
+}
+inline void TrialRequest::clear_startconditions() {
+  startconditions_.Clear();
+}
+inline ::TrialCondition* TrialRequest::mutable_startconditions(int index) {
+  // @@protoc_insertion_point(field_mutable:TrialRequest.startConditions)
+  return startconditions_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
+TrialRequest::mutable_startconditions() {
+  // @@protoc_insertion_point(field_mutable_list:TrialRequest.startConditions)
+  return &startconditions_;
+}
+inline const ::TrialCondition& TrialRequest::_internal_startconditions(int index) const {
+  return startconditions_.Get(index);
+}
+inline const ::TrialCondition& TrialRequest::startconditions(int index) const {
+  // @@protoc_insertion_point(field_get:TrialRequest.startConditions)
+  return _internal_startconditions(index);
+}
+inline ::TrialCondition* TrialRequest::_internal_add_startconditions() {
+  return startconditions_.Add();
+}
+inline ::TrialCondition* TrialRequest::add_startconditions() {
+  // @@protoc_insertion_point(field_add:TrialRequest.startConditions)
+  return _internal_add_startconditions();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
+TrialRequest::startconditions() const {
+  // @@protoc_insertion_point(field_list:TrialRequest.startConditions)
+  return startconditions_;
+}
+
+// repeated .TrialCondition endConditions = 4;
 inline int TrialRequest::_internal_endconditions_size() const {
   return endconditions_.size();
 }
@@ -1983,30 +2011,30 @@ inline int TrialRequest::endconditions_size() const {
 inline void TrialRequest::clear_endconditions() {
   endconditions_.Clear();
 }
-inline ::EndCondition* TrialRequest::mutable_endconditions(int index) {
+inline ::TrialCondition* TrialRequest::mutable_endconditions(int index) {
   // @@protoc_insertion_point(field_mutable:TrialRequest.endConditions)
   return endconditions_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::EndCondition >*
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
 TrialRequest::mutable_endconditions() {
   // @@protoc_insertion_point(field_mutable_list:TrialRequest.endConditions)
   return &endconditions_;
 }
-inline const ::EndCondition& TrialRequest::_internal_endconditions(int index) const {
+inline const ::TrialCondition& TrialRequest::_internal_endconditions(int index) const {
   return endconditions_.Get(index);
 }
-inline const ::EndCondition& TrialRequest::endconditions(int index) const {
+inline const ::TrialCondition& TrialRequest::endconditions(int index) const {
   // @@protoc_insertion_point(field_get:TrialRequest.endConditions)
   return _internal_endconditions(index);
 }
-inline ::EndCondition* TrialRequest::_internal_add_endconditions() {
+inline ::TrialCondition* TrialRequest::_internal_add_endconditions() {
   return endconditions_.Add();
 }
-inline ::EndCondition* TrialRequest::add_endconditions() {
+inline ::TrialCondition* TrialRequest::add_endconditions() {
   // @@protoc_insertion_point(field_add:TrialRequest.endConditions)
   return _internal_add_endconditions();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::EndCondition >&
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
 TrialRequest::endconditions() const {
   // @@protoc_insertion_point(field_list:TrialRequest.endConditions)
   return endconditions_;
@@ -3287,60 +3315,60 @@ inline void ObjectParameter::unsafe_arena_set_allocated_value(
 
 // -------------------------------------------------------------------
 
-// EndCondition
+// TrialCondition
 
 // string name = 1;
-inline void EndCondition::clear_name() {
+inline void TrialCondition::clear_name() {
   name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline const std::string& EndCondition::name() const {
-  // @@protoc_insertion_point(field_get:EndCondition.name)
+inline const std::string& TrialCondition::name() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.name)
   return _internal_name();
 }
-inline void EndCondition::set_name(const std::string& value) {
+inline void TrialCondition::set_name(const std::string& value) {
   _internal_set_name(value);
-  // @@protoc_insertion_point(field_set:EndCondition.name)
+  // @@protoc_insertion_point(field_set:TrialCondition.name)
 }
-inline std::string* EndCondition::mutable_name() {
-  // @@protoc_insertion_point(field_mutable:EndCondition.name)
+inline std::string* TrialCondition::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:TrialCondition.name)
   return _internal_mutable_name();
 }
-inline const std::string& EndCondition::_internal_name() const {
+inline const std::string& TrialCondition::_internal_name() const {
   return name_.Get();
 }
-inline void EndCondition::_internal_set_name(const std::string& value) {
+inline void TrialCondition::_internal_set_name(const std::string& value) {
   
   name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
 }
-inline void EndCondition::set_name(std::string&& value) {
+inline void TrialCondition::set_name(std::string&& value) {
   
   name_.Set(
     &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
-  // @@protoc_insertion_point(field_set_rvalue:EndCondition.name)
+  // @@protoc_insertion_point(field_set_rvalue:TrialCondition.name)
 }
-inline void EndCondition::set_name(const char* value) {
+inline void TrialCondition::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
               GetArena());
-  // @@protoc_insertion_point(field_set_char:EndCondition.name)
+  // @@protoc_insertion_point(field_set_char:TrialCondition.name)
 }
-inline void EndCondition::set_name(const char* value,
+inline void TrialCondition::set_name(const char* value,
     size_t size) {
   
   name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
       reinterpret_cast<const char*>(value), size), GetArena());
-  // @@protoc_insertion_point(field_set_pointer:EndCondition.name)
+  // @@protoc_insertion_point(field_set_pointer:TrialCondition.name)
 }
-inline std::string* EndCondition::_internal_mutable_name() {
+inline std::string* TrialCondition::_internal_mutable_name() {
   
   return name_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline std::string* EndCondition::release_name() {
-  // @@protoc_insertion_point(field_release:EndCondition.name)
+inline std::string* TrialCondition::release_name() {
+  // @@protoc_insertion_point(field_release:TrialCondition.name)
   return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline void EndCondition::set_allocated_name(std::string* name) {
+inline void TrialCondition::set_allocated_name(std::string* name) {
   if (name != nullptr) {
     
   } else {
@@ -3348,16 +3376,16 @@ inline void EndCondition::set_allocated_name(std::string* name) {
   }
   name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
       GetArena());
-  // @@protoc_insertion_point(field_set_allocated:EndCondition.name)
+  // @@protoc_insertion_point(field_set_allocated:TrialCondition.name)
 }
-inline std::string* EndCondition::unsafe_arena_release_name() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:EndCondition.name)
+inline std::string* TrialCondition::unsafe_arena_release_name() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:TrialCondition.name)
   GOOGLE_DCHECK(GetArena() != nullptr);
   
   return name_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       GetArena());
 }
-inline void EndCondition::unsafe_arena_set_allocated_name(
+inline void TrialCondition::unsafe_arena_set_allocated_name(
     std::string* name) {
   GOOGLE_DCHECK(GetArena() != nullptr);
   if (name != nullptr) {
@@ -3367,85 +3395,85 @@ inline void EndCondition::unsafe_arena_set_allocated_name(
   }
   name_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       name, GetArena());
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:EndCondition.name)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:TrialCondition.name)
 }
 
 // bool success = 2;
-inline void EndCondition::clear_success() {
+inline void TrialCondition::clear_success() {
   success_ = false;
 }
-inline bool EndCondition::_internal_success() const {
+inline bool TrialCondition::_internal_success() const {
   return success_;
 }
-inline bool EndCondition::success() const {
-  // @@protoc_insertion_point(field_get:EndCondition.success)
+inline bool TrialCondition::success() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.success)
   return _internal_success();
 }
-inline void EndCondition::_internal_set_success(bool value) {
+inline void TrialCondition::_internal_set_success(bool value) {
   
   success_ = value;
 }
-inline void EndCondition::set_success(bool value) {
+inline void TrialCondition::set_success(bool value) {
   _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:EndCondition.success)
+  // @@protoc_insertion_point(field_set:TrialCondition.success)
 }
 
 // int32 priority = 3;
-inline void EndCondition::clear_priority() {
+inline void TrialCondition::clear_priority() {
   priority_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 EndCondition::_internal_priority() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 TrialCondition::_internal_priority() const {
   return priority_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 EndCondition::priority() const {
-  // @@protoc_insertion_point(field_get:EndCondition.priority)
+inline ::PROTOBUF_NAMESPACE_ID::int32 TrialCondition::priority() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.priority)
   return _internal_priority();
 }
-inline void EndCondition::_internal_set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void TrialCondition::_internal_set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   priority_ = value;
 }
-inline void EndCondition::set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void TrialCondition::set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_priority(value);
-  // @@protoc_insertion_point(field_set:EndCondition.priority)
+  // @@protoc_insertion_point(field_set:TrialCondition.priority)
 }
 
 // repeated .ObjectParameter params = 4;
-inline int EndCondition::_internal_params_size() const {
+inline int TrialCondition::_internal_params_size() const {
   return params_.size();
 }
-inline int EndCondition::params_size() const {
+inline int TrialCondition::params_size() const {
   return _internal_params_size();
 }
-inline void EndCondition::clear_params() {
+inline void TrialCondition::clear_params() {
   params_.Clear();
 }
-inline ::ObjectParameter* EndCondition::mutable_params(int index) {
-  // @@protoc_insertion_point(field_mutable:EndCondition.params)
+inline ::ObjectParameter* TrialCondition::mutable_params(int index) {
+  // @@protoc_insertion_point(field_mutable:TrialCondition.params)
   return params_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >*
-EndCondition::mutable_params() {
-  // @@protoc_insertion_point(field_mutable_list:EndCondition.params)
+TrialCondition::mutable_params() {
+  // @@protoc_insertion_point(field_mutable_list:TrialCondition.params)
   return &params_;
 }
-inline const ::ObjectParameter& EndCondition::_internal_params(int index) const {
+inline const ::ObjectParameter& TrialCondition::_internal_params(int index) const {
   return params_.Get(index);
 }
-inline const ::ObjectParameter& EndCondition::params(int index) const {
-  // @@protoc_insertion_point(field_get:EndCondition.params)
+inline const ::ObjectParameter& TrialCondition::params(int index) const {
+  // @@protoc_insertion_point(field_get:TrialCondition.params)
   return _internal_params(index);
 }
-inline ::ObjectParameter* EndCondition::_internal_add_params() {
+inline ::ObjectParameter* TrialCondition::_internal_add_params() {
   return params_.Add();
 }
-inline ::ObjectParameter* EndCondition::add_params() {
-  // @@protoc_insertion_point(field_add:EndCondition.params)
+inline ::ObjectParameter* TrialCondition::add_params() {
+  // @@protoc_insertion_point(field_add:TrialCondition.params)
   return _internal_add_params();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >&
-EndCondition::params() const {
-  // @@protoc_insertion_point(field_list:EndCondition.params)
+TrialCondition::params() const {
+  // @@protoc_insertion_point(field_list:TrialCondition.params)
   return params_;
 }
 
