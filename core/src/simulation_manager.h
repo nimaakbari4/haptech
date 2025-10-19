@@ -143,14 +143,17 @@ public:
     deleting the object. Do not manually delete or reuse pointers added here.
     */
 
-    static bool addObject(std::string id, cGenericObject* obj, double x, double y, double z);
+    static bool addObject(std::string id, cGenericObject* obj, 
+        double px, double py, double pz,
+        double rx, double ry, double rz);
     static bool removeObject(std::string id);
     static bool removeAllObjects();
 
     // OBJECT HELPERS
-    static bool addSphere(std::string id, double radius, double x, double y, double z);
+    static bool addSphere(std::string id, double radius, double px, double py, double pz);
     static bool addObjectFromConfig(const std::string& id, const std::string& type, 
-                                   double x, double y, double z, 
+                                   double px, double py, double pz,
+                                   double rx, double ry, double rz,
                                    double r, double g, double b,
                                    const std::map<std::string, std::string>& params);
     

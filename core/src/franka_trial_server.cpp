@@ -75,9 +75,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         double r = obj.has_color() ? obj.color().r() : 1.0;
         double g = obj.has_color() ? obj.color().g() : 1.0;
         double b = obj.has_color() ? obj.color().b() : 1.0;
+
+        // debug color
+        std::cout << "[DEBUG] Object color - R: " << r << ", G: " << g << ", B: " << b << std::endl;
         
         if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
                                                    obj.position().x(), obj.position().y(), obj.position().z(),
+                                                   obj.orientation().x(), obj.orientation().y(), obj.orientation().z(),
                                                    r, g, b, params)) {
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::ERROR);

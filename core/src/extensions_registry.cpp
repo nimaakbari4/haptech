@@ -25,6 +25,7 @@ void ExtensionsRegistry::registerAllExtensions() {
     
     // Register trial conditions
     std::cout << "[ExtensionsRegistry] Registering trial conditions..." << std::endl;
+    
     registerTrialCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         return std::make_unique<TimeCondition>(params, success, priority);
     });
