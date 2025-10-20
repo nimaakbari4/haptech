@@ -16,9 +16,9 @@
     </Condition>
     
     <!-- Velocity limit - trial ends if moving too fast -->
-    <Condition name="velocity" success="false" priority="3">
+    <!-- <Condition name="velocity" success="false" priority="3">
       <Parameters max_velocity="0.2"/>
-    </Condition>
+    </Condition> -->
   </EndConditions>
 
   <HUDText>
