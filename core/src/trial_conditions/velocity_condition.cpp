@@ -74,7 +74,7 @@ std::string VelocityCondition::getMessage() {
     return "Velocity limit exceeded: " + std::to_string(_maxVelocityReached) + 
            " > " + std::to_string(_maxVelocity);
 }
-velocity
+
 std::string VelocityCondition::getName() {
     return "VelocityCondition";
 }

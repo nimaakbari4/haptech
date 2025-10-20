@@ -184,7 +184,11 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // go until trial ends (end conditions are met)
     while (SimulationManager::trialContext.startConditionMet == nullptr ||
         SimulationManager::trialContext.endConditionMet == nullptr) {
-        SimulationManager::checkTrialConditions();
+        if (SimulationManager::trialContext.startConditionMet == nullptr) {
+            SimulationManager::checkStartConditions();
+        } else {
+            SimulationManager::checkEndConditions();
+        }
 
         if (!updatedTrialStart && SimulationManager::trialContext.startConditionMet != nullptr) {
             std::cout << "[TRIAL] Trial started after " << std::to_string(SimulationManager::trialContext.time) << " seconds: " << SimulationManager::trialContext.startConditionMet->getMessage() << std::endl;
