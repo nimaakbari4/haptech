@@ -1,0 +1,51 @@
+<TrialConfig>
+  <HomePosition>
+    <Position x="-0.5" y="0.0" z="0.0"/>
+    <Tolerance>0.05</Tolerance>
+  </HomePosition>
+
+  <EndConditions>
+    <!-- Time limit - trial ends after 30 seconds -->
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="30.0"/>
+    </Condition>
+    
+    <!-- Position goal - trial ends when reaching target -->
+    <Condition name="position" success="true" priority="2">
+      <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
+    </Condition>
+    
+    <!-- Velocity limit - trial ends if moving too fast -->
+    <Condition name="velocity" success="false" priority="3">
+      <Parameters max_velocity="0.2"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Reach the target position (0, 0.5, 0) without moving too fast!</StartMessage>
+    <SuccessMessage>Great! You reached the target position!</SuccessMessage>
+    <FailureMessage>You either moved too fast or ran out of time. Try again!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <Object id="target" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Parameters width="0.1" height="0.1" depth="0.1"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>
