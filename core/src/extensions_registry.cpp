@@ -34,7 +34,7 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<PositionCondition>(params, success, priority);
     });
     
-    registerTrialEndCondition("velocity", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
+    registerTrialCondition("velocity", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         return std::make_unique<VelocityCondition>(params, success, priority);
     });
     

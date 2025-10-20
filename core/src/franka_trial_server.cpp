@@ -182,7 +182,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     cMatrix3d retrievedDeviceRot;
 
     // go until trial ends (end conditions are met)
-    while (SimulationManager::trialContext.endConditionMet == nullptr) {
+    while (SimulationManager::trialContext.startConditionMet == nullptr ||
+        SimulationManager::trialContext.endConditionMet == nullptr) {
         SimulationManager::checkTrialConditions();
 
         if (!updatedTrialStart && SimulationManager::trialContext.startConditionMet != nullptr) {

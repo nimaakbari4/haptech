@@ -18,14 +18,24 @@
 #include "third_party/protobuf/version.h"
 #endif
 // @@protoc_insertion_point(includes)
-#include <google/protobuf/port_def.inc>
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Color_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Object_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ObjectParameter_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialCondition_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialDataPoint_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_TrialStatusUpdate_franka_5ftrial_2eproto;
-extern PROTOBUF_INTERNAL_EXPORT_franka_5ftrial_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Vector3_franka_5ftrial_2eproto;
+
+namespace protobuf_franka_5ftrial_2eproto {
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Color;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_HapticsState;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_ObjectParameter;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Quaternion;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_TrialState;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_TrialStatusUpdate;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Vector3;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_Contact;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_HomingInfo;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_TrialCondition;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_Twist;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_Pose;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<3> scc_info_Object;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<3> scc_info_ObjectState;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_franka_5ftrial_2eproto ::google::protobuf::internal::SCCInfo<9> scc_info_TrialDataPoint;
+}  // namespace protobuf_franka_5ftrial_2eproto
 class TrialRequestDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<TrialRequest>
@@ -85,9 +95,105 @@ class ObjectParameterDefaultTypeInternal {
 } _ObjectParameter_default_instance_;
 class TrialConditionDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<TrialCondition> _instance;
+  ::google::protobuf::internal::ExplicitlyConstructed<TrialCondition>
+      _instance;
 } _TrialCondition_default_instance_;
-static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
+class ObjectStateDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ObjectState>
+      _instance;
+} _ObjectState_default_instance_;
+class ContactDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<Contact>
+      _instance;
+} _Contact_default_instance_;
+class TrialStateDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<TrialState>
+      _instance;
+} _TrialState_default_instance_;
+class HapticsStateDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<HapticsState>
+      _instance;
+} _HapticsState_default_instance_;
+class HomingInfoDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<HomingInfo>
+      _instance;
+} _HomingInfo_default_instance_;
+namespace protobuf_franka_5ftrial_2eproto {
+static void InitDefaultsTrialRequest() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_TrialRequest_default_instance_;
+    new (ptr) ::TrialRequest();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::TrialRequest::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<2> scc_info_TrialRequest =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsTrialRequest}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_Object.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialCondition.base,}};
+
+static void InitDefaultsTrialResponseStream() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_TrialResponseStream_default_instance_;
+    new (ptr) ::TrialResponseStream();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::TrialResponseStream::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<2> scc_info_TrialResponseStream =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsTrialResponseStream}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialStatusUpdate.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialDataPoint.base,}};
+
+static void InitDefaultsTrialStatusUpdate() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_TrialStatusUpdate_default_instance_;
+    new (ptr) ::TrialStatusUpdate();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::TrialStatusUpdate::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_TrialStatusUpdate =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsTrialStatusUpdate}, {}};
+
+static void InitDefaultsTrialDataPoint() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_TrialDataPoint_default_instance_;
+    new (ptr) ::TrialDataPoint();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::TrialDataPoint::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<9> scc_info_TrialDataPoint =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 9, InitDefaultsTrialDataPoint}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_Vector3.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Quaternion.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_ObjectState.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Pose.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Twist.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Contact.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialState.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_HapticsState.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_HomingInfo.base,}};
+
+static void InitDefaultsColor() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -101,7 +207,66 @@ static void InitDefaultsscc_info_Color_franka_5ftrial_2eproto() {
 ::google::protobuf::internal::SCCInfo<0> scc_info_Color =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsColor}, {}};
 
-static void InitDefaultsscc_info_Object_franka_5ftrial_2eproto() {
+static void InitDefaultsVector3() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_Vector3_default_instance_;
+    new (ptr) ::Vector3();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::Vector3::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_Vector3 =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsVector3}, {}};
+
+static void InitDefaultsQuaternion() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_Quaternion_default_instance_;
+    new (ptr) ::Quaternion();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::Quaternion::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_Quaternion =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsQuaternion}, {}};
+
+static void InitDefaultsPose() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_Pose_default_instance_;
+    new (ptr) ::Pose();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::Pose::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<2> scc_info_Pose =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsPose}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_Vector3.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Quaternion.base,}};
+
+static void InitDefaultsTwist() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::_Twist_default_instance_;
+    new (ptr) ::Twist();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::Twist::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_Twist =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsTwist}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_Vector3.base,}};
+
+static void InitDefaultsObject() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -132,34 +297,19 @@ static void InitDefaultsObjectParameter() {
 ::google::protobuf::internal::SCCInfo<0> scc_info_ObjectParameter =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsObjectParameter}, {}};
 
-static void InitDefaultsscc_info_TrialCondition_franka_5ftrial_2eproto() {
+static void InitDefaultsTrialCondition() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
     void* ptr = &::_TrialCondition_default_instance_;
     new (ptr) ::TrialCondition();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
   ::TrialCondition::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_TrialCondition_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_TrialCondition_franka_5ftrial_2eproto}, {
-      &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,}};
-
-static void InitDefaultsscc_info_TrialDataPoint_franka_5ftrial_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::_EndCondition_default_instance_;
-    new (ptr) ::EndCondition();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::EndCondition::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_EndCondition =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsEndCondition}, {
+::google::protobuf::internal::SCCInfo<1> scc_info_TrialCondition =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsTrialCondition}, {
       &protobuf_franka_5ftrial_2eproto::scc_info_ObjectParameter.base,}};
 
 static void InitDefaultsObjectState() {
@@ -173,10 +323,11 @@ static void InitDefaultsObjectState() {
   ::ObjectState::InitAsDefaultInstance();
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<2> scc_info_TrialRequest_franka_5ftrial_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 2, 0, InitDefaultsscc_info_TrialRequest_franka_5ftrial_2eproto}, {
-      &scc_info_Object_franka_5ftrial_2eproto.base,
-      &scc_info_TrialCondition_franka_5ftrial_2eproto.base,}};
+::google::protobuf::internal::SCCInfo<3> scc_info_ObjectState =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 3, InitDefaultsObjectState}, {
+      &protobuf_franka_5ftrial_2eproto::scc_info_Vector3.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Quaternion.base,
+      &protobuf_franka_5ftrial_2eproto::scc_info_Color.base,}};
 
 static void InitDefaultsContact() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -248,7 +399,7 @@ void InitDefaults() {
   ::google::protobuf::internal::InitSCC(&scc_info_Twist.base);
   ::google::protobuf::internal::InitSCC(&scc_info_Object.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ObjectParameter.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_EndCondition.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_TrialCondition.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ObjectState.base);
   ::google::protobuf::internal::InitSCC(&scc_info_Contact.base);
   ::google::protobuf::internal::InitSCC(&scc_info_TrialState.base);
@@ -265,10 +416,10 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::TrialRequest, trial_id_),
-  PROTOBUF_FIELD_OFFSET(::TrialRequest, objects_),
-  PROTOBUF_FIELD_OFFSET(::TrialRequest, startconditions_),
-  PROTOBUF_FIELD_OFFSET(::TrialRequest, endconditions_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialRequest, trial_id_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialRequest, objects_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialRequest, startconditions_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialRequest, endconditions_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialResponseStream, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -386,14 +537,14 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::ObjectParameter, key_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::ObjectParameter, value_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::EndCondition, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialCondition, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::EndCondition, name_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::EndCondition, success_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::EndCondition, priority_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::EndCondition, params_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialCondition, name_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialCondition, success_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialCondition, priority_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::TrialCondition, params_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::ObjectState, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -439,85 +590,56 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HapticsState, loopfrequencyhz_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HapticsState, dt_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::TrialCondition, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::TrialCondition, name_),
-  PROTOBUF_FIELD_OFFSET(::TrialCondition, success_),
-  PROTOBUF_FIELD_OFFSET(::TrialCondition, priority_),
-  PROTOBUF_FIELD_OFFSET(::TrialCondition, params_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, homingactive_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, target_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, tolerance_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, elapsed_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, springconstant_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, dampingconstant_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::HomingInfo, maxforce_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::TrialRequest)},
   { 9, -1, sizeof(::TrialResponseStream)},
   { 17, -1, sizeof(::TrialStatusUpdate)},
   { 24, -1, sizeof(::TrialDataPoint)},
-  { 33, -1, sizeof(::Color)},
-  { 41, -1, sizeof(::Vector3)},
-  { 49, -1, sizeof(::Object)},
-  { 60, -1, sizeof(::ObjectParameter)},
-  { 67, -1, sizeof(::TrialCondition)},
+  { 68, -1, sizeof(::Color)},
+  { 76, -1, sizeof(::Vector3)},
+  { 84, -1, sizeof(::Quaternion)},
+  { 93, -1, sizeof(::Pose)},
+  { 100, -1, sizeof(::Twist)},
+  { 107, -1, sizeof(::Object)},
+  { 118, -1, sizeof(::ObjectParameter)},
+  { 125, -1, sizeof(::TrialCondition)},
+  { 134, -1, sizeof(::ObjectState)},
+  { 146, -1, sizeof(::Contact)},
+  { 156, -1, sizeof(::TrialState)},
+  { 167, -1, sizeof(::HapticsState)},
+  { 178, -1, sizeof(::HomingInfo)},
 };
 
-static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialRequest_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialResponseStream_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialStatusUpdate_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialDataPoint_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Color_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Vector3_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Object_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_ObjectParameter_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_TrialCondition_default_instance_),
-};
-
-const char descriptor_table_protodef_franka_5ftrial_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\022franka_trial.proto\"\214\001\n\014TrialRequest\022\020\n"
-  "\010trial_id\030\001 \001(\t\022\030\n\007objects\030\002 \003(\0132\007.Objec"
-  "t\022(\n\017startConditions\030\003 \003(\0132\017.TrialCondit"
-  "ion\022&\n\rendConditions\030\004 \003(\0132\017.TrialCondit"
-  "ion\"r\n\023TrialResponseStream\022*\n\014statusUpda"
-  "te\030\001 \001(\0132\022.TrialStatusUpdateH\000\022$\n\tdataPo"
-  "int\030\002 \001(\0132\017.TrialDataPointH\000B\t\n\007payload\""
-  "B\n\021TrialStatusUpdate\022\034\n\006status\030\001 \001(\0162\014.T"
-  "rialStatus\022\017\n\007message\030\002 \001(\t\"\177\n\016TrialData"
-  "Point\022\021\n\ttimestamp\030\001 \001(\001\022 \n\016devicePositi"
-  "on\030\002 \001(\0132\010.Vector3\022\037\n\rproxyPosition\030\003 \001("
-  "\0132\010.Vector3\022\027\n\005force\030\004 \001(\0132\010.Vector3\"(\n\005"
-  "Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*"
-  "\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001"
-  "(\001\"\226\001\n\006Object\022\n\n\002id\030\001 \001(\t\022\014\n\004type\030\002 \001(\t\022"
-  "\032\n\010position\030\003 \001(\0132\010.Vector3\022\035\n\013orientati"
-  "on\030\004 \001(\0132\010.Vector3\022\025\n\005color\030\005 \001(\0132\006.Colo"
-  "r\022 \n\006params\030\006 \003(\0132\020.ObjectParameter\"-\n\017O"
-  "bjectParameter\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001"
-  "(\t\"c\n\016TrialCondition\022\014\n\004name\030\001 \001(\t\022\017\n\007su"
-  "ccess\030\002 \001(\010\022\020\n\010priority\030\003 \001(\005\022 \n\006params\030"
-  "\004 \003(\0132\020.ObjectParameter*4\n\013TrialStatus\022\013"
-  "\n\007STARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n"
-  "\022FrankaTrialService\0221\n\010RunTrial\022\r.TrialR"
-  "equest\032\024.TrialResponseStream0\001b\006proto3"
-  ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_franka_5ftrial_2eproto_deps[1] = {
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_franka_5ftrial_2eproto_sccs[9] = {
-  &scc_info_Color_franka_5ftrial_2eproto.base,
-  &scc_info_Object_franka_5ftrial_2eproto.base,
-  &scc_info_ObjectParameter_franka_5ftrial_2eproto.base,
-  &scc_info_TrialCondition_franka_5ftrial_2eproto.base,
-  &scc_info_TrialDataPoint_franka_5ftrial_2eproto.base,
-  &scc_info_TrialRequest_franka_5ftrial_2eproto.base,
-  &scc_info_TrialResponseStream_franka_5ftrial_2eproto.base,
-  &scc_info_TrialStatusUpdate_franka_5ftrial_2eproto.base,
-  &scc_info_Vector3_franka_5ftrial_2eproto.base,
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_franka_5ftrial_2eproto_once;
-const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_franka_5ftrial_2eproto = {
-  false, false, descriptor_table_protodef_franka_5ftrial_2eproto, "franka_trial.proto", 998,
-  &descriptor_table_franka_5ftrial_2eproto_once, descriptor_table_franka_5ftrial_2eproto_sccs, descriptor_table_franka_5ftrial_2eproto_deps, 9, 0,
-  schemas, file_default_instances, TableStruct_franka_5ftrial_2eproto::offsets,
-  file_level_metadata_franka_5ftrial_2eproto, 9, file_level_enum_descriptors_franka_5ftrial_2eproto, file_level_service_descriptors_franka_5ftrial_2eproto,
+static ::google::protobuf::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialResponseStream_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialStatusUpdate_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialDataPoint_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Color_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Vector3_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Quaternion_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Pose_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Twist_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Object_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_ObjectParameter_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialCondition_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_ObjectState_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_Contact_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_TrialState_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_HapticsState_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::_HomingInfo_default_instance_),
 };
 
 void protobuf_AssignDescriptors() {
@@ -541,80 +663,81 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\022franka_trial.proto\"w\n\014TrialRequest\022\020\n\010"
-      "trial_id\030\001 \001(\t\022\025\n\rtrialDuration\030\002 \001(\001\022\030\n"
-      "\007objects\030\003 \003(\0132\007.Object\022$\n\rendConditions"
-      "\030\004 \003(\0132\r.EndCondition\"r\n\023TrialResponseSt"
-      "ream\022*\n\014statusUpdate\030\001 \001(\0132\022.TrialStatus"
-      "UpdateH\000\022$\n\tdataPoint\030\002 \001(\0132\017.TrialDataP"
-      "ointH\000B\t\n\007payload\"B\n\021TrialStatusUpdate\022\034"
-      "\n\006status\030\001 \001(\0162\014.TrialStatus\022\017\n\007message\030"
-      "\002 \001(\t\"\212\010\n\016TrialDataPoint\022\021\n\ttimestamp\030\001 "
-      "\001(\001\022 \n\016devicePosition\030\002 \001(\0132\010.Vector3\022\037\n"
-      "\rproxyPosition\030\003 \001(\0132\010.Vector3\022\027\n\005force\030"
-      "\004 \001(\0132\010.Vector3\022 \n\016deviceVelocity\030\005 \001(\0132"
-      "\010.Vector3\022\'\n\025deviceAngularVelocity\030\006 \001(\013"
-      "2\010.Vector3\022&\n\021deviceOrientation\030\007 \001(\0132\013."
-      "Quaternion\022\035\n\007objects\030\010 \003(\0132\014.ObjectStat"
-      "e\022$\n\022deviceAcceleration\030\t \001(\0132\010.Vector3\022"
-      "\037\n\rmeasuredForce\030\n \001(\0132\010.Vector3\022\024\n\014mess"
-      "ageIndex\030\013 \001(\004\022\025\n\rwallTimestamp\030\014 \001(\001\022\016\n"
-      "\006robotQ\030\r \003(\001\022\017\n\007robotDQ\030\016 \003(\001\022\020\n\010robotT"
-      "au\030\017 \003(\001\022\025\n\006eePose\030\020 \001(\0132\005.Pose\022\032\n\neeVel"
-      "ocity\030\021 \001(\0132\006.Twist\022\035\n\013springForce\030\022 \001(\013"
-      "2\010.Vector3\022\036\n\014dampingForce\030\023 \001(\0132\010.Vecto"
-      "r3\022\026\n\016forceSaturated\030\024 \001(\010\022\027\n\017maxForceRe"
-      "ached\030\025 \001(\010\022\032\n\010contacts\030\026 \003(\0132\010.Contact\022"
-      "\032\n\005trial\030\027 \001(\0132\013.TrialState\022\036\n\007haptics\030\030"
-      " \001(\0132\r.HapticsState\022\033\n\006homing\030\031 \001(\0132\013.Ho"
-      "mingInfo\022\023\n\013diagnostics\030\032 \001(\t\022\023\n\013reflexF"
-      "lags\030\033 \003(\t\022\025\n\rdroppedFrames\030\034 \001(\005\022\022\n\nque"
-      "ueDepth\030\035 \001(\005\022\023\n\013cpuAffinity\030\036 \001(\t\022\026\n\016th"
-      "readPriority\030\037 \001(\t\022\030\n\020loopOverrunCount\030 "
-      " \001(\004\022\030\n\020latencyComputeMs\030! \001(\001\022\026\n\016latenc"
-      "yApplyMs\030\" \001(\001\022\025\n\rlatencySendMs\030# \001(\001\022\027\n"
-      "\017coordinateFrame\030$ \001(\t\022\023\n\013unitsLinear\030% "
-      "\001(\t\022\022\n\nunitsForce\030& \001(\t\022\021\n\tunitsTime\030\' \001"
-      "(\t\"(\n\005Color\022\t\n\001r\030\001 \001(\001\022\t\n\001g\030\002 \001(\001\022\t\n\001b\030\003"
-      " \001(\001\"*\n\007Vector3\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n"
-      "\001z\030\003 \001(\001\"8\n\nQuaternion\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002"
-      " \001(\001\022\t\n\001z\030\003 \001(\001\022\t\n\001w\030\004 \001(\001\"D\n\004Pose\022\032\n\010po"
-      "sition\030\001 \001(\0132\010.Vector3\022 \n\013orientation\030\002 "
-      "\001(\0132\013.Quaternion\"<\n\005Twist\022\030\n\006linear\030\001 \001("
-      "\0132\010.Vector3\022\031\n\007angular\030\002 \001(\0132\010.Vector3\"\226"
-      "\001\n\006Object\022\n\n\002id\030\001 \001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010p"
-      "osition\030\003 \001(\0132\010.Vector3\022\035\n\013orientation\030\004"
-      " \001(\0132\010.Vector3\022\025\n\005color\030\005 \001(\0132\006.Color\022 \n"
-      "\006params\030\006 \003(\0132\020.ObjectParameter\"-\n\017Objec"
-      "tParameter\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"a"
-      "\n\014EndCondition\022\014\n\004name\030\001 \001(\t\022\017\n\007success\030"
-      "\002 \001(\010\022\020\n\010priority\030\003 \001(\005\022 \n\006params\030\004 \003(\0132"
-      "\020.ObjectParameter\"\246\001\n\013ObjectState\022\n\n\002id\030"
-      "\001 \001(\t\022\032\n\010position\030\002 \001(\0132\010.Vector3\022 \n\013ori"
-      "entation\030\003 \001(\0132\013.Quaternion\022\014\n\004type\030\004 \001("
-      "\t\022\025\n\005color\030\005 \001(\0132\006.Color\022\016\n\006active\030\006 \001(\010"
-      "\022\030\n\020collisionEnabled\030\007 \001(\010\"\177\n\007Contact\022\020\n"
-      "\010objectId\030\001 \001(\t\022\027\n\005point\030\002 \001(\0132\010.Vector3"
-      "\022\030\n\006normal\030\003 \001(\0132\010.Vector3\022\030\n\020penetratio"
-      "nDepth\030\004 \001(\001\022\025\n\rfrictionState\030\005 \001(\t\"\214\001\n\n"
-      "TrialState\022\017\n\007trialId\030\001 \001(\t\022\023\n\013elapsedTi"
-      "me\030\002 \001(\001\022\024\n\014trialRunning\030\003 \001(\010\022\023\n\013reache"
-      "dGoal\030\004 \001(\010\022\026\n\016distanceToGoal\030\005 \001(\001\022\025\n\rg"
-      "oalTolerance\030\006 \001(\001\"\230\001\n\014HapticsState\022\026\n\016h"
-      "apticsEnabled\030\001 \001(\010\022\034\n\024workspaceScaleFac"
-      "tor\030\002 \001(\001\022\022\n\ntoolRadius\030\003 \001(\001\022\031\n\021waitFor"
-      "SmallForce\030\004 \001(\010\022\027\n\017loopFrequencyHz\030\005 \001("
-      "\001\022\n\n\002dt\030\006 \001(\001\"\243\001\n\nHomingInfo\022\024\n\014homingAc"
-      "tive\030\001 \001(\010\022\030\n\006target\030\002 \001(\0132\010.Vector3\022\021\n\t"
-      "tolerance\030\003 \001(\001\022\017\n\007elapsed\030\004 \001(\001\022\026\n\016spri"
-      "ngConstant\030\005 \001(\001\022\027\n\017dampingConstant\030\006 \001("
-      "\001\022\020\n\010maxForce\030\007 \001(\001*4\n\013TrialStatus\022\013\n\007ST"
-      "ARTED\020\000\022\t\n\005ERROR\020\001\022\r\n\tCOMPLETED\020\0022G\n\022Fra"
-      "nkaTrialService\0221\n\010RunTrial\022\r.TrialReque"
-      "st\032\024.TrialResponseStream0\001b\006proto3"
+      "\n\022franka_trial.proto\"\214\001\n\014TrialRequest\022\020\n"
+      "\010trial_id\030\001 \001(\t\022\030\n\007objects\030\002 \003(\0132\007.Objec"
+      "t\022(\n\017startConditions\030\003 \003(\0132\017.TrialCondit"
+      "ion\022&\n\rendConditions\030\004 \003(\0132\017.TrialCondit"
+      "ion\"r\n\023TrialResponseStream\022*\n\014statusUpda"
+      "te\030\001 \001(\0132\022.TrialStatusUpdateH\000\022$\n\tdataPo"
+      "int\030\002 \001(\0132\017.TrialDataPointH\000B\t\n\007payload\""
+      "B\n\021TrialStatusUpdate\022\034\n\006status\030\001 \001(\0162\014.T"
+      "rialStatus\022\017\n\007message\030\002 \001(\t\"\212\010\n\016TrialDat"
+      "aPoint\022\021\n\ttimestamp\030\001 \001(\001\022 \n\016devicePosit"
+      "ion\030\002 \001(\0132\010.Vector3\022\037\n\rproxyPosition\030\003 \001"
+      "(\0132\010.Vector3\022\027\n\005force\030\004 \001(\0132\010.Vector3\022 \n"
+      "\016deviceVelocity\030\005 \001(\0132\010.Vector3\022\'\n\025devic"
+      "eAngularVelocity\030\006 \001(\0132\010.Vector3\022&\n\021devi"
+      "ceOrientation\030\007 \001(\0132\013.Quaternion\022\035\n\007obje"
+      "cts\030\010 \003(\0132\014.ObjectState\022$\n\022deviceAcceler"
+      "ation\030\t \001(\0132\010.Vector3\022\037\n\rmeasuredForce\030\n"
+      " \001(\0132\010.Vector3\022\024\n\014messageIndex\030\013 \001(\004\022\025\n\r"
+      "wallTimestamp\030\014 \001(\001\022\016\n\006robotQ\030\r \003(\001\022\017\n\007r"
+      "obotDQ\030\016 \003(\001\022\020\n\010robotTau\030\017 \003(\001\022\025\n\006eePose"
+      "\030\020 \001(\0132\005.Pose\022\032\n\neeVelocity\030\021 \001(\0132\006.Twis"
+      "t\022\035\n\013springForce\030\022 \001(\0132\010.Vector3\022\036\n\014damp"
+      "ingForce\030\023 \001(\0132\010.Vector3\022\026\n\016forceSaturat"
+      "ed\030\024 \001(\010\022\027\n\017maxForceReached\030\025 \001(\010\022\032\n\010con"
+      "tacts\030\026 \003(\0132\010.Contact\022\032\n\005trial\030\027 \001(\0132\013.T"
+      "rialState\022\036\n\007haptics\030\030 \001(\0132\r.HapticsStat"
+      "e\022\033\n\006homing\030\031 \001(\0132\013.HomingInfo\022\023\n\013diagno"
+      "stics\030\032 \001(\t\022\023\n\013reflexFlags\030\033 \003(\t\022\025\n\rdrop"
+      "pedFrames\030\034 \001(\005\022\022\n\nqueueDepth\030\035 \001(\005\022\023\n\013c"
+      "puAffinity\030\036 \001(\t\022\026\n\016threadPriority\030\037 \001(\t"
+      "\022\030\n\020loopOverrunCount\030  \001(\004\022\030\n\020latencyCom"
+      "puteMs\030! \001(\001\022\026\n\016latencyApplyMs\030\" \001(\001\022\025\n\r"
+      "latencySendMs\030# \001(\001\022\027\n\017coordinateFrame\030$"
+      " \001(\t\022\023\n\013unitsLinear\030% \001(\t\022\022\n\nunitsForce\030"
+      "& \001(\t\022\021\n\tunitsTime\030\' \001(\t\"(\n\005Color\022\t\n\001r\030\001"
+      " \001(\001\022\t\n\001g\030\002 \001(\001\022\t\n\001b\030\003 \001(\001\"*\n\007Vector3\022\t\n"
+      "\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\"8\n\nQuater"
+      "nion\022\t\n\001x\030\001 \001(\001\022\t\n\001y\030\002 \001(\001\022\t\n\001z\030\003 \001(\001\022\t\n"
+      "\001w\030\004 \001(\001\"D\n\004Pose\022\032\n\010position\030\001 \001(\0132\010.Vec"
+      "tor3\022 \n\013orientation\030\002 \001(\0132\013.Quaternion\"<"
+      "\n\005Twist\022\030\n\006linear\030\001 \001(\0132\010.Vector3\022\031\n\007ang"
+      "ular\030\002 \001(\0132\010.Vector3\"\226\001\n\006Object\022\n\n\002id\030\001 "
+      "\001(\t\022\014\n\004type\030\002 \001(\t\022\032\n\010position\030\003 \001(\0132\010.Ve"
+      "ctor3\022\035\n\013orientation\030\004 \001(\0132\010.Vector3\022\025\n\005"
+      "color\030\005 \001(\0132\006.Color\022 \n\006params\030\006 \003(\0132\020.Ob"
+      "jectParameter\"-\n\017ObjectParameter\022\013\n\003key\030"
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t\"c\n\016TrialCondition\022\014"
+      "\n\004name\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\022\020\n\010priorit"
+      "y\030\003 \001(\005\022 \n\006params\030\004 \003(\0132\020.ObjectParamete"
+      "r\"\246\001\n\013ObjectState\022\n\n\002id\030\001 \001(\t\022\032\n\010positio"
+      "n\030\002 \001(\0132\010.Vector3\022 \n\013orientation\030\003 \001(\0132\013"
+      ".Quaternion\022\014\n\004type\030\004 \001(\t\022\025\n\005color\030\005 \001(\013"
+      "2\006.Color\022\016\n\006active\030\006 \001(\010\022\030\n\020collisionEna"
+      "bled\030\007 \001(\010\"\177\n\007Contact\022\020\n\010objectId\030\001 \001(\t\022"
+      "\027\n\005point\030\002 \001(\0132\010.Vector3\022\030\n\006normal\030\003 \001(\013"
+      "2\010.Vector3\022\030\n\020penetrationDepth\030\004 \001(\001\022\025\n\r"
+      "frictionState\030\005 \001(\t\"\214\001\n\nTrialState\022\017\n\007tr"
+      "ialId\030\001 \001(\t\022\023\n\013elapsedTime\030\002 \001(\001\022\024\n\014tria"
+      "lRunning\030\003 \001(\010\022\023\n\013reachedGoal\030\004 \001(\010\022\026\n\016d"
+      "istanceToGoal\030\005 \001(\001\022\025\n\rgoalTolerance\030\006 \001"
+      "(\001\"\230\001\n\014HapticsState\022\026\n\016hapticsEnabled\030\001 "
+      "\001(\010\022\034\n\024workspaceScaleFactor\030\002 \001(\001\022\022\n\ntoo"
+      "lRadius\030\003 \001(\001\022\031\n\021waitForSmallForce\030\004 \001(\010"
+      "\022\027\n\017loopFrequencyHz\030\005 \001(\001\022\n\n\002dt\030\006 \001(\001\"\243\001"
+      "\n\nHomingInfo\022\024\n\014homingActive\030\001 \001(\010\022\030\n\006ta"
+      "rget\030\002 \001(\0132\010.Vector3\022\021\n\ttolerance\030\003 \001(\001\022"
+      "\017\n\007elapsed\030\004 \001(\001\022\026\n\016springConstant\030\005 \001(\001"
+      "\022\027\n\017dampingConstant\030\006 \001(\001\022\020\n\010maxForce\030\007 "
+      "\001(\001*4\n\013TrialStatus\022\013\n\007STARTED\020\000\022\t\n\005ERROR"
+      "\020\001\022\r\n\tCOMPLETED\020\0022G\n\022FrankaTrialService\022"
+      "1\n\010RunTrial\022\r.TrialRequest\032\024.TrialRespon"
+      "seStream0\001b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2834);
+      descriptor, 2858);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "franka_trial.proto", &protobuf_RegisterTypes);
 }
@@ -652,16 +775,15 @@ void TrialRequest::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TrialRequest::kTrialIdFieldNumber;
-const int TrialRequest::kTrialDurationFieldNumber;
 const int TrialRequest::kObjectsFieldNumber;
+const int TrialRequest::kStartConditionsFieldNumber;
 const int TrialRequest::kEndConditionsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-TrialRequest::TrialRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  objects_(arena),
-  startconditions_(arena),
-  endconditions_(arena) {
+TrialRequest::TrialRequest()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialRequest.base);
   SharedCtor();
   // @@protoc_insertion_point(constructor:TrialRequest)
 }
@@ -680,8 +802,7 @@ TrialRequest::TrialRequest(const TrialRequest& from)
 }
 
 void TrialRequest::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TrialRequest_franka_5ftrial_2eproto.base);
-  trial_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  trial_id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 TrialRequest::~TrialRequest() {
@@ -716,63 +837,72 @@ void TrialRequest::Clear() {
   objects_.Clear();
   startconditions_.Clear();
   endconditions_.Clear();
-  trial_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  trial_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  _internal_metadata_.Clear();
 }
 
-const char* TrialRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
+bool TrialRequest::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:TrialRequest)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // string trial_id = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_trial_id();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "TrialRequest.trial_id"));
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_trial_id()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->trial_id().data(), static_cast<int>(this->trial_id().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "TrialRequest.trial_id"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       // repeated .Object objects = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_objects(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else goto handle_unusual;
-        continue;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_objects()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       // repeated .TrialCondition startConditions = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_startconditions(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
-        } else goto handle_unusual;
-        continue;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_startconditions()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       // repeated .TrialCondition endConditions = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_endconditions(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
-        } else goto handle_unusual;
-        continue;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_endconditions()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -809,21 +939,25 @@ void TrialRequest::SerializeWithCachedSizes(
       1, this->trial_id(), output);
   }
 
-  // double trialDuration = 2;
-  if (this->trialduration() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->trialduration(), output);
-  }
-
-  // repeated .Object objects = 3;
+  // repeated .Object objects = 2;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->objects_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      3,
+      2,
       this->objects(static_cast<int>(i)),
       output);
   }
 
-  // repeated .EndCondition endConditions = 4;
+  // repeated .TrialCondition startConditions = 3;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->startconditions_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3,
+      this->startconditions(static_cast<int>(i)),
+      output);
+  }
+
+  // repeated .TrialCondition endConditions = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->endconditions_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -859,18 +993,18 @@ void TrialRequest::SerializeWithCachedSizes(
 
   // repeated .Object objects = 2;
   for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->_internal_objects_size()); i < n; i++) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, this->_internal_objects(i), target, stream);
+      n = static_cast<unsigned int>(this->objects_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        2, this->objects(static_cast<int>(i)), deterministic, target);
   }
 
   // repeated .TrialCondition startConditions = 3;
   for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->_internal_startconditions_size()); i < n; i++) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, this->_internal_startconditions(i), target, stream);
+      n = static_cast<unsigned int>(this->startconditions_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        3, this->startconditions(static_cast<int>(i)), deterministic, target);
   }
 
   // repeated .TrialCondition endConditions = 4;
@@ -893,18 +1027,12 @@ size_t TrialRequest::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:TrialRequest)
   size_t total_size = 0;
 
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // repeated .Object objects = 2;
-  total_size += 1UL * this->_internal_objects_size();
-  for (const auto& msg : this->objects_) {
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // repeated .Object objects = 3;
+  // repeated .Object objects = 2;
   {
     unsigned int count = static_cast<unsigned int>(this->objects_size());
     total_size += 1UL * count;
@@ -916,17 +1044,25 @@ size_t TrialRequest::ByteSizeLong() const {
   }
 
   // repeated .TrialCondition startConditions = 3;
-  total_size += 1UL * this->_internal_startconditions_size();
-  for (const auto& msg : this->startconditions_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  {
+    unsigned int count = static_cast<unsigned int>(this->startconditions_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->startconditions(static_cast<int>(i)));
+    }
   }
 
   // repeated .TrialCondition endConditions = 4;
-  total_size += 1UL * this->_internal_endconditions_size();
-  for (const auto& msg : this->endconditions_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  {
+    unsigned int count = static_cast<unsigned int>(this->endconditions_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->endconditions(static_cast<int>(i)));
+    }
   }
 
   // string trial_id = 1;
@@ -936,11 +1072,7 @@ size_t TrialRequest::ByteSizeLong() const {
         this->trial_id());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
@@ -1000,11 +1132,12 @@ void TrialRequest::Swap(TrialRequest* other) {
 }
 void TrialRequest::InternalSwap(TrialRequest* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  objects_.InternalSwap(&other->objects_);
-  startconditions_.InternalSwap(&other->startconditions_);
-  endconditions_.InternalSwap(&other->endconditions_);
-  trial_id_.Swap(&other->trial_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  CastToBase(&objects_)->InternalSwap(CastToBase(&other->objects_));
+  CastToBase(&startconditions_)->InternalSwap(CastToBase(&other->startconditions_));
+  CastToBase(&endconditions_)->InternalSwap(CastToBase(&other->endconditions_));
+  trial_id_.Swap(&other->trial_id_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata TrialRequest::GetMetadata() const {
@@ -5964,23 +6097,23 @@ void ObjectParameter::InternalSwap(ObjectParameter* other) {
 
 // ===================================================================
 
-void EndCondition::InitAsDefaultInstance() {
+void TrialCondition::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int EndCondition::kNameFieldNumber;
-const int EndCondition::kSuccessFieldNumber;
-const int EndCondition::kPriorityFieldNumber;
-const int EndCondition::kParamsFieldNumber;
+const int TrialCondition::kNameFieldNumber;
+const int TrialCondition::kSuccessFieldNumber;
+const int TrialCondition::kPriorityFieldNumber;
+const int TrialCondition::kParamsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-EndCondition::EndCondition()
+TrialCondition::TrialCondition()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   ::google::protobuf::internal::InitSCC(
-      &protobuf_franka_5ftrial_2eproto::scc_info_EndCondition.base);
+      &protobuf_franka_5ftrial_2eproto::scc_info_TrialCondition.base);
   SharedCtor();
-  // @@protoc_insertion_point(constructor:EndCondition)
+  // @@protoc_insertion_point(constructor:TrialCondition)
 }
-EndCondition::EndCondition(const EndCondition& from)
+TrialCondition::TrialCondition(const TrialCondition& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
       params_(from.params_) {
@@ -5992,41 +6125,41 @@ EndCondition::EndCondition(const EndCondition& from)
   ::memcpy(&success_, &from.success_,
     static_cast<size_t>(reinterpret_cast<char*>(&priority_) -
     reinterpret_cast<char*>(&success_)) + sizeof(priority_));
-  // @@protoc_insertion_point(copy_constructor:EndCondition)
+  // @@protoc_insertion_point(copy_constructor:TrialCondition)
 }
 
-void EndCondition::SharedCtor() {
+void TrialCondition::SharedCtor() {
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&success_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&priority_) -
       reinterpret_cast<char*>(&success_)) + sizeof(priority_));
 }
 
-EndCondition::~EndCondition() {
-  // @@protoc_insertion_point(destructor:EndCondition)
+TrialCondition::~TrialCondition() {
+  // @@protoc_insertion_point(destructor:TrialCondition)
   SharedDtor();
 }
 
-void EndCondition::SharedDtor() {
+void TrialCondition::SharedDtor() {
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
-void EndCondition::SetCachedSize(int size) const {
+void TrialCondition::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* EndCondition::descriptor() {
+const ::google::protobuf::Descriptor* TrialCondition::descriptor() {
   ::protobuf_franka_5ftrial_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_franka_5ftrial_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
 }
 
-const EndCondition& EndCondition::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_franka_5ftrial_2eproto::scc_info_EndCondition.base);
+const TrialCondition& TrialCondition::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_franka_5ftrial_2eproto::scc_info_TrialCondition.base);
   return *internal_default_instance();
 }
 
 
-void EndCondition::Clear() {
-// @@protoc_insertion_point(message_clear_start:EndCondition)
+void TrialCondition::Clear() {
+// @@protoc_insertion_point(message_clear_start:TrialCondition)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -6039,11 +6172,11 @@ void EndCondition::Clear() {
   _internal_metadata_.Clear();
 }
 
-bool EndCondition::MergePartialFromCodedStream(
+bool TrialCondition::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:EndCondition)
+  // @@protoc_insertion_point(parse_start:TrialCondition)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -6058,7 +6191,7 @@ bool EndCondition::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), static_cast<int>(this->name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "EndCondition.name"));
+            "TrialCondition.name"));
         } else {
           goto handle_unusual;
         }
@@ -6117,17 +6250,17 @@ bool EndCondition::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:EndCondition)
+  // @@protoc_insertion_point(parse_success:TrialCondition)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:EndCondition)
+  // @@protoc_insertion_point(parse_failure:TrialCondition)
   return false;
 #undef DO_
 }
 
-void EndCondition::SerializeWithCachedSizes(
+void TrialCondition::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:EndCondition)
+  // @@protoc_insertion_point(serialize_start:TrialCondition)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -6136,7 +6269,7 @@ void EndCondition::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "EndCondition.name");
+      "TrialCondition.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->name(), output);
   }
@@ -6164,13 +6297,13 @@ void EndCondition::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:EndCondition)
+  // @@protoc_insertion_point(serialize_end:TrialCondition)
 }
 
-::google::protobuf::uint8* EndCondition::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* TrialCondition::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:EndCondition)
+  // @@protoc_insertion_point(serialize_to_array_start:TrialCondition)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -6179,7 +6312,7 @@ void EndCondition::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "EndCondition.name");
+      "TrialCondition.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->name(), target);
@@ -6207,12 +6340,12 @@ void EndCondition::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:EndCondition)
+  // @@protoc_insertion_point(serialize_to_array_end:TrialCondition)
   return target;
 }
 
-size_t EndCondition::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:EndCondition)
+size_t TrialCondition::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:TrialCondition)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -6255,23 +6388,23 @@ size_t EndCondition::ByteSizeLong() const {
   return total_size;
 }
 
-void EndCondition::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:EndCondition)
+void TrialCondition::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:TrialCondition)
   GOOGLE_DCHECK_NE(&from, this);
-  const EndCondition* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const EndCondition>(
+  const TrialCondition* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const TrialCondition>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:EndCondition)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TrialCondition)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:EndCondition)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:TrialCondition)
     MergeFrom(*source);
   }
 }
 
-void EndCondition::MergeFrom(const EndCondition& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:EndCondition)
+void TrialCondition::MergeFrom(const TrialCondition& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:TrialCondition)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -6290,29 +6423,29 @@ void EndCondition::MergeFrom(const EndCondition& from) {
   }
 }
 
-void EndCondition::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:EndCondition)
+void TrialCondition::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:TrialCondition)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void EndCondition::CopyFrom(const EndCondition& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:EndCondition)
+void TrialCondition::CopyFrom(const TrialCondition& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:TrialCondition)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool EndCondition::IsInitialized() const {
+bool TrialCondition::IsInitialized() const {
   return true;
 }
 
-void EndCondition::Swap(EndCondition* other) {
+void TrialCondition::Swap(TrialCondition* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void EndCondition::InternalSwap(EndCondition* other) {
+void TrialCondition::InternalSwap(TrialCondition* other) {
   using std::swap;
   CastToBase(&params_)->InternalSwap(CastToBase(&other->params_));
   name_.Swap(&other->name_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
@@ -6322,7 +6455,7 @@ void EndCondition::InternalSwap(EndCondition* other) {
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata EndCondition::GetMetadata() const {
+::google::protobuf::Metadata TrialCondition::GetMetadata() const {
   protobuf_franka_5ftrial_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_franka_5ftrial_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -8109,70 +8242,74 @@ void HapticsState::InternalSwap(HapticsState* other) {
 
 // ===================================================================
 
-void TrialCondition::InitAsDefaultInstance() {
+void HomingInfo::InitAsDefaultInstance() {
+  ::_HomingInfo_default_instance_._instance.get_mutable()->target_ = const_cast< ::Vector3*>(
+      ::Vector3::internal_default_instance());
 }
-class TrialCondition::_Internal {
- public:
-};
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int HomingInfo::kHomingActiveFieldNumber;
+const int HomingInfo::kTargetFieldNumber;
+const int HomingInfo::kToleranceFieldNumber;
+const int HomingInfo::kElapsedFieldNumber;
+const int HomingInfo::kSpringConstantFieldNumber;
+const int HomingInfo::kDampingConstantFieldNumber;
+const int HomingInfo::kMaxForceFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-TrialCondition::TrialCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  params_(arena) {
+HomingInfo::HomingInfo()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_franka_5ftrial_2eproto::scc_info_HomingInfo.base);
   SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:TrialCondition)
+  // @@protoc_insertion_point(constructor:HomingInfo)
 }
-TrialCondition::TrialCondition(const TrialCondition& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      params_(from.params_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_name().empty()) {
-    name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_name(),
-      GetArena());
+HomingInfo::HomingInfo(const HomingInfo& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_target()) {
+    target_ = new ::Vector3(*from.target_);
+  } else {
+    target_ = NULL;
   }
-  ::memcpy(&success_, &from.success_,
-    static_cast<size_t>(reinterpret_cast<char*>(&priority_) -
-    reinterpret_cast<char*>(&success_)) + sizeof(priority_));
-  // @@protoc_insertion_point(copy_constructor:TrialCondition)
+  ::memcpy(&tolerance_, &from.tolerance_,
+    static_cast<size_t>(reinterpret_cast<char*>(&homingactive_) -
+    reinterpret_cast<char*>(&tolerance_)) + sizeof(homingactive_));
+  // @@protoc_insertion_point(copy_constructor:HomingInfo)
 }
 
-void TrialCondition::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TrialCondition_franka_5ftrial_2eproto.base);
-  name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(&success_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&priority_) -
-      reinterpret_cast<char*>(&success_)) + sizeof(priority_));
+void HomingInfo::SharedCtor() {
+  ::memset(&target_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&homingactive_) -
+      reinterpret_cast<char*>(&target_)) + sizeof(homingactive_));
 }
 
-TrialCondition::~TrialCondition() {
-  // @@protoc_insertion_point(destructor:TrialCondition)
+HomingInfo::~HomingInfo() {
+  // @@protoc_insertion_point(destructor:HomingInfo)
   SharedDtor();
 }
 
-void TrialCondition::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-  name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+void HomingInfo::SharedDtor() {
+  if (this != internal_default_instance()) delete target_;
 }
 
-void TrialCondition::ArenaDtor(void* object) {
-  TrialCondition* _this = reinterpret_cast< TrialCondition* >(object);
-  (void)_this;
-}
-void TrialCondition::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void TrialCondition::SetCachedSize(int size) const {
+void HomingInfo::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const TrialCondition& TrialCondition::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_TrialCondition_franka_5ftrial_2eproto.base);
+const ::google::protobuf::Descriptor* HomingInfo::descriptor() {
+  ::protobuf_franka_5ftrial_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_franka_5ftrial_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const HomingInfo& HomingInfo::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_franka_5ftrial_2eproto::scc_info_HomingInfo.base);
   return *internal_default_instance();
 }
 
 
-void TrialCondition::Clear() {
-// @@protoc_insertion_point(message_clear_start:TrialCondition)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+void HomingInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:HomingInfo)
+  ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -8292,49 +8429,6 @@ bool HomingInfo::MergePartialFromCodedStream(
         break;
       }
 
-const char* TrialCondition::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // string name = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          auto str = _internal_mutable_name();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "TrialCondition.name"));
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // bool success = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // int32 priority = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          priority_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // repeated .ObjectParameter params = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_params(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
-        } else goto handle_unusual;
-        continue;
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -8355,20 +8449,15 @@ failure:
 #undef DO_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* TrialCondition::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:TrialCondition)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+void HomingInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:HomingInfo)
+  ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string name = 1;
-  if (this->name().size() > 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "TrialCondition.name");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_name(), target);
+  // bool homingActive = 1;
+  if (this->homingactive() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->homingactive(), output);
   }
 
   // .Vector3 target = 2;
@@ -8391,12 +8480,78 @@ failure:
   if (this->springconstant() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteDouble(5, this->springconstant(), output);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:TrialCondition)
+
+  // double dampingConstant = 6;
+  if (this->dampingconstant() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(6, this->dampingconstant(), output);
+  }
+
+  // double maxForce = 7;
+  if (this->maxforce() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(7, this->maxforce(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:HomingInfo)
+}
+
+::google::protobuf::uint8* HomingInfo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:HomingInfo)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool homingActive = 1;
+  if (this->homingactive() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->homingactive(), target);
+  }
+
+  // .Vector3 target = 2;
+  if (this->has_target()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        2, this->_internal_target(), deterministic, target);
+  }
+
+  // double tolerance = 3;
+  if (this->tolerance() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->tolerance(), target);
+  }
+
+  // double elapsed = 4;
+  if (this->elapsed() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->elapsed(), target);
+  }
+
+  // double springConstant = 5;
+  if (this->springconstant() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(5, this->springconstant(), target);
+  }
+
+  // double dampingConstant = 6;
+  if (this->dampingconstant() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(6, this->dampingconstant(), target);
+  }
+
+  // double maxForce = 7;
+  if (this->maxforce() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(7, this->maxforce(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:HomingInfo)
   return target;
 }
 
-size_t TrialCondition::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:TrialCondition)
+size_t HomingInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:HomingInfo)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -8446,23 +8601,23 @@ size_t TrialCondition::ByteSizeLong() const {
   return total_size;
 }
 
-void TrialCondition::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:TrialCondition)
+void HomingInfo::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:HomingInfo)
   GOOGLE_DCHECK_NE(&from, this);
-  const TrialCondition* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<TrialCondition>(
+  const HomingInfo* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const HomingInfo>(
           &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:TrialCondition)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:HomingInfo)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:TrialCondition)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:HomingInfo)
     MergeFrom(*source);
   }
 }
 
-void TrialCondition::MergeFrom(const TrialCondition& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:TrialCondition)
+void HomingInfo::MergeFrom(const HomingInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:HomingInfo)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -8491,39 +8646,43 @@ void TrialCondition::MergeFrom(const TrialCondition& from) {
   }
 }
 
-void TrialCondition::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:TrialCondition)
+void HomingInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:HomingInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void TrialCondition::CopyFrom(const TrialCondition& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:TrialCondition)
+void HomingInfo::CopyFrom(const HomingInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:HomingInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool TrialCondition::IsInitialized() const {
+bool HomingInfo::IsInitialized() const {
   return true;
 }
 
-void TrialCondition::InternalSwap(TrialCondition* other) {
+void HomingInfo::Swap(HomingInfo* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void HomingInfo::InternalSwap(HomingInfo* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  params_.InternalSwap(&other->params_);
-  name_.Swap(&other->name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(TrialCondition, priority_)
-      + sizeof(TrialCondition::priority_)
-      - PROTOBUF_FIELD_OFFSET(TrialCondition, success_)>(
-          reinterpret_cast<char*>(&success_),
-          reinterpret_cast<char*>(&other->success_));
+  swap(target_, other->target_);
+  swap(tolerance_, other->tolerance_);
+  swap(elapsed_, other->elapsed_);
+  swap(springconstant_, other->springconstant_);
+  swap(dampingconstant_, other->dampingconstant_);
+  swap(maxforce_, other->maxforce_);
+  swap(homingactive_, other->homingactive_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata TrialCondition::GetMetadata() const {
-  return GetMetadataStatic();
+::google::protobuf::Metadata HomingInfo::GetMetadata() const {
+  protobuf_franka_5ftrial_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_franka_5ftrial_2eproto::file_level_metadata[kIndexInFileMessages];
 }
 
 
@@ -8563,8 +8722,8 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::Object* Arena::CreateMaybeMessag
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ObjectParameter* Arena::CreateMaybeMessage< ::ObjectParameter >(Arena* arena) {
   return Arena::CreateInternal< ::ObjectParameter >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::EndCondition* Arena::CreateMaybeMessage< ::EndCondition >(Arena* arena) {
-  return Arena::CreateInternal< ::EndCondition >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::TrialCondition* Arena::CreateMaybeMessage< ::TrialCondition >(Arena* arena) {
+  return Arena::CreateInternal< ::TrialCondition >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::ObjectState* Arena::CreateMaybeMessage< ::ObjectState >(Arena* arena) {
   return Arena::CreateInternal< ::ObjectState >(arena);
@@ -8578,8 +8737,8 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::TrialState* Arena::CreateMaybeMe
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::HapticsState* Arena::CreateMaybeMessage< ::HapticsState >(Arena* arena) {
   return Arena::CreateInternal< ::HapticsState >(arena);
 }
-template<> PROTOBUF_NOINLINE ::TrialCondition* Arena::CreateMaybeMessage< ::TrialCondition >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::TrialCondition >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::HomingInfo* Arena::CreateMaybeMessage< ::HomingInfo >(Arena* arena) {
+  return Arena::CreateInternal< ::HomingInfo >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

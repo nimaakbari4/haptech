@@ -4,6 +4,7 @@
 #include "trial_conditions/trial_condition.h"
 #include "trial_conditions/time_condition.h"
 #include "trial_conditions/position_condition.h"
+#include "trial_conditions/velocity_condition.h"
 #include "objects/custom_object_interface.h"
 #include "objects/spring_object.h"
 #include "objects/cup_object.h"

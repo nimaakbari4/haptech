@@ -4,6 +4,12 @@
     <Tolerance>0.05</Tolerance>
   </HomePosition>
 
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </StartConditions>
+
   <EndConditions>
     <!-- Time limit - trial ends after 30 seconds -->
     <Condition name="time" success="false" priority="1">

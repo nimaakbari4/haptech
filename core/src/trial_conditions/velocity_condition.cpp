@@ -5,7 +5,7 @@
 
 VelocityCondition::VelocityCondition(std::map<std::string, std::string>& params,
                                    bool success, int priority)
-    : TrialEndCondition(params, success, priority), _maxVelocity(0.1), _lastPosition(0, 0, 0), _lastTime(0), _initialized(false) {
+    : TrialConditionInterface(params, success, priority), _maxVelocity(0.1), _lastPosition(0, 0, 0), _lastTime(0), _initialized(false) {
     
     // Parse max velocity parameter
     auto vel_it = params.find("max_velocity");
@@ -49,6 +49,7 @@ bool VelocityCondition::evaluate() {
     _lastPosition = currentPos;
     _lastTime = currentTime;
     
+    _maxVelocityReached = velocity;
     return velocity > _maxVelocity;
 }
 
@@ -70,10 +71,10 @@ std::string VelocityCondition::getMessage() {
     double dz = currentPos.z() - _lastPosition.z();
     double velocity = std::sqrt(dx*dx + dy*dy + dz*dz) / dt;
     
-    return "Velocity limit exceeded: " + std::to_string(velocity) + 
+    return "Velocity limit exceeded: " + std::to_string(_maxVelocityReached) + 
            " > " + std::to_string(_maxVelocity);
 }
-
+velocity
 std::string VelocityCondition::getName() {
     return "VelocityCondition";
 }
