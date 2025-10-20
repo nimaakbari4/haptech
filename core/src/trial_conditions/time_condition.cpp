@@ -4,7 +4,7 @@
 
 TimeCondition::TimeCondition(std::map<std::string, std::string>& params,
                             bool success, int priority)
-    : TrialEndCondition(params, success, priority), _durationSeconds(0) {
+    : TrialConditionInterface(params, success, priority), _durationSeconds(0) {
     auto it = params.find("duration_seconds");
     if (it != params.end()) {
         try {
@@ -20,13 +20,13 @@ TimeCondition::TimeCondition(std::map<std::string, std::string>& params,
 
 bool TimeCondition::evaluate() {    
     // Use the trial context time instead of wall clock time
-    double elapsedTime = SimulationManager::trialContext.time;
+    double elapsedTime = SimulationManager::trialContext.time - SimulationManager::trialContext.startTime;
     return elapsedTime >= _durationSeconds;
 }
 
 std::string TimeCondition::getMessage() {
-    double elapsedTime = SimulationManager::trialContext.time;
-    return "Time limit reached: " + std::to_string(elapsedTime) + "/" + std::to_string(_durationSeconds) + " seconds";
+    double elapsedTime = SimulationManager::trialContext.time - SimulationManager::trialContext.startTime;
+    return "Time condition reached: " + std::to_string(elapsedTime) + "/" + std::to_string(_durationSeconds) + " seconds";
 }
 
 std::string TimeCondition::getName() {

@@ -4,8 +4,8 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: float, output_csv_stream, objects=None, end_conditions=None):
-    request = pb2.TrialRequest(trial_id=trial_id, trialDuration=duration)
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None):
+    request = pb2.TrialRequest(trial_id=trial_id)
     
     # Add objects to the request if provided
     if objects:
@@ -33,6 +33,20 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, duration: fl
                     param_msg.key = param.key
                     param_msg.value = param.value
     
+    if start_conditions:
+        for condition in start_conditions:
+            # Create StartCondition message
+            start_cond_msg = request.startConditions.add()
+            start_cond_msg.name = condition.name
+            start_cond_msg.success = condition.success
+            start_cond_msg.priority = condition.priority
+            
+            # Add parameters
+            for param in condition.parameters:
+                param_msg = start_cond_msg.params.add()
+                param_msg.key = param.key
+                param_msg.value = param.value
+
     # Add end conditions to the request if provided
     if end_conditions:
         for condition in end_conditions:
@@ -80,7 +94,7 @@ def handle_data_point(data, output_csv_stream):
     force_str = f"[{force.x:.4f}, {force.y:.4f}, {force.z:.4f}]"
 
     # display data point
-    print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
+    # print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
 
     # log to CSV file
     writer = csv.writer(output_csv_stream)

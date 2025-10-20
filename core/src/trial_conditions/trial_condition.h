@@ -1,5 +1,5 @@
-#ifndef TRIAL_END_CONDITION_H
-#define TRIAL_END_CONDITION_H
+#ifndef TRIAL_CONDITION_H
+#define TRIAL_CONDITION_H
 
 #include "chai3d.h"
 #include <map>
@@ -9,16 +9,16 @@ using namespace chai3d;
 // Forward declaration to avoid circular include
 class SimulationManager;
 
-class TrialEndCondition {
+class TrialConditionInterface {
 public:
     std::map<std::string, std::string> params;
     bool success;
     int priority;
 
-    TrialEndCondition(std::map<std::string, std::string>& params,
-                    bool success, int priority)
+    TrialConditionInterface(std::map<std::string, std::string>& params,
+                   bool success, int priority)
         : params(params), success(success), priority(priority) {}
-    virtual ~TrialEndCondition() = default;
+    virtual ~TrialConditionInterface() = default;
     
     /**
      * Evaluate the condition
@@ -36,10 +36,9 @@ public:
     virtual std::string getName() = 0;
 };
 
-
-class EndConditionRegistry {
+class TrialConditionRegistry {
 public:
-    using ConditionCreator = std::function<std::unique_ptr<TrialEndCondition>(
+    using ConditionCreator = std::function<std::unique_ptr<TrialConditionInterface>(
         std::map<std::string, std::string>&, bool, int)>;
     
     /**
@@ -48,9 +47,9 @@ public:
     static void registerCondition(const std::string& name, ConditionCreator creator);
     
     /**
-     * Create an condition by type name
+     * Create a condition by type name
      */
-    static std::unique_ptr<TrialEndCondition> createCondition(const std::string& name, 
+    static std::unique_ptr<TrialConditionInterface> createCondition(const std::string& name, 
                                                 std::map<std::string, std::string>& params,
                                                 bool success, int priority);
     

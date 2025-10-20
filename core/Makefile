@@ -26,7 +26,7 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(CHAI3D_DIR)/external/libfranka/common/include \
 	-I$(SRC_DIR) \
 	-I$(SRC_DIR)/objects \
-	-I$(SRC_DIR)/end_conditions \
+	-I$(SRC_DIR)/trial_conditions \
 	-I/usr/include \
 	-I/usr/local/include \
 	-I/usr/include/eigen3 \
@@ -97,8 +97,8 @@ $(BIN_DIR)/objects/%.o: $(SRC_DIR)/objects/%.cpp | $(BIN_DIR)
 	@mkdir -p $(BIN_DIR)/objects
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BIN_DIR)/end_conditions/%.o: $(SRC_DIR)/end_conditions/%.cpp | $(BIN_DIR)
-	@mkdir -p $(BIN_DIR)/end_conditions
+$(BIN_DIR)/trial_conditions/%.o: $(SRC_DIR)/trial_conditions/%.cpp | $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)/trial_conditions
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile protobuf/gRPC generated files
@@ -111,7 +111,7 @@ $(BIN_DIR)/franka_trial.grpc.pb.o: $(SRC_DIR)/franka_trial.grpc.pb.cc $(SRC_DIR)
 $(BIN_DIR):
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(BIN_DIR)/objects
-	@mkdir -p $(BIN_DIR)/end_conditions
+	@mkdir -p $(BIN_DIR)/trial_conditions
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(TARGET)
