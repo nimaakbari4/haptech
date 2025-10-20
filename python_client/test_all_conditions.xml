@@ -7,7 +7,7 @@
   <EndConditions>
     <!-- Time limit - trial ends after 30 seconds -->
     <Condition name="time" success="false" priority="1">
-      <Parameters duration_seconds="30.0"/>
+      <Parameters duration_seconds="15.0"/>
     </Condition>
     
     <!-- Position goal - trial ends when reaching target -->
@@ -16,9 +16,9 @@
     </Condition>
     
     <!-- Velocity limit - trial ends if moving too fast -->
-    <!-- <Condition name="velocity" success="false" priority="3">
-      <Parameters max_velocity="0.2"/>
-    </Condition> -->
+    <Condition name="velocity" success="false" priority="3">
+      <Parameters max_velocity="2.5"/>
+    </Condition> 
   </EndConditions>
 
   <HUDText>

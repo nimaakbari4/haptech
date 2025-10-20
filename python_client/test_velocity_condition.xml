@@ -6,7 +6,7 @@
 
   <EndConditions>
     <Condition name="velocity" success="false" priority="1">
-      <Parameters max_velocity="0.5"/>
+      <Parameters max_velocity="2"/>
     </Condition>
   </EndConditions>
 
