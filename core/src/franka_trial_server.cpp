@@ -75,9 +75,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         double r = obj.has_color() ? obj.color().r() : 1.0;
         double g = obj.has_color() ? obj.color().g() : 1.0;
         double b = obj.has_color() ? obj.color().b() : 1.0;
+
+        // debug color
+        std::cout << "[DEBUG] Object color - R: " << r << ", G: " << g << ", B: " << b << std::endl;
         
         if (!SimulationManager::addObjectFromConfig(obj.id(), obj.type(), 
                                                    obj.position().x(), obj.position().y(), obj.position().z(),
+                                                   obj.orientation().x(), obj.orientation().y(), obj.orientation().z(),
                                                    r, g, b, params)) {
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::ERROR);
@@ -87,15 +91,38 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         }
     }
 
+    // Add trial start conditions
+    SimulationManager::trialContext.startConditions.clear();
+    std::cout << "[DEBUG] Adding " << request->startconditions_size() << " start conditions." << std::endl;
+    for (const auto& cond : request->startconditions()) {
+        std::map<std::string, std::string> params;
+        for (const auto& param : cond.params()) {
+            params[param.key()] = param.value();
+        }
+
+        std::unique_ptr<TrialConditionInterface> condition = TrialConditionRegistry::createCondition(cond.name(), params, cond.success(), cond.priority());
+
+        if (condition != nullptr) {
+            SimulationManager::trialContext.startConditions.push_back(std::move(condition));
+        } else {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Unknown start condition: " + cond.name());
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+    }
+
     // Add trial end conditions
     SimulationManager::trialContext.endConditions.clear();
+    std::cout << "[DEBUG] Adding " << request->endconditions_size() << " end conditions." << std::endl;
     for (const auto& cond : request->endconditions()) {
         std::map<std::string, std::string> params;
         for (const auto& param : cond.params()) {
             params[param.key()] = param.value();
         }
 
-        std::unique_ptr<TrialEndCondition> condition = EndConditionRegistry::createCondition(cond.name(), params, cond.success(), cond.priority());
+        std::unique_ptr<TrialConditionInterface> condition = TrialConditionRegistry::createCondition(cond.name(), params, cond.success(), cond.priority());
 
         if (condition != nullptr) {
             SimulationManager::trialContext.endConditions.push_back(std::move(condition));
@@ -110,21 +137,23 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // Sort conditions by priority
     std::sort(SimulationManager::trialContext.endConditions.begin(), SimulationManager::trialContext.endConditions.end(),
-        [](const std::unique_ptr<TrialEndCondition>& a, const std::unique_ptr<TrialEndCondition>& b) -> bool {
+        [](const std::unique_ptr<TrialConditionInterface>& a, const std::unique_ptr<TrialConditionInterface>& b) -> bool {
             return a->priority > b->priority;
     });
 
     // set trial context
     SimulationManager::trialContext.trialId = request->trial_id();
     SimulationManager::trialContext.time = 0.0;
+    SimulationManager::trialContext.startTime = 0.0;
     SimulationManager::trialContext.endConditionMet = nullptr;
+    SimulationManager::trialContext.startConditionMet = nullptr;
 
     // start trial
-    std::cout << "[TRIAL] Trial started: " << request->trial_id() << " for " << request->trialduration() << "s" << std::endl;
+    std::cout << "[TRIAL] Trial created: " << request->trial_id() << " (start conditions: " << request->startconditions_size() << " condition(s), end conditions: " << request->endconditions_size() << " condition(s))" << std::endl;
 
     TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
     status->set_status(TrialStatus::STARTED);
-    status->set_message("The trial has started.");
+    status->set_message("The trial has been created. Waiting for trial start.");
     writer->Write(statusMsg);
 
     SimulationManager::trialContext.trialRunning = true;
@@ -147,15 +176,28 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     cVector3d retrievedProxyPos;
     cVector3d retrievedComputedForce;
     cVector3d retrievedDevicePos;
+    bool updatedTrialStart = false;
     cVector3d retrievedDeviceVel;
     cVector3d retrievedDeviceAngVel;
     cMatrix3d retrievedDeviceRot;
 
     // go until trial ends (end conditions are met)
     while (SimulationManager::trialContext.endConditionMet == nullptr) {
-        SimulationManager::checkEndConditions();
+        SimulationManager::checkTrialConditions();
 
-        if (SimulationManager::trialContext.endConditionMet != nullptr) {
+        if (!updatedTrialStart && SimulationManager::trialContext.startConditionMet != nullptr) {
+            std::cout << "[TRIAL] Trial started after " << std::to_string(SimulationManager::trialContext.time) << " seconds: " << SimulationManager::trialContext.startConditionMet->getMessage() << std::endl;
+
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::STARTED);
+            status->set_message("Trial started after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.startConditionMet->getMessage());
+            writer->Write(statusMsg);
+            updatedTrialStart = true;
+            SimulationManager::trialContext.startTime = SimulationManager::trialContext.time;
+        }
+
+        if (SimulationManager::trialContext.startConditionMet != nullptr &&
+            SimulationManager::trialContext.endConditionMet != nullptr) {
             break;
         }
         
@@ -255,13 +297,18 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // ensure haptics is disabled and ramp forces to zero during teardown
     SimulationManager::simContext.hapticsEnabled = false;
     SimulationManager::rampDeviceForceToZero(150);
-    std::cout << "[TRIAL] Trial ended: " << SimulationManager::trialContext.trialId << ", lasted " << SimulationManager::trialContext.time << "s" << std::endl;
 
-    status->set_status(TrialStatus::COMPLETED);
-    status->set_message(SimulationManager::trialContext.endConditionMet != nullptr ? 
-                        "Trial completed: " + SimulationManager::trialContext.endConditionMet->getMessage() : 
-                        "Trial completed.");
-    writer->Write(statusMsg);
+    // output results
+    std::cout << "[TRIAL] Trial results: " << SimulationManager::trialContext.trialId << std::endl;
+    std::cout << "[TRIAL] Duration: " << SimulationManager::trialContext.time << " seconds" << std::endl;
+
+    if (SimulationManager::trialContext.endConditionMet != nullptr) {
+        std::cout << "[TRIAL] End condition met: " << SimulationManager::trialContext.endConditionMet->getMessage() << std::endl;
+
+        status->set_status(TrialStatus::COMPLETED);
+        status->set_message("Trial completed after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.endConditionMet->getMessage());
+        writer->Write(statusMsg);
+    }
 
     // reset environment
     SimulationManager::reset();

@@ -49,33 +49,15 @@ void AddDescriptors();
 class Color;
 class ColorDefaultTypeInternal;
 extern ColorDefaultTypeInternal _Color_default_instance_;
-class Contact;
-class ContactDefaultTypeInternal;
-extern ContactDefaultTypeInternal _Contact_default_instance_;
-class EndCondition;
-class EndConditionDefaultTypeInternal;
-extern EndConditionDefaultTypeInternal _EndCondition_default_instance_;
-class HapticsState;
-class HapticsStateDefaultTypeInternal;
-extern HapticsStateDefaultTypeInternal _HapticsState_default_instance_;
-class HomingInfo;
-class HomingInfoDefaultTypeInternal;
-extern HomingInfoDefaultTypeInternal _HomingInfo_default_instance_;
 class Object;
 class ObjectDefaultTypeInternal;
 extern ObjectDefaultTypeInternal _Object_default_instance_;
 class ObjectParameter;
 class ObjectParameterDefaultTypeInternal;
 extern ObjectParameterDefaultTypeInternal _ObjectParameter_default_instance_;
-class ObjectState;
-class ObjectStateDefaultTypeInternal;
-extern ObjectStateDefaultTypeInternal _ObjectState_default_instance_;
-class Pose;
-class PoseDefaultTypeInternal;
-extern PoseDefaultTypeInternal _Pose_default_instance_;
-class Quaternion;
-class QuaternionDefaultTypeInternal;
-extern QuaternionDefaultTypeInternal _Quaternion_default_instance_;
+class TrialCondition;
+class TrialConditionDefaultTypeInternal;
+extern TrialConditionDefaultTypeInternal _TrialCondition_default_instance_;
 class TrialDataPoint;
 class TrialDataPointDefaultTypeInternal;
 extern TrialDataPointDefaultTypeInternal _TrialDataPoint_default_instance_;
@@ -100,15 +82,9 @@ extern Vector3DefaultTypeInternal _Vector3_default_instance_;
 namespace google {
 namespace protobuf {
 template<> ::Color* Arena::CreateMaybeMessage<::Color>(Arena*);
-template<> ::Contact* Arena::CreateMaybeMessage<::Contact>(Arena*);
-template<> ::EndCondition* Arena::CreateMaybeMessage<::EndCondition>(Arena*);
-template<> ::HapticsState* Arena::CreateMaybeMessage<::HapticsState>(Arena*);
-template<> ::HomingInfo* Arena::CreateMaybeMessage<::HomingInfo>(Arena*);
 template<> ::Object* Arena::CreateMaybeMessage<::Object>(Arena*);
 template<> ::ObjectParameter* Arena::CreateMaybeMessage<::ObjectParameter>(Arena*);
-template<> ::ObjectState* Arena::CreateMaybeMessage<::ObjectState>(Arena*);
-template<> ::Pose* Arena::CreateMaybeMessage<::Pose>(Arena*);
-template<> ::Quaternion* Arena::CreateMaybeMessage<::Quaternion>(Arena*);
+template<> ::TrialCondition* Arena::CreateMaybeMessage<::TrialCondition>(Arena*);
 template<> ::TrialDataPoint* Arena::CreateMaybeMessage<::TrialDataPoint>(Arena*);
 template<> ::TrialRequest* Arena::CreateMaybeMessage<::TrialRequest>(Arena*);
 template<> ::TrialResponseStream* Arena::CreateMaybeMessage<::TrialResponseStream>(Arena*);
@@ -230,7 +206,13 @@ class TrialRequest : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // repeated .Object objects = 3;
+  enum : int {
+    kObjectsFieldNumber = 2,
+    kStartConditionsFieldNumber = 3,
+    kEndConditionsFieldNumber = 4,
+    kTrialIdFieldNumber = 1,
+  };
+  // repeated .Object objects = 2;
   int objects_size() const;
   void clear_objects();
   static const int kObjectsFieldNumber = 3;
@@ -242,16 +224,37 @@ class TrialRequest : public ::google::protobuf::Message /* @@protoc_insertion_po
   const ::google::protobuf::RepeatedPtrField< ::Object >&
       objects() const;
 
-  // repeated .EndCondition endConditions = 4;
+  // repeated .TrialCondition startConditions = 3;
+  int startconditions_size() const;
+  private:
+  int _internal_startconditions_size() const;
+  public:
+  void clear_startconditions();
+  ::TrialCondition* mutable_startconditions(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
+      mutable_startconditions();
+  private:
+  const ::TrialCondition& _internal_startconditions(int index) const;
+  ::TrialCondition* _internal_add_startconditions();
+  public:
+  const ::TrialCondition& startconditions(int index) const;
+  ::TrialCondition* add_startconditions();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
+      startconditions() const;
+
+  // repeated .TrialCondition endConditions = 4;
   int endconditions_size() const;
   void clear_endconditions();
-  static const int kEndConditionsFieldNumber = 4;
-  ::EndCondition* mutable_endconditions(int index);
-  ::google::protobuf::RepeatedPtrField< ::EndCondition >*
+  ::TrialCondition* mutable_endconditions(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
       mutable_endconditions();
-  const ::EndCondition& endconditions(int index) const;
-  ::EndCondition* add_endconditions();
-  const ::google::protobuf::RepeatedPtrField< ::EndCondition >&
+  private:
+  const ::TrialCondition& _internal_endconditions(int index) const;
+  ::TrialCondition* _internal_add_endconditions();
+  public:
+  const ::TrialCondition& endconditions(int index) const;
+  ::TrialCondition* add_endconditions();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
       endconditions() const;
 
   // string trial_id = 1;
@@ -268,22 +271,19 @@ class TrialRequest : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::std::string* release_trial_id();
   void set_allocated_trial_id(::std::string* trial_id);
 
-  // double trialDuration = 2;
-  void clear_trialduration();
-  static const int kTrialDurationFieldNumber = 2;
-  double trialduration() const;
-  void set_trialduration(double value);
-
   // @@protoc_insertion_point(class_scope:TrialRequest)
  private:
+  class _Internal;
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedPtrField< ::Object > objects_;
-  ::google::protobuf::RepeatedPtrField< ::EndCondition > endconditions_;
-  ::google::protobuf::internal::ArenaStringPtr trial_id_;
-  double trialduration_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Object > objects_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition > startconditions_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition > endconditions_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr trial_id_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_franka_5ftrial_2eproto;
 };
 // -------------------------------------------------------------------
 
@@ -1711,62 +1711,81 @@ class Twist : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 };
 // -------------------------------------------------------------------
 
-class Object : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Object) */ {
+class TrialCondition PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:TrialCondition) */ {
  public:
-  Object();
-  virtual ~Object();
+  inline TrialCondition() : TrialCondition(nullptr) {};
+  virtual ~TrialCondition();
 
-  Object(const Object& from);
-
-  inline Object& operator=(const Object& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Object(Object&& from) noexcept
-    : Object() {
+  TrialCondition(const TrialCondition& from);
+  TrialCondition(TrialCondition&& from) noexcept
+    : TrialCondition() {
     *this = ::std::move(from);
   }
 
-  inline Object& operator=(Object&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+  inline TrialCondition& operator=(const TrialCondition& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TrialCondition& operator=(TrialCondition&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
       CopyFrom(from);
     }
     return *this;
   }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Object& default_instance();
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const TrialCondition& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Object* internal_default_instance() {
-    return reinterpret_cast<const Object*>(
-               &_Object_default_instance_);
+  static inline const TrialCondition* internal_default_instance() {
+    return reinterpret_cast<const TrialCondition*>(
+               &_TrialCondition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     9;
 
-  void Swap(Object* other);
-  friend void swap(Object& a, Object& b) {
+  friend void swap(TrialCondition& a, TrialCondition& b) {
     a.Swap(&b);
+  }
+  inline void Swap(TrialCondition* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TrialCondition* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
   }
 
   // implements Message ----------------------------------------------
 
-  inline Object* New() const final {
-    return CreateMaybeMessage<Object>(NULL);
+  inline TrialCondition* New() const final {
+    return CreateMaybeMessage<TrialCondition>(nullptr);
   }
 
-  Object* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Object>(arena);
+  TrialCondition* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<TrialCondition>(arena);
   }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Object& from);
-  void MergeFrom(const Object& from);
-  void Clear() final;
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const TrialCondition& from);
+  void MergeFrom(const TrialCondition& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
   size_t ByteSizeLong() const final;
@@ -1782,7 +1801,19 @@ class Object : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Object* other);
+  void InternalSwap(TrialCondition* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "TrialCondition";
+  }
+  protected:
+  explicit TrialCondition(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -2234,2295 +2265,9 @@ class ObjectState : public ::google::protobuf::Message /* @@protoc_insertion_poi
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // string id = 1;
-  void clear_id();
-  static const int kIdFieldNumber = 1;
-  const ::std::string& id() const;
-  void set_id(const ::std::string& value);
-  #if LANG_CXX11
-  void set_id(::std::string&& value);
-  #endif
-  void set_id(const char* value);
-  void set_id(const char* value, size_t size);
-  ::std::string* mutable_id();
-  ::std::string* release_id();
-  void set_allocated_id(::std::string* id);
-
-  // string type = 4;
-  void clear_type();
-  static const int kTypeFieldNumber = 4;
-  const ::std::string& type() const;
-  void set_type(const ::std::string& value);
-  #if LANG_CXX11
-  void set_type(::std::string&& value);
-  #endif
-  void set_type(const char* value);
-  void set_type(const char* value, size_t size);
-  ::std::string* mutable_type();
-  ::std::string* release_type();
-  void set_allocated_type(::std::string* type);
-
-  // .Vector3 position = 2;
-  bool has_position() const;
-  void clear_position();
-  static const int kPositionFieldNumber = 2;
-  private:
-  const ::Vector3& _internal_position() const;
-  public:
-  const ::Vector3& position() const;
-  ::Vector3* release_position();
-  ::Vector3* mutable_position();
-  void set_allocated_position(::Vector3* position);
-
-  // .Quaternion orientation = 3;
-  bool has_orientation() const;
-  void clear_orientation();
-  static const int kOrientationFieldNumber = 3;
-  private:
-  const ::Quaternion& _internal_orientation() const;
-  public:
-  const ::Quaternion& orientation() const;
-  ::Quaternion* release_orientation();
-  ::Quaternion* mutable_orientation();
-  void set_allocated_orientation(::Quaternion* orientation);
-
-  // .Color color = 5;
-  bool has_color() const;
-  void clear_color();
-  static const int kColorFieldNumber = 5;
-  private:
-  const ::Color& _internal_color() const;
-  public:
-  const ::Color& color() const;
-  ::Color* release_color();
-  ::Color* mutable_color();
-  void set_allocated_color(::Color* color);
-
-  // bool active = 6;
-  void clear_active();
-  static const int kActiveFieldNumber = 6;
-  bool active() const;
-  void set_active(bool value);
-
-  // bool collisionEnabled = 7;
-  void clear_collisionenabled();
-  static const int kCollisionEnabledFieldNumber = 7;
-  bool collisionenabled() const;
-  void set_collisionenabled(bool value);
-
-  // @@protoc_insertion_point(class_scope:ObjectState)
+  // @@protoc_insertion_point(class_scope:TrialCondition)
  private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr id_;
-  ::google::protobuf::internal::ArenaStringPtr type_;
-  ::Vector3* position_;
-  ::Quaternion* orientation_;
-  ::Color* color_;
-  bool active_;
-  bool collisionenabled_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class Contact : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Contact) */ {
- public:
-  Contact();
-  virtual ~Contact();
-
-  Contact(const Contact& from);
-
-  inline Contact& operator=(const Contact& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Contact(Contact&& from) noexcept
-    : Contact() {
-    *this = ::std::move(from);
-  }
-
-  inline Contact& operator=(Contact&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Contact& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Contact* internal_default_instance() {
-    return reinterpret_cast<const Contact*>(
-               &_Contact_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    13;
-
-  void Swap(Contact* other);
-  friend void swap(Contact& a, Contact& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Contact* New() const final {
-    return CreateMaybeMessage<Contact>(NULL);
-  }
-
-  Contact* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Contact>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Contact& from);
-  void MergeFrom(const Contact& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Contact* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // string objectId = 1;
-  void clear_objectid();
-  static const int kObjectIdFieldNumber = 1;
-  const ::std::string& objectid() const;
-  void set_objectid(const ::std::string& value);
-  #if LANG_CXX11
-  void set_objectid(::std::string&& value);
-  #endif
-  void set_objectid(const char* value);
-  void set_objectid(const char* value, size_t size);
-  ::std::string* mutable_objectid();
-  ::std::string* release_objectid();
-  void set_allocated_objectid(::std::string* objectid);
-
-  // string frictionState = 5;
-  void clear_frictionstate();
-  static const int kFrictionStateFieldNumber = 5;
-  const ::std::string& frictionstate() const;
-  void set_frictionstate(const ::std::string& value);
-  #if LANG_CXX11
-  void set_frictionstate(::std::string&& value);
-  #endif
-  void set_frictionstate(const char* value);
-  void set_frictionstate(const char* value, size_t size);
-  ::std::string* mutable_frictionstate();
-  ::std::string* release_frictionstate();
-  void set_allocated_frictionstate(::std::string* frictionstate);
-
-  // .Vector3 point = 2;
-  bool has_point() const;
-  void clear_point();
-  static const int kPointFieldNumber = 2;
-  private:
-  const ::Vector3& _internal_point() const;
-  public:
-  const ::Vector3& point() const;
-  ::Vector3* release_point();
-  ::Vector3* mutable_point();
-  void set_allocated_point(::Vector3* point);
-
-  // .Vector3 normal = 3;
-  bool has_normal() const;
-  void clear_normal();
-  static const int kNormalFieldNumber = 3;
-  private:
-  const ::Vector3& _internal_normal() const;
-  public:
-  const ::Vector3& normal() const;
-  ::Vector3* release_normal();
-  ::Vector3* mutable_normal();
-  void set_allocated_normal(::Vector3* normal);
-
-  // double penetrationDepth = 4;
-  void clear_penetrationdepth();
-  static const int kPenetrationDepthFieldNumber = 4;
-  double penetrationdepth() const;
-  void set_penetrationdepth(double value);
-
-  // @@protoc_insertion_point(class_scope:Contact)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr objectid_;
-  ::google::protobuf::internal::ArenaStringPtr frictionstate_;
-  ::Vector3* point_;
-  ::Vector3* normal_;
-  double penetrationdepth_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class TrialState : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:TrialState) */ {
- public:
-  TrialState();
-  virtual ~TrialState();
-
-  TrialState(const TrialState& from);
-
-  inline TrialState& operator=(const TrialState& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  TrialState(TrialState&& from) noexcept
-    : TrialState() {
-    *this = ::std::move(from);
-  }
-
-  inline TrialState& operator=(TrialState&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const TrialState& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const TrialState* internal_default_instance() {
-    return reinterpret_cast<const TrialState*>(
-               &_TrialState_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    14;
-
-  void Swap(TrialState* other);
-  friend void swap(TrialState& a, TrialState& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline TrialState* New() const final {
-    return CreateMaybeMessage<TrialState>(NULL);
-  }
-
-  TrialState* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<TrialState>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const TrialState& from);
-  void MergeFrom(const TrialState& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(TrialState* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // string trialId = 1;
-  void clear_trialid();
-  static const int kTrialIdFieldNumber = 1;
-  const ::std::string& trialid() const;
-  void set_trialid(const ::std::string& value);
-  #if LANG_CXX11
-  void set_trialid(::std::string&& value);
-  #endif
-  void set_trialid(const char* value);
-  void set_trialid(const char* value, size_t size);
-  ::std::string* mutable_trialid();
-  ::std::string* release_trialid();
-  void set_allocated_trialid(::std::string* trialid);
-
-  // double elapsedTime = 2;
-  void clear_elapsedtime();
-  static const int kElapsedTimeFieldNumber = 2;
-  double elapsedtime() const;
-  void set_elapsedtime(double value);
-
-  // double distanceToGoal = 5;
-  void clear_distancetogoal();
-  static const int kDistanceToGoalFieldNumber = 5;
-  double distancetogoal() const;
-  void set_distancetogoal(double value);
-
-  // double goalTolerance = 6;
-  void clear_goaltolerance();
-  static const int kGoalToleranceFieldNumber = 6;
-  double goaltolerance() const;
-  void set_goaltolerance(double value);
-
-  // bool trialRunning = 3;
-  void clear_trialrunning();
-  static const int kTrialRunningFieldNumber = 3;
-  bool trialrunning() const;
-  void set_trialrunning(bool value);
-
-  // bool reachedGoal = 4;
-  void clear_reachedgoal();
-  static const int kReachedGoalFieldNumber = 4;
-  bool reachedgoal() const;
-  void set_reachedgoal(bool value);
-
-  // @@protoc_insertion_point(class_scope:TrialState)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr trialid_;
-  double elapsedtime_;
-  double distancetogoal_;
-  double goaltolerance_;
-  bool trialrunning_;
-  bool reachedgoal_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class HapticsState : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:HapticsState) */ {
- public:
-  HapticsState();
-  virtual ~HapticsState();
-
-  HapticsState(const HapticsState& from);
-
-  inline HapticsState& operator=(const HapticsState& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  HapticsState(HapticsState&& from) noexcept
-    : HapticsState() {
-    *this = ::std::move(from);
-  }
-
-  inline HapticsState& operator=(HapticsState&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const HapticsState& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const HapticsState* internal_default_instance() {
-    return reinterpret_cast<const HapticsState*>(
-               &_HapticsState_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    15;
-
-  void Swap(HapticsState* other);
-  friend void swap(HapticsState& a, HapticsState& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline HapticsState* New() const final {
-    return CreateMaybeMessage<HapticsState>(NULL);
-  }
-
-  HapticsState* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<HapticsState>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const HapticsState& from);
-  void MergeFrom(const HapticsState& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(HapticsState* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // double workspaceScaleFactor = 2;
-  void clear_workspacescalefactor();
-  static const int kWorkspaceScaleFactorFieldNumber = 2;
-  double workspacescalefactor() const;
-  void set_workspacescalefactor(double value);
-
-  // double toolRadius = 3;
-  void clear_toolradius();
-  static const int kToolRadiusFieldNumber = 3;
-  double toolradius() const;
-  void set_toolradius(double value);
-
-  // double loopFrequencyHz = 5;
-  void clear_loopfrequencyhz();
-  static const int kLoopFrequencyHzFieldNumber = 5;
-  double loopfrequencyhz() const;
-  void set_loopfrequencyhz(double value);
-
-  // double dt = 6;
-  void clear_dt();
-  static const int kDtFieldNumber = 6;
-  double dt() const;
-  void set_dt(double value);
-
-  // bool hapticsEnabled = 1;
-  void clear_hapticsenabled();
-  static const int kHapticsEnabledFieldNumber = 1;
-  bool hapticsenabled() const;
-  void set_hapticsenabled(bool value);
-
-  // bool waitForSmallForce = 4;
-  void clear_waitforsmallforce();
-  static const int kWaitForSmallForceFieldNumber = 4;
-  bool waitforsmallforce() const;
-  void set_waitforsmallforce(bool value);
-
-  // @@protoc_insertion_point(class_scope:HapticsState)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  double workspacescalefactor_;
-  double toolradius_;
-  double loopfrequencyhz_;
-  double dt_;
-  bool hapticsenabled_;
-  bool waitforsmallforce_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class HomingInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:HomingInfo) */ {
- public:
-  HomingInfo();
-  virtual ~HomingInfo();
-
-  HomingInfo(const HomingInfo& from);
-
-  inline HomingInfo& operator=(const HomingInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  HomingInfo(HomingInfo&& from) noexcept
-    : HomingInfo() {
-    *this = ::std::move(from);
-  }
-
-  inline HomingInfo& operator=(HomingInfo&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const HomingInfo& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const HomingInfo* internal_default_instance() {
-    return reinterpret_cast<const HomingInfo*>(
-               &_HomingInfo_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    16;
-
-  void Swap(HomingInfo* other);
-  friend void swap(HomingInfo& a, HomingInfo& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline HomingInfo* New() const final {
-    return CreateMaybeMessage<HomingInfo>(NULL);
-  }
-
-  HomingInfo* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<HomingInfo>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const HomingInfo& from);
-  void MergeFrom(const HomingInfo& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(HomingInfo* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // .Vector3 target = 2;
-  bool has_target() const;
-  void clear_target();
-  static const int kTargetFieldNumber = 2;
-  private:
-  const ::Vector3& _internal_target() const;
-  public:
-  const ::Vector3& target() const;
-  ::Vector3* release_target();
-  ::Vector3* mutable_target();
-  void set_allocated_target(::Vector3* target);
-
-  // double tolerance = 3;
-  void clear_tolerance();
-  static const int kToleranceFieldNumber = 3;
-  double tolerance() const;
-  void set_tolerance(double value);
-
-  // double elapsed = 4;
-  void clear_elapsed();
-  static const int kElapsedFieldNumber = 4;
-  double elapsed() const;
-  void set_elapsed(double value);
-
-  // double springConstant = 5;
-  void clear_springconstant();
-  static const int kSpringConstantFieldNumber = 5;
-  double springconstant() const;
-  void set_springconstant(double value);
-
-  // double dampingConstant = 6;
-  void clear_dampingconstant();
-  static const int kDampingConstantFieldNumber = 6;
-  double dampingconstant() const;
-  void set_dampingconstant(double value);
-
-  // double maxForce = 7;
-  void clear_maxforce();
-  static const int kMaxForceFieldNumber = 7;
-  double maxforce() const;
-  void set_maxforce(double value);
-
-  // bool homingActive = 1;
-  void clear_homingactive();
-  static const int kHomingActiveFieldNumber = 1;
-  bool homingactive() const;
-  void set_homingactive(bool value);
-
-  // @@protoc_insertion_point(class_scope:HomingInfo)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::Vector3* target_;
-  double tolerance_;
-  double elapsed_;
-  double springconstant_;
-  double dampingconstant_;
-  double maxforce_;
-  bool homingactive_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_franka_5ftrial_2eproto::TableStruct;
-};
-// ===================================================================
-
-
-// ===================================================================
-
-#ifdef __GNUC__
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#endif  // __GNUC__
-// TrialRequest
-
-// string trial_id = 1;
-inline void TrialRequest::clear_trial_id() {
-  trial_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialRequest::trial_id() const {
-  // @@protoc_insertion_point(field_get:TrialRequest.trial_id)
-  return trial_id_.GetNoArena();
-}
-inline void TrialRequest::set_trial_id(const ::std::string& value) {
-  
-  trial_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialRequest.trial_id)
-}
-#if LANG_CXX11
-inline void TrialRequest::set_trial_id(::std::string&& value) {
-  
-  trial_id_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialRequest.trial_id)
-}
-#endif
-inline void TrialRequest::set_trial_id(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  trial_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialRequest.trial_id)
-}
-inline void TrialRequest::set_trial_id(const char* value, size_t size) {
-  
-  trial_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialRequest.trial_id)
-}
-inline ::std::string* TrialRequest::mutable_trial_id() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialRequest.trial_id)
-  return trial_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialRequest::release_trial_id() {
-  // @@protoc_insertion_point(field_release:TrialRequest.trial_id)
-  
-  return trial_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialRequest::set_allocated_trial_id(::std::string* trial_id) {
-  if (trial_id != NULL) {
-    
-  } else {
-    
-  }
-  trial_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), trial_id);
-  // @@protoc_insertion_point(field_set_allocated:TrialRequest.trial_id)
-}
-
-// double trialDuration = 2;
-inline void TrialRequest::clear_trialduration() {
-  trialduration_ = 0;
-}
-inline double TrialRequest::trialduration() const {
-  // @@protoc_insertion_point(field_get:TrialRequest.trialDuration)
-  return trialduration_;
-}
-inline void TrialRequest::set_trialduration(double value) {
-  
-  trialduration_ = value;
-  // @@protoc_insertion_point(field_set:TrialRequest.trialDuration)
-}
-
-// repeated .Object objects = 3;
-inline int TrialRequest::objects_size() const {
-  return objects_.size();
-}
-inline void TrialRequest::clear_objects() {
-  objects_.Clear();
-}
-inline ::Object* TrialRequest::mutable_objects(int index) {
-  // @@protoc_insertion_point(field_mutable:TrialRequest.objects)
-  return objects_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::Object >*
-TrialRequest::mutable_objects() {
-  // @@protoc_insertion_point(field_mutable_list:TrialRequest.objects)
-  return &objects_;
-}
-inline const ::Object& TrialRequest::objects(int index) const {
-  // @@protoc_insertion_point(field_get:TrialRequest.objects)
-  return objects_.Get(index);
-}
-inline ::Object* TrialRequest::add_objects() {
-  // @@protoc_insertion_point(field_add:TrialRequest.objects)
-  return objects_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::Object >&
-TrialRequest::objects() const {
-  // @@protoc_insertion_point(field_list:TrialRequest.objects)
-  return objects_;
-}
-
-// repeated .EndCondition endConditions = 4;
-inline int TrialRequest::endconditions_size() const {
-  return endconditions_.size();
-}
-inline void TrialRequest::clear_endconditions() {
-  endconditions_.Clear();
-}
-inline ::EndCondition* TrialRequest::mutable_endconditions(int index) {
-  // @@protoc_insertion_point(field_mutable:TrialRequest.endConditions)
-  return endconditions_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::EndCondition >*
-TrialRequest::mutable_endconditions() {
-  // @@protoc_insertion_point(field_mutable_list:TrialRequest.endConditions)
-  return &endconditions_;
-}
-inline const ::EndCondition& TrialRequest::endconditions(int index) const {
-  // @@protoc_insertion_point(field_get:TrialRequest.endConditions)
-  return endconditions_.Get(index);
-}
-inline ::EndCondition* TrialRequest::add_endconditions() {
-  // @@protoc_insertion_point(field_add:TrialRequest.endConditions)
-  return endconditions_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::EndCondition >&
-TrialRequest::endconditions() const {
-  // @@protoc_insertion_point(field_list:TrialRequest.endConditions)
-  return endconditions_;
-}
-
-// -------------------------------------------------------------------
-
-// TrialResponseStream
-
-// .TrialStatusUpdate statusUpdate = 1;
-inline bool TrialResponseStream::has_statusupdate() const {
-  return payload_case() == kStatusUpdate;
-}
-inline void TrialResponseStream::set_has_statusupdate() {
-  _oneof_case_[0] = kStatusUpdate;
-}
-inline void TrialResponseStream::clear_statusupdate() {
-  if (has_statusupdate()) {
-    delete payload_.statusupdate_;
-    clear_has_payload();
-  }
-}
-inline const ::TrialStatusUpdate& TrialResponseStream::_internal_statusupdate() const {
-  return *payload_.statusupdate_;
-}
-inline ::TrialStatusUpdate* TrialResponseStream::release_statusupdate() {
-  // @@protoc_insertion_point(field_release:TrialResponseStream.statusUpdate)
-  if (has_statusupdate()) {
-    clear_has_payload();
-      ::TrialStatusUpdate* temp = payload_.statusupdate_;
-    payload_.statusupdate_ = NULL;
-    return temp;
-  } else {
-    return NULL;
-  }
-}
-inline const ::TrialStatusUpdate& TrialResponseStream::statusupdate() const {
-  // @@protoc_insertion_point(field_get:TrialResponseStream.statusUpdate)
-  return has_statusupdate()
-      ? *payload_.statusupdate_
-      : *reinterpret_cast< ::TrialStatusUpdate*>(&::_TrialStatusUpdate_default_instance_);
-}
-inline ::TrialStatusUpdate* TrialResponseStream::mutable_statusupdate() {
-  if (!has_statusupdate()) {
-    clear_payload();
-    set_has_statusupdate();
-    payload_.statusupdate_ = CreateMaybeMessage< ::TrialStatusUpdate >(
-        GetArenaNoVirtual());
-  }
-  // @@protoc_insertion_point(field_mutable:TrialResponseStream.statusUpdate)
-  return payload_.statusupdate_;
-}
-
-// .TrialDataPoint dataPoint = 2;
-inline bool TrialResponseStream::has_datapoint() const {
-  return payload_case() == kDataPoint;
-}
-inline void TrialResponseStream::set_has_datapoint() {
-  _oneof_case_[0] = kDataPoint;
-}
-inline void TrialResponseStream::clear_datapoint() {
-  if (has_datapoint()) {
-    delete payload_.datapoint_;
-    clear_has_payload();
-  }
-}
-inline const ::TrialDataPoint& TrialResponseStream::_internal_datapoint() const {
-  return *payload_.datapoint_;
-}
-inline ::TrialDataPoint* TrialResponseStream::release_datapoint() {
-  // @@protoc_insertion_point(field_release:TrialResponseStream.dataPoint)
-  if (has_datapoint()) {
-    clear_has_payload();
-      ::TrialDataPoint* temp = payload_.datapoint_;
-    payload_.datapoint_ = NULL;
-    return temp;
-  } else {
-    return NULL;
-  }
-}
-inline const ::TrialDataPoint& TrialResponseStream::datapoint() const {
-  // @@protoc_insertion_point(field_get:TrialResponseStream.dataPoint)
-  return has_datapoint()
-      ? *payload_.datapoint_
-      : *reinterpret_cast< ::TrialDataPoint*>(&::_TrialDataPoint_default_instance_);
-}
-inline ::TrialDataPoint* TrialResponseStream::mutable_datapoint() {
-  if (!has_datapoint()) {
-    clear_payload();
-    set_has_datapoint();
-    payload_.datapoint_ = CreateMaybeMessage< ::TrialDataPoint >(
-        GetArenaNoVirtual());
-  }
-  // @@protoc_insertion_point(field_mutable:TrialResponseStream.dataPoint)
-  return payload_.datapoint_;
-}
-
-inline bool TrialResponseStream::has_payload() const {
-  return payload_case() != PAYLOAD_NOT_SET;
-}
-inline void TrialResponseStream::clear_has_payload() {
-  _oneof_case_[0] = PAYLOAD_NOT_SET;
-}
-inline TrialResponseStream::PayloadCase TrialResponseStream::payload_case() const {
-  return TrialResponseStream::PayloadCase(_oneof_case_[0]);
-}
-// -------------------------------------------------------------------
-
-// TrialStatusUpdate
-
-// .TrialStatus status = 1;
-inline void TrialStatusUpdate::clear_status() {
-  status_ = 0;
-}
-inline ::TrialStatus TrialStatusUpdate::status() const {
-  // @@protoc_insertion_point(field_get:TrialStatusUpdate.status)
-  return static_cast< ::TrialStatus >(status_);
-}
-inline void TrialStatusUpdate::set_status(::TrialStatus value) {
-  
-  status_ = value;
-  // @@protoc_insertion_point(field_set:TrialStatusUpdate.status)
-}
-
-// string message = 2;
-inline void TrialStatusUpdate::clear_message() {
-  message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialStatusUpdate::message() const {
-  // @@protoc_insertion_point(field_get:TrialStatusUpdate.message)
-  return message_.GetNoArena();
-}
-inline void TrialStatusUpdate::set_message(const ::std::string& value) {
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialStatusUpdate.message)
-}
-#if LANG_CXX11
-inline void TrialStatusUpdate::set_message(::std::string&& value) {
-  
-  message_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialStatusUpdate.message)
-}
-#endif
-inline void TrialStatusUpdate::set_message(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialStatusUpdate.message)
-}
-inline void TrialStatusUpdate::set_message(const char* value, size_t size) {
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialStatusUpdate.message)
-}
-inline ::std::string* TrialStatusUpdate::mutable_message() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialStatusUpdate.message)
-  return message_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialStatusUpdate::release_message() {
-  // @@protoc_insertion_point(field_release:TrialStatusUpdate.message)
-  
-  return message_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialStatusUpdate::set_allocated_message(::std::string* message) {
-  if (message != NULL) {
-    
-  } else {
-    
-  }
-  message_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), message);
-  // @@protoc_insertion_point(field_set_allocated:TrialStatusUpdate.message)
-}
-
-// -------------------------------------------------------------------
-
-// TrialDataPoint
-
-// double timestamp = 1;
-inline void TrialDataPoint::clear_timestamp() {
-  timestamp_ = 0;
-}
-inline double TrialDataPoint::timestamp() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.timestamp)
-  return timestamp_;
-}
-inline void TrialDataPoint::set_timestamp(double value) {
-  
-  timestamp_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.timestamp)
-}
-
-// .Vector3 devicePosition = 2;
-inline bool TrialDataPoint::has_deviceposition() const {
-  return this != internal_default_instance() && deviceposition_ != NULL;
-}
-inline void TrialDataPoint::clear_deviceposition() {
-  if (GetArenaNoVirtual() == NULL && deviceposition_ != NULL) {
-    delete deviceposition_;
-  }
-  deviceposition_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_deviceposition() const {
-  return *deviceposition_;
-}
-inline const ::Vector3& TrialDataPoint::deviceposition() const {
-  const ::Vector3* p = deviceposition_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.devicePosition)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_deviceposition() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.devicePosition)
-  
-  ::Vector3* temp = deviceposition_;
-  deviceposition_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_deviceposition() {
-  
-  if (deviceposition_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    deviceposition_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.devicePosition)
-  return deviceposition_;
-}
-inline void TrialDataPoint::set_allocated_deviceposition(::Vector3* deviceposition) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete deviceposition_;
-  }
-  if (deviceposition) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      deviceposition = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, deviceposition, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  deviceposition_ = deviceposition;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.devicePosition)
-}
-
-// .Vector3 proxyPosition = 3;
-inline bool TrialDataPoint::has_proxyposition() const {
-  return this != internal_default_instance() && proxyposition_ != NULL;
-}
-inline void TrialDataPoint::clear_proxyposition() {
-  if (GetArenaNoVirtual() == NULL && proxyposition_ != NULL) {
-    delete proxyposition_;
-  }
-  proxyposition_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_proxyposition() const {
-  return *proxyposition_;
-}
-inline const ::Vector3& TrialDataPoint::proxyposition() const {
-  const ::Vector3* p = proxyposition_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.proxyPosition)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_proxyposition() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.proxyPosition)
-  
-  ::Vector3* temp = proxyposition_;
-  proxyposition_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_proxyposition() {
-  
-  if (proxyposition_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    proxyposition_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.proxyPosition)
-  return proxyposition_;
-}
-inline void TrialDataPoint::set_allocated_proxyposition(::Vector3* proxyposition) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete proxyposition_;
-  }
-  if (proxyposition) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      proxyposition = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, proxyposition, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  proxyposition_ = proxyposition;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.proxyPosition)
-}
-
-// .Vector3 force = 4;
-inline bool TrialDataPoint::has_force() const {
-  return this != internal_default_instance() && force_ != NULL;
-}
-inline void TrialDataPoint::clear_force() {
-  if (GetArenaNoVirtual() == NULL && force_ != NULL) {
-    delete force_;
-  }
-  force_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_force() const {
-  return *force_;
-}
-inline const ::Vector3& TrialDataPoint::force() const {
-  const ::Vector3* p = force_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.force)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_force() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.force)
-  
-  ::Vector3* temp = force_;
-  force_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_force() {
-  
-  if (force_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    force_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.force)
-  return force_;
-}
-inline void TrialDataPoint::set_allocated_force(::Vector3* force) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete force_;
-  }
-  if (force) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      force = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, force, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  force_ = force;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.force)
-}
-
-// .Vector3 deviceVelocity = 5;
-inline bool TrialDataPoint::has_devicevelocity() const {
-  return this != internal_default_instance() && devicevelocity_ != NULL;
-}
-inline void TrialDataPoint::clear_devicevelocity() {
-  if (GetArenaNoVirtual() == NULL && devicevelocity_ != NULL) {
-    delete devicevelocity_;
-  }
-  devicevelocity_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_devicevelocity() const {
-  return *devicevelocity_;
-}
-inline const ::Vector3& TrialDataPoint::devicevelocity() const {
-  const ::Vector3* p = devicevelocity_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.deviceVelocity)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_devicevelocity() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.deviceVelocity)
-  
-  ::Vector3* temp = devicevelocity_;
-  devicevelocity_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_devicevelocity() {
-  
-  if (devicevelocity_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    devicevelocity_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.deviceVelocity)
-  return devicevelocity_;
-}
-inline void TrialDataPoint::set_allocated_devicevelocity(::Vector3* devicevelocity) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete devicevelocity_;
-  }
-  if (devicevelocity) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      devicevelocity = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, devicevelocity, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  devicevelocity_ = devicevelocity;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.deviceVelocity)
-}
-
-// .Vector3 deviceAngularVelocity = 6;
-inline bool TrialDataPoint::has_deviceangularvelocity() const {
-  return this != internal_default_instance() && deviceangularvelocity_ != NULL;
-}
-inline void TrialDataPoint::clear_deviceangularvelocity() {
-  if (GetArenaNoVirtual() == NULL && deviceangularvelocity_ != NULL) {
-    delete deviceangularvelocity_;
-  }
-  deviceangularvelocity_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_deviceangularvelocity() const {
-  return *deviceangularvelocity_;
-}
-inline const ::Vector3& TrialDataPoint::deviceangularvelocity() const {
-  const ::Vector3* p = deviceangularvelocity_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.deviceAngularVelocity)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_deviceangularvelocity() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.deviceAngularVelocity)
-  
-  ::Vector3* temp = deviceangularvelocity_;
-  deviceangularvelocity_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_deviceangularvelocity() {
-  
-  if (deviceangularvelocity_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    deviceangularvelocity_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.deviceAngularVelocity)
-  return deviceangularvelocity_;
-}
-inline void TrialDataPoint::set_allocated_deviceangularvelocity(::Vector3* deviceangularvelocity) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete deviceangularvelocity_;
-  }
-  if (deviceangularvelocity) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      deviceangularvelocity = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, deviceangularvelocity, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  deviceangularvelocity_ = deviceangularvelocity;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.deviceAngularVelocity)
-}
-
-// .Quaternion deviceOrientation = 7;
-inline bool TrialDataPoint::has_deviceorientation() const {
-  return this != internal_default_instance() && deviceorientation_ != NULL;
-}
-inline void TrialDataPoint::clear_deviceorientation() {
-  if (GetArenaNoVirtual() == NULL && deviceorientation_ != NULL) {
-    delete deviceorientation_;
-  }
-  deviceorientation_ = NULL;
-}
-inline const ::Quaternion& TrialDataPoint::_internal_deviceorientation() const {
-  return *deviceorientation_;
-}
-inline const ::Quaternion& TrialDataPoint::deviceorientation() const {
-  const ::Quaternion* p = deviceorientation_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.deviceOrientation)
-  return p != NULL ? *p : *reinterpret_cast<const ::Quaternion*>(
-      &::_Quaternion_default_instance_);
-}
-inline ::Quaternion* TrialDataPoint::release_deviceorientation() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.deviceOrientation)
-  
-  ::Quaternion* temp = deviceorientation_;
-  deviceorientation_ = NULL;
-  return temp;
-}
-inline ::Quaternion* TrialDataPoint::mutable_deviceorientation() {
-  
-  if (deviceorientation_ == NULL) {
-    auto* p = CreateMaybeMessage<::Quaternion>(GetArenaNoVirtual());
-    deviceorientation_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.deviceOrientation)
-  return deviceorientation_;
-}
-inline void TrialDataPoint::set_allocated_deviceorientation(::Quaternion* deviceorientation) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete deviceorientation_;
-  }
-  if (deviceorientation) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      deviceorientation = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, deviceorientation, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  deviceorientation_ = deviceorientation;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.deviceOrientation)
-}
-
-// repeated .ObjectState objects = 8;
-inline int TrialDataPoint::objects_size() const {
-  return objects_.size();
-}
-inline void TrialDataPoint::clear_objects() {
-  objects_.Clear();
-}
-inline ::ObjectState* TrialDataPoint::mutable_objects(int index) {
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.objects)
-  return objects_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::ObjectState >*
-TrialDataPoint::mutable_objects() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.objects)
-  return &objects_;
-}
-inline const ::ObjectState& TrialDataPoint::objects(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.objects)
-  return objects_.Get(index);
-}
-inline ::ObjectState* TrialDataPoint::add_objects() {
-  // @@protoc_insertion_point(field_add:TrialDataPoint.objects)
-  return objects_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::ObjectState >&
-TrialDataPoint::objects() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.objects)
-  return objects_;
-}
-
-// .Vector3 deviceAcceleration = 9;
-inline bool TrialDataPoint::has_deviceacceleration() const {
-  return this != internal_default_instance() && deviceacceleration_ != NULL;
-}
-inline void TrialDataPoint::clear_deviceacceleration() {
-  if (GetArenaNoVirtual() == NULL && deviceacceleration_ != NULL) {
-    delete deviceacceleration_;
-  }
-  deviceacceleration_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_deviceacceleration() const {
-  return *deviceacceleration_;
-}
-inline const ::Vector3& TrialDataPoint::deviceacceleration() const {
-  const ::Vector3* p = deviceacceleration_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.deviceAcceleration)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_deviceacceleration() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.deviceAcceleration)
-  
-  ::Vector3* temp = deviceacceleration_;
-  deviceacceleration_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_deviceacceleration() {
-  
-  if (deviceacceleration_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    deviceacceleration_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.deviceAcceleration)
-  return deviceacceleration_;
-}
-inline void TrialDataPoint::set_allocated_deviceacceleration(::Vector3* deviceacceleration) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete deviceacceleration_;
-  }
-  if (deviceacceleration) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      deviceacceleration = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, deviceacceleration, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  deviceacceleration_ = deviceacceleration;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.deviceAcceleration)
-}
-
-// .Vector3 measuredForce = 10;
-inline bool TrialDataPoint::has_measuredforce() const {
-  return this != internal_default_instance() && measuredforce_ != NULL;
-}
-inline void TrialDataPoint::clear_measuredforce() {
-  if (GetArenaNoVirtual() == NULL && measuredforce_ != NULL) {
-    delete measuredforce_;
-  }
-  measuredforce_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_measuredforce() const {
-  return *measuredforce_;
-}
-inline const ::Vector3& TrialDataPoint::measuredforce() const {
-  const ::Vector3* p = measuredforce_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.measuredForce)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_measuredforce() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.measuredForce)
-  
-  ::Vector3* temp = measuredforce_;
-  measuredforce_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_measuredforce() {
-  
-  if (measuredforce_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    measuredforce_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.measuredForce)
-  return measuredforce_;
-}
-inline void TrialDataPoint::set_allocated_measuredforce(::Vector3* measuredforce) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete measuredforce_;
-  }
-  if (measuredforce) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      measuredforce = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, measuredforce, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  measuredforce_ = measuredforce;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.measuredForce)
-}
-
-// uint64 messageIndex = 11;
-inline void TrialDataPoint::clear_messageindex() {
-  messageindex_ = GOOGLE_ULONGLONG(0);
-}
-inline ::google::protobuf::uint64 TrialDataPoint::messageindex() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.messageIndex)
-  return messageindex_;
-}
-inline void TrialDataPoint::set_messageindex(::google::protobuf::uint64 value) {
-  
-  messageindex_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.messageIndex)
-}
-
-// double wallTimestamp = 12;
-inline void TrialDataPoint::clear_walltimestamp() {
-  walltimestamp_ = 0;
-}
-inline double TrialDataPoint::walltimestamp() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.wallTimestamp)
-  return walltimestamp_;
-}
-inline void TrialDataPoint::set_walltimestamp(double value) {
-  
-  walltimestamp_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.wallTimestamp)
-}
-
-// repeated double robotQ = 13;
-inline int TrialDataPoint::robotq_size() const {
-  return robotq_.size();
-}
-inline void TrialDataPoint::clear_robotq() {
-  robotq_.Clear();
-}
-inline double TrialDataPoint::robotq(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.robotQ)
-  return robotq_.Get(index);
-}
-inline void TrialDataPoint::set_robotq(int index, double value) {
-  robotq_.Set(index, value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.robotQ)
-}
-inline void TrialDataPoint::add_robotq(double value) {
-  robotq_.Add(value);
-  // @@protoc_insertion_point(field_add:TrialDataPoint.robotQ)
-}
-inline const ::google::protobuf::RepeatedField< double >&
-TrialDataPoint::robotq() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.robotQ)
-  return robotq_;
-}
-inline ::google::protobuf::RepeatedField< double >*
-TrialDataPoint::mutable_robotq() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.robotQ)
-  return &robotq_;
-}
-
-// repeated double robotDQ = 14;
-inline int TrialDataPoint::robotdq_size() const {
-  return robotdq_.size();
-}
-inline void TrialDataPoint::clear_robotdq() {
-  robotdq_.Clear();
-}
-inline double TrialDataPoint::robotdq(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.robotDQ)
-  return robotdq_.Get(index);
-}
-inline void TrialDataPoint::set_robotdq(int index, double value) {
-  robotdq_.Set(index, value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.robotDQ)
-}
-inline void TrialDataPoint::add_robotdq(double value) {
-  robotdq_.Add(value);
-  // @@protoc_insertion_point(field_add:TrialDataPoint.robotDQ)
-}
-inline const ::google::protobuf::RepeatedField< double >&
-TrialDataPoint::robotdq() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.robotDQ)
-  return robotdq_;
-}
-inline ::google::protobuf::RepeatedField< double >*
-TrialDataPoint::mutable_robotdq() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.robotDQ)
-  return &robotdq_;
-}
-
-// repeated double robotTau = 15;
-inline int TrialDataPoint::robottau_size() const {
-  return robottau_.size();
-}
-inline void TrialDataPoint::clear_robottau() {
-  robottau_.Clear();
-}
-inline double TrialDataPoint::robottau(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.robotTau)
-  return robottau_.Get(index);
-}
-inline void TrialDataPoint::set_robottau(int index, double value) {
-  robottau_.Set(index, value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.robotTau)
-}
-inline void TrialDataPoint::add_robottau(double value) {
-  robottau_.Add(value);
-  // @@protoc_insertion_point(field_add:TrialDataPoint.robotTau)
-}
-inline const ::google::protobuf::RepeatedField< double >&
-TrialDataPoint::robottau() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.robotTau)
-  return robottau_;
-}
-inline ::google::protobuf::RepeatedField< double >*
-TrialDataPoint::mutable_robottau() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.robotTau)
-  return &robottau_;
-}
-
-// .Pose eePose = 16;
-inline bool TrialDataPoint::has_eepose() const {
-  return this != internal_default_instance() && eepose_ != NULL;
-}
-inline void TrialDataPoint::clear_eepose() {
-  if (GetArenaNoVirtual() == NULL && eepose_ != NULL) {
-    delete eepose_;
-  }
-  eepose_ = NULL;
-}
-inline const ::Pose& TrialDataPoint::_internal_eepose() const {
-  return *eepose_;
-}
-inline const ::Pose& TrialDataPoint::eepose() const {
-  const ::Pose* p = eepose_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.eePose)
-  return p != NULL ? *p : *reinterpret_cast<const ::Pose*>(
-      &::_Pose_default_instance_);
-}
-inline ::Pose* TrialDataPoint::release_eepose() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.eePose)
-  
-  ::Pose* temp = eepose_;
-  eepose_ = NULL;
-  return temp;
-}
-inline ::Pose* TrialDataPoint::mutable_eepose() {
-  
-  if (eepose_ == NULL) {
-    auto* p = CreateMaybeMessage<::Pose>(GetArenaNoVirtual());
-    eepose_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.eePose)
-  return eepose_;
-}
-inline void TrialDataPoint::set_allocated_eepose(::Pose* eepose) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete eepose_;
-  }
-  if (eepose) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      eepose = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, eepose, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  eepose_ = eepose;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.eePose)
-}
-
-// .Twist eeVelocity = 17;
-inline bool TrialDataPoint::has_eevelocity() const {
-  return this != internal_default_instance() && eevelocity_ != NULL;
-}
-inline void TrialDataPoint::clear_eevelocity() {
-  if (GetArenaNoVirtual() == NULL && eevelocity_ != NULL) {
-    delete eevelocity_;
-  }
-  eevelocity_ = NULL;
-}
-inline const ::Twist& TrialDataPoint::_internal_eevelocity() const {
-  return *eevelocity_;
-}
-inline const ::Twist& TrialDataPoint::eevelocity() const {
-  const ::Twist* p = eevelocity_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.eeVelocity)
-  return p != NULL ? *p : *reinterpret_cast<const ::Twist*>(
-      &::_Twist_default_instance_);
-}
-inline ::Twist* TrialDataPoint::release_eevelocity() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.eeVelocity)
-  
-  ::Twist* temp = eevelocity_;
-  eevelocity_ = NULL;
-  return temp;
-}
-inline ::Twist* TrialDataPoint::mutable_eevelocity() {
-  
-  if (eevelocity_ == NULL) {
-    auto* p = CreateMaybeMessage<::Twist>(GetArenaNoVirtual());
-    eevelocity_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.eeVelocity)
-  return eevelocity_;
-}
-inline void TrialDataPoint::set_allocated_eevelocity(::Twist* eevelocity) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete eevelocity_;
-  }
-  if (eevelocity) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      eevelocity = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, eevelocity, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  eevelocity_ = eevelocity;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.eeVelocity)
-}
-
-// .Vector3 springForce = 18;
-inline bool TrialDataPoint::has_springforce() const {
-  return this != internal_default_instance() && springforce_ != NULL;
-}
-inline void TrialDataPoint::clear_springforce() {
-  if (GetArenaNoVirtual() == NULL && springforce_ != NULL) {
-    delete springforce_;
-  }
-  springforce_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_springforce() const {
-  return *springforce_;
-}
-inline const ::Vector3& TrialDataPoint::springforce() const {
-  const ::Vector3* p = springforce_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.springForce)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_springforce() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.springForce)
-  
-  ::Vector3* temp = springforce_;
-  springforce_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_springforce() {
-  
-  if (springforce_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    springforce_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.springForce)
-  return springforce_;
-}
-inline void TrialDataPoint::set_allocated_springforce(::Vector3* springforce) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete springforce_;
-  }
-  if (springforce) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      springforce = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, springforce, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  springforce_ = springforce;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.springForce)
-}
-
-// .Vector3 dampingForce = 19;
-inline bool TrialDataPoint::has_dampingforce() const {
-  return this != internal_default_instance() && dampingforce_ != NULL;
-}
-inline void TrialDataPoint::clear_dampingforce() {
-  if (GetArenaNoVirtual() == NULL && dampingforce_ != NULL) {
-    delete dampingforce_;
-  }
-  dampingforce_ = NULL;
-}
-inline const ::Vector3& TrialDataPoint::_internal_dampingforce() const {
-  return *dampingforce_;
-}
-inline const ::Vector3& TrialDataPoint::dampingforce() const {
-  const ::Vector3* p = dampingforce_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.dampingForce)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* TrialDataPoint::release_dampingforce() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.dampingForce)
-  
-  ::Vector3* temp = dampingforce_;
-  dampingforce_ = NULL;
-  return temp;
-}
-inline ::Vector3* TrialDataPoint::mutable_dampingforce() {
-  
-  if (dampingforce_ == NULL) {
-    auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
-    dampingforce_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.dampingForce)
-  return dampingforce_;
-}
-inline void TrialDataPoint::set_allocated_dampingforce(::Vector3* dampingforce) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete dampingforce_;
-  }
-  if (dampingforce) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      dampingforce = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, dampingforce, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  dampingforce_ = dampingforce;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.dampingForce)
-}
-
-// bool forceSaturated = 20;
-inline void TrialDataPoint::clear_forcesaturated() {
-  forcesaturated_ = false;
-}
-inline bool TrialDataPoint::forcesaturated() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.forceSaturated)
-  return forcesaturated_;
-}
-inline void TrialDataPoint::set_forcesaturated(bool value) {
-  
-  forcesaturated_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.forceSaturated)
-}
-
-// bool maxForceReached = 21;
-inline void TrialDataPoint::clear_maxforcereached() {
-  maxforcereached_ = false;
-}
-inline bool TrialDataPoint::maxforcereached() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.maxForceReached)
-  return maxforcereached_;
-}
-inline void TrialDataPoint::set_maxforcereached(bool value) {
-  
-  maxforcereached_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.maxForceReached)
-}
-
-// repeated .Contact contacts = 22;
-inline int TrialDataPoint::contacts_size() const {
-  return contacts_.size();
-}
-inline void TrialDataPoint::clear_contacts() {
-  contacts_.Clear();
-}
-inline ::Contact* TrialDataPoint::mutable_contacts(int index) {
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.contacts)
-  return contacts_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::Contact >*
-TrialDataPoint::mutable_contacts() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.contacts)
-  return &contacts_;
-}
-inline const ::Contact& TrialDataPoint::contacts(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.contacts)
-  return contacts_.Get(index);
-}
-inline ::Contact* TrialDataPoint::add_contacts() {
-  // @@protoc_insertion_point(field_add:TrialDataPoint.contacts)
-  return contacts_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::Contact >&
-TrialDataPoint::contacts() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.contacts)
-  return contacts_;
-}
-
-// .TrialState trial = 23;
-inline bool TrialDataPoint::has_trial() const {
-  return this != internal_default_instance() && trial_ != NULL;
-}
-inline void TrialDataPoint::clear_trial() {
-  if (GetArenaNoVirtual() == NULL && trial_ != NULL) {
-    delete trial_;
-  }
-  trial_ = NULL;
-}
-inline const ::TrialState& TrialDataPoint::_internal_trial() const {
-  return *trial_;
-}
-inline const ::TrialState& TrialDataPoint::trial() const {
-  const ::TrialState* p = trial_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.trial)
-  return p != NULL ? *p : *reinterpret_cast<const ::TrialState*>(
-      &::_TrialState_default_instance_);
-}
-inline ::TrialState* TrialDataPoint::release_trial() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.trial)
-  
-  ::TrialState* temp = trial_;
-  trial_ = NULL;
-  return temp;
-}
-inline ::TrialState* TrialDataPoint::mutable_trial() {
-  
-  if (trial_ == NULL) {
-    auto* p = CreateMaybeMessage<::TrialState>(GetArenaNoVirtual());
-    trial_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.trial)
-  return trial_;
-}
-inline void TrialDataPoint::set_allocated_trial(::TrialState* trial) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete trial_;
-  }
-  if (trial) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      trial = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, trial, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  trial_ = trial;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.trial)
-}
-
-// .HapticsState haptics = 24;
-inline bool TrialDataPoint::has_haptics() const {
-  return this != internal_default_instance() && haptics_ != NULL;
-}
-inline void TrialDataPoint::clear_haptics() {
-  if (GetArenaNoVirtual() == NULL && haptics_ != NULL) {
-    delete haptics_;
-  }
-  haptics_ = NULL;
-}
-inline const ::HapticsState& TrialDataPoint::_internal_haptics() const {
-  return *haptics_;
-}
-inline const ::HapticsState& TrialDataPoint::haptics() const {
-  const ::HapticsState* p = haptics_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.haptics)
-  return p != NULL ? *p : *reinterpret_cast<const ::HapticsState*>(
-      &::_HapticsState_default_instance_);
-}
-inline ::HapticsState* TrialDataPoint::release_haptics() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.haptics)
-  
-  ::HapticsState* temp = haptics_;
-  haptics_ = NULL;
-  return temp;
-}
-inline ::HapticsState* TrialDataPoint::mutable_haptics() {
-  
-  if (haptics_ == NULL) {
-    auto* p = CreateMaybeMessage<::HapticsState>(GetArenaNoVirtual());
-    haptics_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.haptics)
-  return haptics_;
-}
-inline void TrialDataPoint::set_allocated_haptics(::HapticsState* haptics) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete haptics_;
-  }
-  if (haptics) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      haptics = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, haptics, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  haptics_ = haptics;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.haptics)
-}
-
-// .HomingInfo homing = 25;
-inline bool TrialDataPoint::has_homing() const {
-  return this != internal_default_instance() && homing_ != NULL;
-}
-inline void TrialDataPoint::clear_homing() {
-  if (GetArenaNoVirtual() == NULL && homing_ != NULL) {
-    delete homing_;
-  }
-  homing_ = NULL;
-}
-inline const ::HomingInfo& TrialDataPoint::_internal_homing() const {
-  return *homing_;
-}
-inline const ::HomingInfo& TrialDataPoint::homing() const {
-  const ::HomingInfo* p = homing_;
-  // @@protoc_insertion_point(field_get:TrialDataPoint.homing)
-  return p != NULL ? *p : *reinterpret_cast<const ::HomingInfo*>(
-      &::_HomingInfo_default_instance_);
-}
-inline ::HomingInfo* TrialDataPoint::release_homing() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.homing)
-  
-  ::HomingInfo* temp = homing_;
-  homing_ = NULL;
-  return temp;
-}
-inline ::HomingInfo* TrialDataPoint::mutable_homing() {
-  
-  if (homing_ == NULL) {
-    auto* p = CreateMaybeMessage<::HomingInfo>(GetArenaNoVirtual());
-    homing_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.homing)
-  return homing_;
-}
-inline void TrialDataPoint::set_allocated_homing(::HomingInfo* homing) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete homing_;
-  }
-  if (homing) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      homing = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, homing, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  homing_ = homing;
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.homing)
-}
-
-// string diagnostics = 26;
-inline void TrialDataPoint::clear_diagnostics() {
-  diagnostics_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialDataPoint::diagnostics() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.diagnostics)
-  return diagnostics_.GetNoArena();
-}
-inline void TrialDataPoint::set_diagnostics(const ::std::string& value) {
-  
-  diagnostics_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.diagnostics)
-}
-#if LANG_CXX11
-inline void TrialDataPoint::set_diagnostics(::std::string&& value) {
-  
-  diagnostics_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialDataPoint.diagnostics)
-}
-#endif
-inline void TrialDataPoint::set_diagnostics(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  diagnostics_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialDataPoint.diagnostics)
-}
-inline void TrialDataPoint::set_diagnostics(const char* value, size_t size) {
-  
-  diagnostics_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialDataPoint.diagnostics)
-}
-inline ::std::string* TrialDataPoint::mutable_diagnostics() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.diagnostics)
-  return diagnostics_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialDataPoint::release_diagnostics() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.diagnostics)
-  
-  return diagnostics_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialDataPoint::set_allocated_diagnostics(::std::string* diagnostics) {
-  if (diagnostics != NULL) {
-    
-  } else {
-    
-  }
-  diagnostics_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), diagnostics);
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.diagnostics)
-}
-
-// repeated string reflexFlags = 27;
-inline int TrialDataPoint::reflexflags_size() const {
-  return reflexflags_.size();
-}
-inline void TrialDataPoint::clear_reflexflags() {
-  reflexflags_.Clear();
-}
-inline const ::std::string& TrialDataPoint::reflexflags(int index) const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.reflexFlags)
-  return reflexflags_.Get(index);
-}
-inline ::std::string* TrialDataPoint::mutable_reflexflags(int index) {
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.reflexFlags)
-  return reflexflags_.Mutable(index);
-}
-inline void TrialDataPoint::set_reflexflags(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:TrialDataPoint.reflexFlags)
-  reflexflags_.Mutable(index)->assign(value);
-}
-#if LANG_CXX11
-inline void TrialDataPoint::set_reflexflags(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:TrialDataPoint.reflexFlags)
-  reflexflags_.Mutable(index)->assign(std::move(value));
-}
-#endif
-inline void TrialDataPoint::set_reflexflags(int index, const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  reflexflags_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:TrialDataPoint.reflexFlags)
-}
-inline void TrialDataPoint::set_reflexflags(int index, const char* value, size_t size) {
-  reflexflags_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:TrialDataPoint.reflexFlags)
-}
-inline ::std::string* TrialDataPoint::add_reflexflags() {
-  // @@protoc_insertion_point(field_add_mutable:TrialDataPoint.reflexFlags)
-  return reflexflags_.Add();
-}
-inline void TrialDataPoint::add_reflexflags(const ::std::string& value) {
-  reflexflags_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:TrialDataPoint.reflexFlags)
-}
-#if LANG_CXX11
-inline void TrialDataPoint::add_reflexflags(::std::string&& value) {
-  reflexflags_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:TrialDataPoint.reflexFlags)
-}
-#endif
-inline void TrialDataPoint::add_reflexflags(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  reflexflags_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:TrialDataPoint.reflexFlags)
-}
-inline void TrialDataPoint::add_reflexflags(const char* value, size_t size) {
-  reflexflags_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:TrialDataPoint.reflexFlags)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-TrialDataPoint::reflexflags() const {
-  // @@protoc_insertion_point(field_list:TrialDataPoint.reflexFlags)
-  return reflexflags_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-TrialDataPoint::mutable_reflexflags() {
-  // @@protoc_insertion_point(field_mutable_list:TrialDataPoint.reflexFlags)
-  return &reflexflags_;
-}
-
-// int32 droppedFrames = 28;
-inline void TrialDataPoint::clear_droppedframes() {
-  droppedframes_ = 0;
-}
-inline ::google::protobuf::int32 TrialDataPoint::droppedframes() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.droppedFrames)
-  return droppedframes_;
-}
-inline void TrialDataPoint::set_droppedframes(::google::protobuf::int32 value) {
-  
-  droppedframes_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.droppedFrames)
-}
-
-// int32 queueDepth = 29;
-inline void TrialDataPoint::clear_queuedepth() {
-  queuedepth_ = 0;
-}
-inline ::google::protobuf::int32 TrialDataPoint::queuedepth() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.queueDepth)
-  return queuedepth_;
-}
-inline void TrialDataPoint::set_queuedepth(::google::protobuf::int32 value) {
-  
-  queuedepth_ = value;
-  // @@protoc_insertion_point(field_set:TrialDataPoint.queueDepth)
-}
-
-// string cpuAffinity = 30;
-inline void TrialDataPoint::clear_cpuaffinity() {
-  cpuaffinity_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialDataPoint::cpuaffinity() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.cpuAffinity)
-  return cpuaffinity_.GetNoArena();
-}
-inline void TrialDataPoint::set_cpuaffinity(const ::std::string& value) {
-  
-  cpuaffinity_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.cpuAffinity)
-}
-#if LANG_CXX11
-inline void TrialDataPoint::set_cpuaffinity(::std::string&& value) {
-  
-  cpuaffinity_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialDataPoint.cpuAffinity)
-}
-#endif
-inline void TrialDataPoint::set_cpuaffinity(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  cpuaffinity_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialDataPoint.cpuAffinity)
-}
-inline void TrialDataPoint::set_cpuaffinity(const char* value, size_t size) {
-  
-  cpuaffinity_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialDataPoint.cpuAffinity)
-}
-inline ::std::string* TrialDataPoint::mutable_cpuaffinity() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.cpuAffinity)
-  return cpuaffinity_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialDataPoint::release_cpuaffinity() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.cpuAffinity)
-  
-  return cpuaffinity_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialDataPoint::set_allocated_cpuaffinity(::std::string* cpuaffinity) {
-  if (cpuaffinity != NULL) {
-    
-  } else {
-    
-  }
-  cpuaffinity_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), cpuaffinity);
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.cpuAffinity)
-}
-
-// string threadPriority = 31;
-inline void TrialDataPoint::clear_threadpriority() {
-  threadpriority_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialDataPoint::threadpriority() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.threadPriority)
-  return threadpriority_.GetNoArena();
-}
-inline void TrialDataPoint::set_threadpriority(const ::std::string& value) {
-  
-  threadpriority_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.threadPriority)
-}
-#if LANG_CXX11
-inline void TrialDataPoint::set_threadpriority(::std::string&& value) {
-  
-  threadpriority_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialDataPoint.threadPriority)
-}
-#endif
-inline void TrialDataPoint::set_threadpriority(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  threadpriority_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialDataPoint.threadPriority)
-}
-inline void TrialDataPoint::set_threadpriority(const char* value, size_t size) {
-  
-  threadpriority_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialDataPoint.threadPriority)
-}
-inline ::std::string* TrialDataPoint::mutable_threadpriority() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.threadPriority)
-  return threadpriority_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialDataPoint::release_threadpriority() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.threadPriority)
-  
-  return threadpriority_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialDataPoint::set_allocated_threadpriority(::std::string* threadpriority) {
-  if (threadpriority != NULL) {
-    
-  } else {
-    
-  }
-  threadpriority_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), threadpriority);
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.threadPriority)
-}
+  class _Internal;
 
 // uint64 loopOverrunCount = 32;
 inline void TrialDataPoint::clear_loopoverruncount() {
@@ -4739,66 +2484,9 @@ inline void TrialDataPoint::set_allocated_unitsforce(::std::string* unitsforce) 
   // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.unitsForce)
 }
 
-// string unitsTime = 39;
-inline void TrialDataPoint::clear_unitstime() {
-  unitstime_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& TrialDataPoint::unitstime() const {
-  // @@protoc_insertion_point(field_get:TrialDataPoint.unitsTime)
-  return unitstime_.GetNoArena();
-}
-inline void TrialDataPoint::set_unitstime(const ::std::string& value) {
-  
-  unitstime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:TrialDataPoint.unitsTime)
-}
-#if LANG_CXX11
-inline void TrialDataPoint::set_unitstime(::std::string&& value) {
-  
-  unitstime_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:TrialDataPoint.unitsTime)
-}
-#endif
-inline void TrialDataPoint::set_unitstime(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  unitstime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:TrialDataPoint.unitsTime)
-}
-inline void TrialDataPoint::set_unitstime(const char* value, size_t size) {
-  
-  unitstime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:TrialDataPoint.unitsTime)
-}
-inline ::std::string* TrialDataPoint::mutable_unitstime() {
-  
-  // @@protoc_insertion_point(field_mutable:TrialDataPoint.unitsTime)
-  return unitstime_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* TrialDataPoint::release_unitstime() {
-  // @@protoc_insertion_point(field_release:TrialDataPoint.unitsTime)
-  
-  return unitstime_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void TrialDataPoint::set_allocated_unitstime(::std::string* unitstime) {
-  if (unitstime != NULL) {
-    
-  } else {
-    
-  }
-  unitstime_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), unitstime);
-  // @@protoc_insertion_point(field_set_allocated:TrialDataPoint.unitsTime)
-}
-
-// -------------------------------------------------------------------
-
-// Color
-
-// double r = 1;
-inline void Color::clear_r() {
-  r_ = 0;
+// repeated .Object objects = 2;
+inline int TrialRequest::_internal_objects_size() const {
+  return objects_.size();
 }
 inline double Color::r() const {
   // @@protoc_insertion_point(field_get:Color.r)
@@ -4856,9 +2544,48 @@ inline void Vector3::set_x(double value) {
   // @@protoc_insertion_point(field_set:Vector3.x)
 }
 
-// double y = 2;
-inline void Vector3::clear_y() {
-  y_ = 0;
+// repeated .TrialCondition startConditions = 3;
+inline int TrialRequest::_internal_startconditions_size() const {
+  return startconditions_.size();
+}
+inline int TrialRequest::startconditions_size() const {
+  return _internal_startconditions_size();
+}
+inline void TrialRequest::clear_startconditions() {
+  startconditions_.Clear();
+}
+inline ::TrialCondition* TrialRequest::mutable_startconditions(int index) {
+  // @@protoc_insertion_point(field_mutable:TrialRequest.startConditions)
+  return startconditions_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
+TrialRequest::mutable_startconditions() {
+  // @@protoc_insertion_point(field_mutable_list:TrialRequest.startConditions)
+  return &startconditions_;
+}
+inline const ::TrialCondition& TrialRequest::_internal_startconditions(int index) const {
+  return startconditions_.Get(index);
+}
+inline const ::TrialCondition& TrialRequest::startconditions(int index) const {
+  // @@protoc_insertion_point(field_get:TrialRequest.startConditions)
+  return _internal_startconditions(index);
+}
+inline ::TrialCondition* TrialRequest::_internal_add_startconditions() {
+  return startconditions_.Add();
+}
+inline ::TrialCondition* TrialRequest::add_startconditions() {
+  // @@protoc_insertion_point(field_add:TrialRequest.startConditions)
+  return _internal_add_startconditions();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
+TrialRequest::startconditions() const {
+  // @@protoc_insertion_point(field_list:TrialRequest.startConditions)
+  return startconditions_;
+}
+
+// repeated .TrialCondition endConditions = 4;
+inline int TrialRequest::_internal_endconditions_size() const {
+  return endconditions_.size();
 }
 inline double Vector3::y() const {
   // @@protoc_insertion_point(field_get:Vector3.y)
@@ -4869,79 +2596,33 @@ inline void Vector3::set_y(double value) {
   y_ = value;
   // @@protoc_insertion_point(field_set:Vector3.y)
 }
-
-// double z = 3;
-inline void Vector3::clear_z() {
-  z_ = 0;
+inline ::TrialCondition* TrialRequest::mutable_endconditions(int index) {
+  // @@protoc_insertion_point(field_mutable:TrialRequest.endConditions)
+  return endconditions_.Mutable(index);
 }
-inline double Vector3::z() const {
-  // @@protoc_insertion_point(field_get:Vector3.z)
-  return z_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >*
+TrialRequest::mutable_endconditions() {
+  // @@protoc_insertion_point(field_mutable_list:TrialRequest.endConditions)
+  return &endconditions_;
 }
-inline void Vector3::set_z(double value) {
-  
-  z_ = value;
-  // @@protoc_insertion_point(field_set:Vector3.z)
+inline const ::TrialCondition& TrialRequest::_internal_endconditions(int index) const {
+  return endconditions_.Get(index);
 }
-
-// -------------------------------------------------------------------
-
-// Quaternion
-
-// double x = 1;
-inline void Quaternion::clear_x() {
-  x_ = 0;
+inline const ::TrialCondition& TrialRequest::endconditions(int index) const {
+  // @@protoc_insertion_point(field_get:TrialRequest.endConditions)
+  return _internal_endconditions(index);
 }
-inline double Quaternion::x() const {
-  // @@protoc_insertion_point(field_get:Quaternion.x)
-  return x_;
+inline ::TrialCondition* TrialRequest::_internal_add_endconditions() {
+  return endconditions_.Add();
 }
-inline void Quaternion::set_x(double value) {
-  
-  x_ = value;
-  // @@protoc_insertion_point(field_set:Quaternion.x)
+inline ::TrialCondition* TrialRequest::add_endconditions() {
+  // @@protoc_insertion_point(field_add:TrialRequest.endConditions)
+  return _internal_add_endconditions();
 }
-
-// double y = 2;
-inline void Quaternion::clear_y() {
-  y_ = 0;
-}
-inline double Quaternion::y() const {
-  // @@protoc_insertion_point(field_get:Quaternion.y)
-  return y_;
-}
-inline void Quaternion::set_y(double value) {
-  
-  y_ = value;
-  // @@protoc_insertion_point(field_set:Quaternion.y)
-}
-
-// double z = 3;
-inline void Quaternion::clear_z() {
-  z_ = 0;
-}
-inline double Quaternion::z() const {
-  // @@protoc_insertion_point(field_get:Quaternion.z)
-  return z_;
-}
-inline void Quaternion::set_z(double value) {
-  
-  z_ = value;
-  // @@protoc_insertion_point(field_set:Quaternion.z)
-}
-
-// double w = 4;
-inline void Quaternion::clear_w() {
-  w_ = 0;
-}
-inline double Quaternion::w() const {
-  // @@protoc_insertion_point(field_get:Quaternion.w)
-  return w_;
-}
-inline void Quaternion::set_w(double value) {
-  
-  w_ = value;
-  // @@protoc_insertion_point(field_set:Quaternion.w)
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::TrialCondition >&
+TrialRequest::endconditions() const {
+  // @@protoc_insertion_point(field_list:TrialRequest.endConditions)
+  return endconditions_;
 }
 
 // -------------------------------------------------------------------
@@ -6356,31 +4037,28 @@ inline void TrialState::set_goaltolerance(double value) {
 
 // -------------------------------------------------------------------
 
-// HapticsState
+// TrialCondition
 
-// bool hapticsEnabled = 1;
-inline void HapticsState::clear_hapticsenabled() {
-  hapticsenabled_ = false;
+// string name = 1;
+inline void TrialCondition::clear_name() {
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline bool HapticsState::hapticsenabled() const {
-  // @@protoc_insertion_point(field_get:HapticsState.hapticsEnabled)
-  return hapticsenabled_;
+inline const std::string& TrialCondition::name() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.name)
+  return _internal_name();
 }
-inline void HapticsState::set_hapticsenabled(bool value) {
-  
-  hapticsenabled_ = value;
-  // @@protoc_insertion_point(field_set:HapticsState.hapticsEnabled)
+inline void TrialCondition::set_name(const std::string& value) {
+  _internal_set_name(value);
+  // @@protoc_insertion_point(field_set:TrialCondition.name)
 }
-
-// double workspaceScaleFactor = 2;
-inline void HapticsState::clear_workspacescalefactor() {
-  workspacescalefactor_ = 0;
+inline std::string* TrialCondition::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:TrialCondition.name)
+  return _internal_mutable_name();
 }
-inline double HapticsState::workspacescalefactor() const {
-  // @@protoc_insertion_point(field_get:HapticsState.workspaceScaleFactor)
-  return workspacescalefactor_;
+inline const std::string& TrialCondition::_internal_name() const {
+  return name_.Get();
 }
-inline void HapticsState::set_workspacescalefactor(double value) {
+inline void TrialCondition::_internal_set_name(const std::string& value) {
   
   workspacescalefactor_ = value;
   // @@protoc_insertion_point(field_set:HapticsState.workspaceScaleFactor)
@@ -6390,103 +4068,48 @@ inline void HapticsState::set_workspacescalefactor(double value) {
 inline void HapticsState::clear_toolradius() {
   toolradius_ = 0;
 }
-inline double HapticsState::toolradius() const {
-  // @@protoc_insertion_point(field_get:HapticsState.toolRadius)
-  return toolradius_;
-}
-inline void HapticsState::set_toolradius(double value) {
+inline void TrialCondition::set_name(std::string&& value) {
   
-  toolradius_ = value;
-  // @@protoc_insertion_point(field_set:HapticsState.toolRadius)
+  name_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:TrialCondition.name)
 }
-
-// bool waitForSmallForce = 4;
-inline void HapticsState::clear_waitforsmallforce() {
-  waitforsmallforce_ = false;
-}
-inline bool HapticsState::waitforsmallforce() const {
-  // @@protoc_insertion_point(field_get:HapticsState.waitForSmallForce)
-  return waitforsmallforce_;
-}
-inline void HapticsState::set_waitforsmallforce(bool value) {
+inline void TrialCondition::set_name(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
   
-  waitforsmallforce_ = value;
-  // @@protoc_insertion_point(field_set:HapticsState.waitForSmallForce)
+  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:TrialCondition.name)
 }
-
-// double loopFrequencyHz = 5;
-inline void HapticsState::clear_loopfrequencyhz() {
-  loopfrequencyhz_ = 0;
-}
-inline double HapticsState::loopfrequencyhz() const {
-  // @@protoc_insertion_point(field_get:HapticsState.loopFrequencyHz)
-  return loopfrequencyhz_;
-}
-inline void HapticsState::set_loopfrequencyhz(double value) {
+inline void TrialCondition::set_name(const char* value,
+    size_t size) {
   
-  loopfrequencyhz_ = value;
-  // @@protoc_insertion_point(field_set:HapticsState.loopFrequencyHz)
+  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:TrialCondition.name)
 }
-
-// double dt = 6;
-inline void HapticsState::clear_dt() {
-  dt_ = 0;
-}
-inline double HapticsState::dt() const {
-  // @@protoc_insertion_point(field_get:HapticsState.dt)
-  return dt_;
-}
-inline void HapticsState::set_dt(double value) {
+inline std::string* TrialCondition::_internal_mutable_name() {
   
   dt_ = value;
   // @@protoc_insertion_point(field_set:HapticsState.dt)
 }
-
-// -------------------------------------------------------------------
-
-// HomingInfo
-
-// bool homingActive = 1;
-inline void HomingInfo::clear_homingactive() {
-  homingactive_ = false;
+inline std::string* TrialCondition::release_name() {
+  // @@protoc_insertion_point(field_release:TrialCondition.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
-inline bool HomingInfo::homingactive() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.homingActive)
-  return homingactive_;
-}
-inline void HomingInfo::set_homingactive(bool value) {
-  
-  homingactive_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.homingActive)
-}
-
-// .Vector3 target = 2;
-inline bool HomingInfo::has_target() const {
-  return this != internal_default_instance() && target_ != NULL;
-}
-inline void HomingInfo::clear_target() {
-  if (GetArenaNoVirtual() == NULL && target_ != NULL) {
-    delete target_;
+inline void TrialCondition::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
   }
-  target_ = NULL;
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:TrialCondition.name)
 }
-inline const ::Vector3& HomingInfo::_internal_target() const {
-  return *target_;
-}
-inline const ::Vector3& HomingInfo::target() const {
-  const ::Vector3* p = target_;
-  // @@protoc_insertion_point(field_get:HomingInfo.target)
-  return p != NULL ? *p : *reinterpret_cast<const ::Vector3*>(
-      &::_Vector3_default_instance_);
-}
-inline ::Vector3* HomingInfo::release_target() {
-  // @@protoc_insertion_point(field_release:HomingInfo.target)
-  
-  ::Vector3* temp = target_;
-  target_ = NULL;
-  return temp;
-}
-inline ::Vector3* HomingInfo::mutable_target() {
+inline std::string* TrialCondition::unsafe_arena_release_name() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:TrialCondition.name)
+  GOOGLE_DCHECK(GetArena() != nullptr);
   
   if (target_ == NULL) {
     auto* p = CreateMaybeMessage<::Vector3>(GetArenaNoVirtual());
@@ -6495,93 +4118,96 @@ inline ::Vector3* HomingInfo::mutable_target() {
   // @@protoc_insertion_point(field_mutable:HomingInfo.target)
   return target_;
 }
-inline void HomingInfo::set_allocated_target(::Vector3* target) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete target_;
-  }
-  if (target) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      target = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, target, submessage_arena);
-    }
+inline void TrialCondition::unsafe_arena_set_allocated_name(
+    std::string* name) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (name != nullptr) {
     
   } else {
     
   }
-  target_ = target;
-  // @@protoc_insertion_point(field_set_allocated:HomingInfo.target)
+  name_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      name, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:TrialCondition.name)
 }
 
-// double tolerance = 3;
-inline void HomingInfo::clear_tolerance() {
-  tolerance_ = 0;
+// bool success = 2;
+inline void TrialCondition::clear_success() {
+  success_ = false;
 }
-inline double HomingInfo::tolerance() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.tolerance)
-  return tolerance_;
+inline bool TrialCondition::_internal_success() const {
+  return success_;
 }
-inline void HomingInfo::set_tolerance(double value) {
+inline bool TrialCondition::success() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.success)
+  return _internal_success();
+}
+inline void TrialCondition::_internal_set_success(bool value) {
   
-  tolerance_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.tolerance)
+  success_ = value;
+}
+inline void TrialCondition::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:TrialCondition.success)
 }
 
-// double elapsed = 4;
-inline void HomingInfo::clear_elapsed() {
-  elapsed_ = 0;
+// int32 priority = 3;
+inline void TrialCondition::clear_priority() {
+  priority_ = 0;
 }
-inline double HomingInfo::elapsed() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.elapsed)
-  return elapsed_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 TrialCondition::_internal_priority() const {
+  return priority_;
 }
-inline void HomingInfo::set_elapsed(double value) {
+inline ::PROTOBUF_NAMESPACE_ID::int32 TrialCondition::priority() const {
+  // @@protoc_insertion_point(field_get:TrialCondition.priority)
+  return _internal_priority();
+}
+inline void TrialCondition::_internal_set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  elapsed_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.elapsed)
+  priority_ = value;
+}
+inline void TrialCondition::set_priority(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_priority(value);
+  // @@protoc_insertion_point(field_set:TrialCondition.priority)
 }
 
-// double springConstant = 5;
-inline void HomingInfo::clear_springconstant() {
-  springconstant_ = 0;
+// repeated .ObjectParameter params = 4;
+inline int TrialCondition::_internal_params_size() const {
+  return params_.size();
 }
-inline double HomingInfo::springconstant() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.springConstant)
-  return springconstant_;
+inline int TrialCondition::params_size() const {
+  return _internal_params_size();
 }
-inline void HomingInfo::set_springconstant(double value) {
-  
-  springconstant_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.springConstant)
+inline void TrialCondition::clear_params() {
+  params_.Clear();
 }
-
-// double dampingConstant = 6;
-inline void HomingInfo::clear_dampingconstant() {
-  dampingconstant_ = 0;
+inline ::ObjectParameter* TrialCondition::mutable_params(int index) {
+  // @@protoc_insertion_point(field_mutable:TrialCondition.params)
+  return params_.Mutable(index);
 }
-inline double HomingInfo::dampingconstant() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.dampingConstant)
-  return dampingconstant_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >*
+TrialCondition::mutable_params() {
+  // @@protoc_insertion_point(field_mutable_list:TrialCondition.params)
+  return &params_;
 }
-inline void HomingInfo::set_dampingconstant(double value) {
-  
-  dampingconstant_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.dampingConstant)
+inline const ::ObjectParameter& TrialCondition::_internal_params(int index) const {
+  return params_.Get(index);
 }
-
-// double maxForce = 7;
-inline void HomingInfo::clear_maxforce() {
-  maxforce_ = 0;
+inline const ::ObjectParameter& TrialCondition::params(int index) const {
+  // @@protoc_insertion_point(field_get:TrialCondition.params)
+  return _internal_params(index);
 }
-inline double HomingInfo::maxforce() const {
-  // @@protoc_insertion_point(field_get:HomingInfo.maxForce)
-  return maxforce_;
+inline ::ObjectParameter* TrialCondition::_internal_add_params() {
+  return params_.Add();
 }
-inline void HomingInfo::set_maxforce(double value) {
-  
-  maxforce_ = value;
-  // @@protoc_insertion_point(field_set:HomingInfo.maxForce)
+inline ::ObjectParameter* TrialCondition::add_params() {
+  // @@protoc_insertion_point(field_add:TrialCondition.params)
+  return _internal_add_params();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::ObjectParameter >&
+TrialCondition::params() const {
+  // @@protoc_insertion_point(field_list:TrialCondition.params)
+  return params_;
 }
 
 #ifdef __GNUC__

@@ -47,13 +47,20 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     spring->m_material->setStiffness(stiffness);
     spring->m_material->setDamping(damping);
     
-    // Assign color properties
-    cColorf color;
-    color.set(r, g, b, 1.0);
-    spring->setLineColor(color);
+    // Clamp color values to [0,1] range for CHAI3D
+    double red = std::max(0.0, std::min(1.0, r));
+    double green = std::max(0.0, std::min(1.0, g));
+    double blue = std::max(0.0, std::min(1.0, b));
     
-    // Assign line width
+    // For cMultiSegment, set line color (this is the primary color method)
+    cColorf lineColor(red, green, blue, 1.0);
+    spring->setLineColor(lineColor);
+    
+    // Assign line width for visibility
     spring->setLineWidth(4.0);
+    
+    // Also set material colors for consistency
+    spring->m_material->setColorf(red, green, blue);
     
     // Use display list for faster rendering
     spring->setUseDisplayList(true);
@@ -61,11 +68,8 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     // Build collision tree
     spring->createAABBCollisionDetector(radius);
     
-    // Set position and color
+    // Set position
     spring->setLocalPos(x, y, z);
-    spring->m_material->m_ambient.set(r, g, b);
-    spring->m_material->m_diffuse.set(r, g, b);
-    spring->m_material->m_specular.set(r, g, b);
     
     // Set spring-specific physics properties
     spring->m_material->setStiffness(stiffness);
