@@ -114,6 +114,31 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             return a->priority > b->priority;
     });
 
+    // Store data collection config (defaults to collecting everything if not specified)
+    DataCollectionConfig dataCollectionConfig;
+    if (request->has_datacollection()) {
+        dataCollectionConfig = request->datacollection();
+        std::cout << "[DEBUG] Using custom data collection config" << std::endl;
+    } else {
+        // Default: collect everything
+        dataCollectionConfig.mutable_device()->set_position(true);
+        dataCollectionConfig.mutable_device()->set_velocity(true);
+        dataCollectionConfig.mutable_device()->set_angularvelocity(true);
+        dataCollectionConfig.mutable_device()->set_orientation(true);
+        dataCollectionConfig.mutable_device()->set_proxyposition(true);
+        dataCollectionConfig.mutable_device()->set_force(true);
+        dataCollectionConfig.mutable_objects()->set_position(true);
+        dataCollectionConfig.mutable_objects()->set_orientation(true);
+        dataCollectionConfig.mutable_objects()->set_contact(true);
+        dataCollectionConfig.mutable_objects()->set_contactpoint(true);
+        dataCollectionConfig.mutable_objects()->set_contactnormal(true);
+        dataCollectionConfig.mutable_objects()->set_penetrationdepth(true);
+        dataCollectionConfig.mutable_objects()->set_force(true);
+        dataCollectionConfig.mutable_objects()->set_springforce(true);
+        dataCollectionConfig.mutable_objects()->set_dampingforce(true);
+        std::cout << "[DEBUG] Using default data collection config (collect everything)" << std::endl;
+    }
+
     // set trial context
     SimulationManager::trialContext.trialId = request->trial_id();
     SimulationManager::trialContext.time = 0.0;
@@ -163,66 +188,182 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             break;
         }
         
-        // get haptic point data
-        retrievedProxyPos = hapticPoint->getGlobalPosProxy();
-        retrievedComputedForce = hapticPoint->getLastComputedForce();
-        retrievedDevicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
-        retrievedDeviceVel = SimulationManager::simContext.tool->getDeviceGlobalLinVel();
-        retrievedDeviceAngVel = SimulationManager::simContext.tool->getDeviceGlobalAngVel();
-        retrievedDeviceRot = SimulationManager::simContext.tool->getDeviceGlobalRot();
-
+        // Collect data based on configuration
         TrialDataPoint* dataPoint = dataPointMsg.mutable_datapoint();
-
         dataPoint->set_timestamp(SimulationManager::trialContext.time);
 
-        Vector3* devicePos = dataPoint->mutable_deviceposition();
-        devicePos->set_x(retrievedDevicePos.x());
-        devicePos->set_y(retrievedDevicePos.y());
-        devicePos->set_z(retrievedDevicePos.z());
+        // Device position
+        if (dataCollectionConfig.device().position()) {
+            retrievedDevicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
+            Vector3* devicePos = dataPoint->mutable_deviceposition();
+            devicePos->set_x(retrievedDevicePos.x());
+            devicePos->set_y(retrievedDevicePos.y());
+            devicePos->set_z(retrievedDevicePos.z());
+        }
 
-        Vector3* proxyPos = dataPoint->mutable_proxyposition();
-        proxyPos->set_x(retrievedProxyPos.x());
-        proxyPos->set_y(retrievedProxyPos.y());
-        proxyPos->set_z(retrievedProxyPos.z());
+        // Proxy position
+        if (dataCollectionConfig.device().proxyposition()) {
+            retrievedProxyPos = hapticPoint->getGlobalPosProxy();
+            Vector3* proxyPos = dataPoint->mutable_proxyposition();
+            proxyPos->set_x(retrievedProxyPos.x());
+            proxyPos->set_y(retrievedProxyPos.y());
+            proxyPos->set_z(retrievedProxyPos.z());
+        }
 
-        Vector3* force = dataPoint->mutable_force();
-        force->set_x(retrievedComputedForce.x());
-        force->set_y(retrievedComputedForce.y());
-        force->set_z(retrievedComputedForce.z());
+        // Force
+        if (dataCollectionConfig.device().force()) {
+            retrievedComputedForce = hapticPoint->getLastComputedForce();
+            Vector3* force = dataPoint->mutable_force();
+            force->set_x(retrievedComputedForce.x());
+            force->set_y(retrievedComputedForce.y());
+            force->set_z(retrievedComputedForce.z());
+        }
 
-        // Device kinematics
-        Vector3* devVel = dataPoint->mutable_devicevelocity();
-        devVel->set_x(retrievedDeviceVel.x());
-        devVel->set_y(retrievedDeviceVel.y());
-        devVel->set_z(retrievedDeviceVel.z());
+        // Device velocity
+        if (dataCollectionConfig.device().velocity()) {
+            retrievedDeviceVel = SimulationManager::simContext.tool->getDeviceGlobalLinVel();
+            Vector3* devVel = dataPoint->mutable_devicevelocity();
+            devVel->set_x(retrievedDeviceVel.x());
+            devVel->set_y(retrievedDeviceVel.y());
+            devVel->set_z(retrievedDeviceVel.z());
+        }
 
-        Vector3* devAngVel = dataPoint->mutable_deviceangularvelocity();
-        devAngVel->set_x(retrievedDeviceAngVel.x());
-        devAngVel->set_y(retrievedDeviceAngVel.y());
-        devAngVel->set_z(retrievedDeviceAngVel.z());
+        // Device angular velocity
+        if (dataCollectionConfig.device().angularvelocity()) {
+            retrievedDeviceAngVel = SimulationManager::simContext.tool->getDeviceGlobalAngVel();
+            Vector3* devAngVel = dataPoint->mutable_deviceangularvelocity();
+            devAngVel->set_x(retrievedDeviceAngVel.x());
+            devAngVel->set_y(retrievedDeviceAngVel.y());
+            devAngVel->set_z(retrievedDeviceAngVel.z());
+        }
 
-        // Orientation as quaternion
-        cQuaternion q; q.fromRotMat(retrievedDeviceRot);
-        Quaternion* devQuat = dataPoint->mutable_deviceorientation();
-        devQuat->set_x(q.x);
-        devQuat->set_y(q.y);
-        devQuat->set_z(q.z);
-        devQuat->set_w(q.w);
+        // Device orientation
+        if (dataCollectionConfig.device().orientation()) {
+            retrievedDeviceRot = SimulationManager::simContext.tool->getDeviceGlobalRot();
+            cQuaternion q; q.fromRotMat(retrievedDeviceRot);
+            Quaternion* devQuat = dataPoint->mutable_deviceorientation();
+            devQuat->set_x(q.x);
+            devQuat->set_y(q.y);
+            devQuat->set_z(q.z);
+            devQuat->set_w(q.w);
+        }
 
-        // Object states snapshot
+        // Make sure we have velocity for force calculations if needed
+        if (!dataCollectionConfig.device().velocity() && 
+            (dataCollectionConfig.objects().dampingforce() || dataCollectionConfig.objects().force())) {
+            retrievedDeviceVel = SimulationManager::simContext.tool->getDeviceGlobalLinVel();
+        }
+
+        // Object states snapshot based on configuration
         for (const auto& kv : SimulationManager::simContext.objectMap) {
             const std::string& oid = kv.first;
             const std::unique_ptr<cGenericObject>& objPtr = kv.second;
             if (!objPtr) continue;
+            
             ObjectState* os = dataPoint->add_objects();
             os->set_id(oid);
-            cVector3d p = objPtr->getGlobalPos();
-            Vector3* osp = os->mutable_position();
-            osp->set_x(p.x()); osp->set_y(p.y()); osp->set_z(p.z());
-            cMatrix3d R = objPtr->getGlobalRot();
-            cQuaternion oq; oq.fromRotMat(R);
-            Quaternion* oso = os->mutable_orientation();
-            oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
+            
+            // Position
+            if (dataCollectionConfig.objects().position()) {
+                cVector3d p = objPtr->getGlobalPos();
+                Vector3* osp = os->mutable_position();
+                osp->set_x(p.x()); osp->set_y(p.y()); osp->set_z(p.z());
+            }
+            
+            // Orientation
+            if (dataCollectionConfig.objects().orientation()) {
+                cMatrix3d R = objPtr->getGlobalRot();
+                cQuaternion oq; oq.fromRotMat(R);
+                Quaternion* oso = os->mutable_orientation();
+                oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
+            }
+            
+            // Contact detection and related data
+            bool inContact = false;
+            if (dataCollectionConfig.objects().contact() || 
+                dataCollectionConfig.objects().contactpoint() ||
+                dataCollectionConfig.objects().contactnormal() ||
+                dataCollectionConfig.objects().penetrationdepth() ||
+                dataCollectionConfig.objects().force() ||
+                dataCollectionConfig.objects().springforce() ||
+                dataCollectionConfig.objects().dampingforce()) {
+                
+                inContact = hapticPoint->isInContact(objPtr.get());
+                
+                if (dataCollectionConfig.objects().contact()) {
+                    os->set_incontact(inContact);
+                }
+                
+                if (inContact && objPtr->m_interactionInside) {
+                    // Get proxy position for calculations
+                    cVector3d proxyPos;
+                    if (!dataCollectionConfig.device().proxyposition()) {
+                        proxyPos = hapticPoint->getGlobalPosProxy();
+                    } else {
+                        proxyPos = retrievedProxyPos;
+                    }
+                    
+                    // Contact point (in world coordinates)
+                    cVector3d contactPoint = objPtr->getGlobalPos() + cMul(objPtr->getGlobalRot(), objPtr->m_interactionPoint);
+                    if (dataCollectionConfig.objects().contactpoint()) {
+                        Vector3* cp = os->mutable_contactpoint();
+                        cp->set_x(contactPoint.x());
+                        cp->set_y(contactPoint.y());
+                        cp->set_z(contactPoint.z());
+                    }
+                    
+                    // Contact normal (in world coordinates)
+                    cVector3d contactNormal = cMul(objPtr->getGlobalRot(), objPtr->m_interactionNormal);
+                    if (dataCollectionConfig.objects().contactnormal()) {
+                        Vector3* cn = os->mutable_contactnormal();
+                        cn->set_x(contactNormal.x());
+                        cn->set_y(contactNormal.y());
+                        cn->set_z(contactNormal.z());
+                    }
+                    
+                    // Compute penetration depth
+                    double penetrationDepth = cDistance(proxyPos, contactPoint);
+                    if (dataCollectionConfig.objects().penetrationdepth()) {
+                        os->set_penetrationdepth(penetrationDepth);
+                    }
+                    
+                    // Force calculations (if requested)
+                    if ((dataCollectionConfig.objects().force() || 
+                         dataCollectionConfig.objects().springforce() ||
+                         dataCollectionConfig.objects().dampingforce()) && objPtr->m_material) {
+                        
+                        double stiffness = objPtr->m_material->getStiffness();
+                        double damping = objPtr->m_material->getDamping();
+                        
+                        // Spring force: F = k * penetration * normal
+                        cVector3d springForce = -stiffness * penetrationDepth * contactNormal;
+                        if (dataCollectionConfig.objects().springforce()) {
+                            Vector3* sf = os->mutable_springforce();
+                            sf->set_x(springForce.x());
+                            sf->set_y(springForce.y());
+                            sf->set_z(springForce.z());
+                        }
+                        
+                        // Damping force: F = -b * velocity
+                        cVector3d dampingForce = -damping * retrievedDeviceVel;
+                        if (dataCollectionConfig.objects().dampingforce()) {
+                            Vector3* df = os->mutable_dampingforce();
+                            df->set_x(dampingForce.x());
+                            df->set_y(dampingForce.y());
+                            df->set_z(dampingForce.z());
+                        }
+                        
+                        // Total force from this object
+                        if (dataCollectionConfig.objects().force()) {
+                            cVector3d totalObjForce = springForce + dampingForce;
+                            Vector3* tf = os->mutable_force();
+                            tf->set_x(totalObjForce.x());
+                            tf->set_y(totalObjForce.y());
+                            tf->set_z(totalObjForce.z());
+                        }
+                    }
+                }
+            }
         }
 
         writer->Write(dataPointMsg);
