@@ -1,0 +1,54 @@
+<TrialConfig>
+  <HomePosition>
+    <Position x="-0.5" y="0.0" z="0.0"/>
+    <Tolerance>0.05</Tolerance>
+  </HomePosition>
+
+  <EndConditions>
+    <!-- Time-based condition - trial ends after 30 seconds -->
+    <Condition name="time" success="false" priority="1">
+      <Parameter key="duration_seconds" value="30.0"/>
+    </Condition>
+    
+    <!-- Position-based condition - trial ends when reaching goal -->
+    <Condition name="position" success="true" priority="2">
+      <Parameter key="target_x" value="0.0"/>
+      <Parameter key="target_y" value="0.5"/>
+      <Parameter key="target_z" value="0.0"/>
+      <Parameter key="tolerance" value="0.05"/>
+    </Condition>
+    
+    <!-- Velocity-based condition - trial ends if moving too fast -->
+    <Condition name="velocity" success="false" priority="3">
+      <Parameter key="max_velocity" value="0.1"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Move the red sphere to the green goal on the right!</StartMessage>
+    <SuccessMessage>Well done! You reached the goal!</SuccessMessage>
+    <FailureMessage>Time's up or you moved too fast. Try again!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <Object id="goal" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Parameters width="0.02" height="0.02" depth="0.02"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>

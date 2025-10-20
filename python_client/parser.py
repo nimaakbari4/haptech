@@ -18,18 +18,25 @@ class Position:
         )
 
 @dataclass
+class ObjectParameter:
+    key: str
+    value: str
+
+@dataclass
 class HomePosition:
     position: Position
     tolerance: float
 
 @dataclass
 class Condition:
-    type: str
-    result: str
-    value: Optional[float] = None
-    position: Optional[Position] = None
-    tolerance: Optional[float] = None
-    max_velocity: Optional[float] = None
+    name: str
+    success: bool
+    priority: int
+    parameters: List[ObjectParameter] = None
+    
+    def __post_init__(self):
+        if self.parameters is None:
+            self.parameters = []
 
 @dataclass
 class EndConditions:
@@ -57,11 +64,6 @@ class Camera:
 class SceneSettings:
     background_color: BackgroundColor
     camera: Camera
-
-@dataclass
-class ObjectParameter:
-    key: str
-    value: str
 
 @dataclass
 class ObjectConfig:
@@ -101,17 +103,19 @@ def xml_parser(xml_path: str) -> TrialConfig:
     # EndConditions
     conds = []
     for c in root.find("EndConditions").findall("Condition"):
+        # Parse parameters from Parameters element (consistent with Objects)
+        params = []
+        params_elem = c.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
+        
         cond = Condition(
-            type = c.get("type"),
-            result = c.get("result"),
-            value = float(c.get("value")) if c.get("value") else None
+            name = c.get("name"),
+            success = c.get("success", "false").lower() == "true",
+            priority = int(c.get("priority", "0")),
+            parameters = params
         )
-        if c.find("Position") is not None:
-            cond.position  = Position.from_elem(c.find("Position"))
-        if c.find("Tolerance") is not None:
-            cond.tolerance = float(c.findtext("Tolerance"))
-        if c.find("MaxVelocity") is not None:
-            cond.max_velocity = float(c.findtext("MaxVelocity"))
         conds.append(cond)
     end_conditions = EndConditions(conditions=conds)
 
@@ -193,12 +197,9 @@ if __name__ == "__main__":
     print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
     print("\nEnd Conditions:")
     for c in cfg.end_conditions.conditions:
-        print(f" - {c.type} → {c.result}", end="")
-        if c.value:         print(f", value={c.value}", end="")
-        if c.position:      print(f", at {c.position}", end="")
-        if c.tolerance:     print(f", tol={c.tolerance}", end="")
-        if c.max_velocity:  print(f", max_vel={c.max_velocity}", end="")
-        print()
+        print(f" - {c.name} (success={c.success}, priority={c.priority})")
+        for param in c.parameters:
+            print(f"   {param.key}: {param.value}")
 
     print("\nHUD Messages:")
     print(" Start:",   cfg.hud_text.start_message)

@@ -1,4 +1,7 @@
 #include "extensions_registry.h"
+#include "end_conditions/time_condition.h"
+#include "end_conditions/position_condition.h"
+#include "end_conditions/velocity_condition.h"
 #include <iostream>
 
 bool ExtensionsRegistry::registered_ = false;
@@ -27,6 +30,14 @@ void ExtensionsRegistry::registerAllExtensions() {
     std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;
     registerTrialEndCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
         return std::make_unique<TimeCondition>(params, success, priority);
+    });
+    
+    registerTrialEndCondition("position", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
+        return std::make_unique<PositionCondition>(params, success, priority);
+    });
+    
+    registerTrialEndCondition("velocity", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
+        return std::make_unique<VelocityCondition>(params, success, priority);
     });
     
     // TODO: Researchers can add their own extensions here

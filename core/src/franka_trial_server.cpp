@@ -120,7 +120,11 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     SimulationManager::trialContext.endConditionMet = nullptr;
 
     // start trial
-    std::cout << "[TRIAL] Trial started: " << request->trial_id() << " for " << request->trialduration() << "s" << std::endl;
+    if (request->trialduration() > 0) {
+        std::cout << "[TRIAL] Trial started: " << request->trial_id() << " for " << request->trialduration() << "s" << std::endl;
+    } else {
+        std::cout << "[TRIAL] Trial started: " << request->trial_id() << " (end conditions: " << request->endconditions_size() << " condition(s))" << std::endl;
+    }
 
     TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
     status->set_status(TrialStatus::STARTED);
@@ -251,7 +255,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
 
     // stop trial
-    SimulationManager::trialContext.trialRunning == false;
+    SimulationManager::trialContext.trialRunning = false;
     // ensure haptics is disabled and ramp forces to zero during teardown
     SimulationManager::simContext.hapticsEnabled = false;
     SimulationManager::rampDeviceForceToZero(150);
