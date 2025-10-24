@@ -13,11 +13,7 @@ cGenericObject* TorusObject::createObject(const std::map<std::string, std::strin
     unsigned int numRings = getNumRings(params);
     
     // Create torus mesh using cCreateRing (which creates a full torus)
-    cMesh* torus = new cMesh();
-    cCreateRing(torus, innerRadius, outerRadius, numSides, numRings);
-    
-    // Calculate collision detector radius (use outer radius)
-    torus->createAABBCollisionDetector(outerRadius);
+    cShapeTorus* torus = new cShapeTorus(innerRadius, outerRadius);
     
     // Set color
     torus->m_material->m_ambient.set(r, g, b);
@@ -26,6 +22,9 @@ cGenericObject* TorusObject::createObject(const std::map<std::string, std::strin
     
     // Position the torus
     torus->setLocalPos(x, y, z);
+
+    cEffectSurface* newEffect = new cEffectSurface(torus);
+    torus->addEffect(newEffect);
     
     // Note: Haptic material properties (stiffness) will be set by SimulationManager::addObject
     

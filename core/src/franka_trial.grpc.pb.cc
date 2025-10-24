@@ -11,12 +11,8 @@
 #include <grpcpp/impl/codegen/channel_interface.h>
 #include <grpcpp/impl/codegen/client_unary_call.h>
 #include <grpcpp/impl/codegen/client_callback.h>
-#include <grpcpp/impl/codegen/message_allocator.h>
-#include <grpcpp/impl/codegen/method_handler.h>
+#include <grpcpp/impl/codegen/method_handler_impl.h>
 #include <grpcpp/impl/codegen/rpc_service_method.h>
-#include <grpcpp/impl/codegen/server_callback.h>
-#include <grpcpp/impl/codegen/server_callback_handlers.h>
-#include <grpcpp/impl/codegen/server_context.h>
 #include <grpcpp/impl/codegen/service_type.h>
 #include <grpcpp/impl/codegen/sync_stream.h>
 
@@ -35,19 +31,15 @@ FrankaTrialService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>&
   {}
 
 ::grpc::ClientReader< ::TrialResponseStream>* FrankaTrialService::Stub::RunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request) {
-  return ::grpc_impl::internal::ClientReaderFactory< ::TrialResponseStream>::Create(channel_.get(), rpcmethod_RunTrial_, context, request);
-}
-
-void FrankaTrialService::Stub::experimental_async::RunTrial(::grpc::ClientContext* context, ::TrialRequest* request, ::grpc::experimental::ClientReadReactor< ::TrialResponseStream>* reactor) {
-  ::grpc_impl::internal::ClientCallbackReaderFactory< ::TrialResponseStream>::Create(stub_->channel_.get(), stub_->rpcmethod_RunTrial_, context, request, reactor);
+  return ::grpc::internal::ClientReaderFactory< ::TrialResponseStream>::Create(channel_.get(), rpcmethod_RunTrial_, context, request);
 }
 
 ::grpc::ClientAsyncReader< ::TrialResponseStream>* FrankaTrialService::Stub::AsyncRunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
-  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::TrialResponseStream>::Create(channel_.get(), cq, rpcmethod_RunTrial_, context, request, true, tag);
+  return ::grpc::internal::ClientAsyncReaderFactory< ::TrialResponseStream>::Create(channel_.get(), cq, rpcmethod_RunTrial_, context, request, true, tag);
 }
 
 ::grpc::ClientAsyncReader< ::TrialResponseStream>* FrankaTrialService::Stub::PrepareAsyncRunTrialRaw(::grpc::ClientContext* context, const ::TrialRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc_impl::internal::ClientAsyncReaderFactory< ::TrialResponseStream>::Create(channel_.get(), cq, rpcmethod_RunTrial_, context, request, false, nullptr);
+  return ::grpc::internal::ClientAsyncReaderFactory< ::TrialResponseStream>::Create(channel_.get(), cq, rpcmethod_RunTrial_, context, request, false, nullptr);
 }
 
 FrankaTrialService::Service::Service() {
@@ -55,12 +47,7 @@ FrankaTrialService::Service::Service() {
       FrankaTrialService_method_names[0],
       ::grpc::internal::RpcMethod::SERVER_STREAMING,
       new ::grpc::internal::ServerStreamingHandler< FrankaTrialService::Service, ::TrialRequest, ::TrialResponseStream>(
-          [](FrankaTrialService::Service* service,
-             ::grpc_impl::ServerContext* ctx,
-             const ::TrialRequest* req,
-             ::grpc_impl::ServerWriter<::TrialResponseStream>* writer) {
-               return service->RunTrial(ctx, req, writer);
-             }, this)));
+          std::mem_fn(&FrankaTrialService::Service::RunTrial), this)));
 }
 
 FrankaTrialService::Service::~Service() {
