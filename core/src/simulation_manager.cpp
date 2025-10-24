@@ -443,6 +443,20 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
 
                 // Add to world and object map
                 simContext.world->addChild(chaiObj);
+                
+                // Get workspace scale
+                double workspaceScaleFactor = simContext.tool->getWorkspaceScaleFactor();
+                cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
+                double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
+
+                // Preserve existing material or create new one
+                cMaterialPtr material = chaiObj->m_material;
+                if (!material) {
+                    material = cMaterial::create();
+                    chaiObj->setMaterial(material);
+                }
+                material->setStiffness(maxStiffness);
+                
                 simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
                 std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
                 return true;

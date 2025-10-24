@@ -40,9 +40,13 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<BallObject>();
     });
     
+    registerCustomObject("torus", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<TorusObject>();
+    });
+    
     // Register trial end conditions
     std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;
-    registerTrialEndCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
+    registerTrialCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         return std::make_unique<TimeCondition>(params, success, priority);
     });
 

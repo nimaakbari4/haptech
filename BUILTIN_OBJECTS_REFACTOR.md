@@ -28,10 +28,15 @@ This refactoring moved the built-in object creation logic from `SimulationManage
    - Parameters: `radius` (required), `bounciness` (optional, default 0.5)
    - Creates a sphere with customizable bounciness via damping
 
+5. **TorusObject** (`src/objects/torus_object.h/cpp`)
+   - Type: `"torus"`
+   - Parameters: `inner_radius`, `outer_radius` (both required), `num_sides`, `num_rings` (optional, defaults 16)
+   - Creates a torus (donut shape) mesh using CHAI3D's `cCreateRing` function
+
 ### Registry Updates
 
 - Updated `extensions_registry.h` to include the new object headers
-- Updated `extensions_registry.cpp` to register all four new object types in `registerAllExtensions()`
+- Updated `extensions_registry.cpp` to register all five new object types in `registerAllExtensions()`
 
 ### SimulationManager Simplification
 
@@ -64,6 +69,13 @@ The XML configuration syntax remains unchanged. Objects are still created with:
 <object id="my_ball" type="ball" x="0" y="0.2" z="0" r="0" g="0" b="1">
     <param name="radius" value="0.05"/>
     <param name="bounciness" value="0.8"/>
+</object>
+
+<object id="my_torus" type="torus" x="0" y="0" z="0.2" r="0" g="1" b="1">
+    <param name="inner_radius" value="0.02"/>
+    <param name="outer_radius" value="0.05"/>
+    <param name="num_sides" value="16"/>
+    <param name="num_rings" value="20"/>
 </object>
 ```
 

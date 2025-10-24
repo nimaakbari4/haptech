@@ -12,6 +12,7 @@
 #include "objects/box_object.h"
 #include "objects/cylinder_object.h"
 #include "objects/ball_object.h"
+#include "objects/torus_object.h"
 
 /**
  * Registry for extensions including custom objects and trial conditions
