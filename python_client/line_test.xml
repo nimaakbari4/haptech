@@ -44,7 +44,7 @@
       <Parameters 
         point_a_x="-0.3" point_a_y="0.0" point_a_z="0.0"
         point_b_x="0.3" point_b_y="0.0" point_b_z="0.0"
-        line_width="0.05"
+        line_width="3.0"
         magnet_max_distance="0.2"
         magnet_max_force="1"
         stiffness="600"/>

@@ -14,45 +14,40 @@ cGenericObject* LineObject::createObject(const std::map<std::string, std::string
     double magnetMaxForce = getMagnetMaxForce(params);
     double stiffness = getStiffness(params);
     
-    // Create line as a thin cylinder mesh for better visibility
-    cMesh* line = new cMesh();
+    // Create line using cMultiSegment for proper visibility and haptic feedback
+    cMultiSegment* line = new cMultiSegment();
     
     // Calculate line properties
     cVector3d lineVector = pointB - pointA;
     double lineLength = lineVector.length();
-    cVector3d lineCenter = (pointA + pointB) * 0.5;
     
-    // Create a thin cylinder to represent the line
-    double radius = lineWidth; // Convert line width to cylinder radius (much smaller!)
-    cCreateCylinder(line, radius, lineLength);
+    // Create vertices for the line endpoints
+    int indexA = line->newVertex(pointA.x(), pointA.y(), pointA.z());
+    int indexB = line->newVertex(pointB.x(), pointB.y(), pointB.z());
     
-    // Orient the cylinder to align with the line direction
-    if (lineLength > 0.001) { // Avoid division by zero
-        cVector3d upVector(0, 0, 1);
-        cVector3d lineDirection = lineVector / lineLength;
-        
-        // Calculate rotation to align cylinder with line
-        cVector3d rotationAxis = cCross(upVector, lineDirection);
-        double rotationAngle = cAngle(upVector, lineDirection);
-        
-        if (rotationAxis.length() > 0.001) {
-            rotationAxis.normalize();
-            cMatrix3d rotation;
-            rotation.setAxisAngleRotationDeg(rotationAxis, rotationAngle * 180.0 / C_PI);
-            line->setLocalRot(rotation);
-        }
-    }
+    // Create segment connecting the two vertices
+    line->newSegment(indexA, indexB);
     
-    // Position the cylinder at the line center
-    line->setLocalPos(x + lineCenter.x(), y + lineCenter.y(), z + lineCenter.z());
+    // Clamp color values to [0,1] range for CHAI3D
+    double red = std::max(0.0, std::min(1.0, r));
+    double green = std::max(0.0, std::min(1.0, g));
+    double blue = std::max(0.0, std::min(1.0, b));
     
-    // Set material properties for visibility
-    line->m_material->m_ambient.set(r, g, b);
-    line->m_material->m_diffuse.set(r, g, b);
-    line->m_material->m_specular.set(r, g, b);
+    // For cMultiSegment, set line color (this is the primary color method)
+    cColorf lineColor(red, green, blue, 1.0);
+    line->setLineColor(lineColor);
+    
+    // Assign line width for visibility
+    line->setLineWidth(lineWidth);
+    
+    // Also set material colors for consistency
+    line->m_material->setColorf(red, green, blue);
+    
+    // Use display list for faster rendering
+    line->setUseDisplayList(true);
     
     // Create collision detector
-    line->createAABBCollisionDetector(std::max(radius, lineLength * 0.1));
+    line->createAABBCollisionDetector(std::max(0.001, lineLength * 0.1));
     
     // Create magnetic effect
     line->createEffectMagnetic();
@@ -62,12 +57,15 @@ cGenericObject* LineObject::createObject(const std::map<std::string, std::string
     line->m_material->setMagnetMaxForce(magnetMaxForce);
     line->m_material->setStiffness(stiffness);
     
+    // Position the line
+    line->setLocalPos(x, y, z);
+    
     std::cout << "[LineObject] Line created from (" 
               << pointA.x() << ", " << pointA.y() << ", " << pointA.z() 
               << ") to (" 
               << pointB.x() << ", " << pointB.y() << ", " << pointB.z() 
               << ") with length=" << lineLength 
-              << ", radius=" << radius 
+              << ", line width=" << lineWidth 
               << ", magnet distance=" << magnetMaxDistance 
               << ", force=" << magnetMaxForce << ", stiffness=" << stiffness << std::endl;
     
