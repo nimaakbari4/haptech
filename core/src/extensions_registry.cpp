@@ -25,6 +25,23 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<CupObject>();
     });
     
+    // Register built-in objects as custom objects
+    registerCustomObject("sphere", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<SphereObject>();
+    });
+    
+    registerCustomObject("box", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<BoxObject>();
+    });
+    
+    registerCustomObject("cylinder", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<CylinderObject>();
+    });
+    
+    registerCustomObject("ball", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<BallObject>();
+    });
+    
     // Register trial end conditions
     std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;
     registerTrialEndCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {

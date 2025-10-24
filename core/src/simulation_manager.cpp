@@ -391,9 +391,9 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         return false;
     }
 
-    // First, try to create using custom object system
+    // Try to create using custom object system (now includes built-in types)
     if (CustomObjectRegistry::isTypeRegistered(type)) {
-        std::cout << "[DEBUG] Creating custom object: " << type << std::endl;
+        std::cout << "[DEBUG] Creating object using custom object system: " << type << std::endl;
         
         auto customObj = CustomObjectRegistry::createObject(type);
         if (customObj) {
@@ -402,89 +402,17 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                 // Add to world and object map
                 simContext.world->addChild(chaiObj);
                 simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
-                std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
+                std::cout << "[DEBUG] Added object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
                 return true;
             }
         }
-        std::cout << "[ERROR] Failed to create custom object: " << type << std::endl;
+        std::cout << "[ERROR] Failed to create object: " << type << std::endl;
         return false;
     }
 
-    // Fall back to built-in object types
-    std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
-    
-    if (type == "sphere") {
-        auto radiusIt = params.find("radius");
-        if (radiusIt == params.end()) {
-            std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        cCreateSphere(mesh.get(), radius);
-        mesh->createAABBCollisionDetector(radius);
-    }
-    else if (type == "box") {
-        auto widthIt = params.find("width");
-        auto heightIt = params.find("height");
-        auto depthIt = params.find("depth");
-        
-        if (widthIt == params.end() || heightIt == params.end() || depthIt == params.end()) {
-            std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
-            return false;
-        }
-        double width = std::stod(widthIt->second);
-        double height = std::stod(heightIt->second);
-        double depth = std::stod(depthIt->second);
-        cCreateBox(mesh.get(), width, height, depth);
-        double maxDim = std::max({width, height, depth});
-        mesh->createAABBCollisionDetector(maxDim);
-    }
-    else if (type == "cylinder") {
-        auto radiusIt = params.find("radius");
-        auto heightIt = params.find("height");
-
-        if (radiusIt == params.end() || heightIt == params.end()) {
-            std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        double height = std::stod(heightIt->second);
-        cCreateCylinder(mesh.get(), radius, height);
-        double maxDim = std::max(radius, height);
-        mesh->createAABBCollisionDetector(maxDim);
-    }
-    else if (type == "ball") {
-        // Custom ball object with bounciness
-        auto radiusIt = params.find("radius");
-        if (radiusIt == params.end()) {
-            std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        cCreateSphere(mesh.get(), radius);
-        mesh->createAABBCollisionDetector(radius);
-        
-        // Set bounciness if provided
-        auto bouncinessIt = params.find("bounciness");
-        if (bouncinessIt != params.end()) {
-            double bounciness = std::stod(bouncinessIt->second);
-            mesh->m_material->setDamping(50.0 * (1.0 - bounciness)); // Less damping = more bouncy
-        }
-    }
-    else {
-        std::cout << "[ERROR] Unknown object type: " << type << std::endl;
-        return false;
-    }
-
-    // Set color
-    mesh->m_material->m_ambient.set(r, g, b);
-    mesh->m_material->m_diffuse.set(r, g, b);
-    mesh->m_material->m_specular.set(r, g, b);
-
-    std::cout << "[DEBUG] About to call addObject for: " << id << std::endl;
-    bool result = addObject(id, mesh.release(), x, y, z);
-    std::cout << "[DEBUG] addObject result: " << (result ? "SUCCESS" : "FAILED") << std::endl;
-    return result;
+    // If we get here, the object type is not registered
+    std::cout << "[ERROR] Unknown object type: " << type << std::endl;
+    return false;
 }
 
 // PRIVATE CALLBACKS //
