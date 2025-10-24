@@ -1,11 +1,11 @@
 #pragma once
 #ifndef SIMULATION_MANAGER_H
 #define SIMULATION_MANAGER_H
-#define DATA_POLL_FREQUENCY 1000 // Hz
+#define DATA_POLL_FREQUENCY 500 // Hz
 #define HAPTICS_LOOP_FREQUENCY 1000 // Hz
 
 #include "chai3d.h"
-#include "end_conditions/trial_end_condition.h"
+#include "trial_conditions/trial_condition.h"
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
@@ -56,7 +56,7 @@ struct SimulationContext {
     cLabel* statusText;
 
     // a virtual tool representing the haptic device in the scene
-    cToolCursor* tool;
+    cGenericTool* tool;
 
     // Set of object IDs pending deletion (processed by graphics thread)
     std::set<std::string> pendingDelete;
@@ -102,10 +102,13 @@ struct SimulationContext {
 struct TrialContext {
     bool trialRunning = false;
     double time = 0;
+    double startTime = 0;
 
     std::string trialId = "";
-    std::vector<std::unique_ptr<TrialEndCondition>> endConditions;
-    std::unique_ptr<TrialEndCondition> endConditionMet;
+    std::vector<std::unique_ptr<TrialConditionInterface>> startConditions;
+    std::vector<std::unique_ptr<TrialConditionInterface>> endConditions;
+    std::unique_ptr<TrialConditionInterface> startConditionMet;
+    std::unique_ptr<TrialConditionInterface> endConditionMet;
 };
 
 // Singleton SimulationManager class
@@ -123,8 +126,9 @@ public:
     // sets debug mode
     static void setDebugMode(bool debug);
 
-    // checks trial end conditions - returns the one that was satisifed
-    // if it was true
+    // checks trial conditions - returns the one that was satisfied
+    static void checkTrialConditions();
+    static void checkStartConditions();
     static void checkEndConditions();
 
     // SCENE SETTINGS
@@ -139,14 +143,17 @@ public:
     deleting the object. Do not manually delete or reuse pointers added here.
     */
 
-    static bool addObject(std::string id, cGenericObject* obj, double x, double y, double z);
+    static bool addObject(std::string id, cGenericObject* obj, 
+        double px, double py, double pz,
+        double rx, double ry, double rz);
     static bool removeObject(std::string id);
     static bool removeAllObjects();
 
     // OBJECT HELPERS
-    static bool addSphere(std::string id, double radius, double x, double y, double z);
+    static bool addSphere(std::string id, double radius, double px, double py, double pz);
     static bool addObjectFromConfig(const std::string& id, const std::string& type, 
-                                   double x, double y, double z, 
+                                   double px, double py, double pz,
+                                   double rx, double ry, double rz,
                                    double r, double g, double b,
                                    const std::map<std::string, std::string>& params);
     

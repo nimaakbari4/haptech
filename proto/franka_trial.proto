@@ -7,9 +7,9 @@ service FrankaTrialService {
 // Message structure for client trial requests
 message TrialRequest {
     string trial_id = 1;
-    double trialDuration = 2;
-    repeated Object objects = 3;
-    repeated EndCondition endConditions = 4;
+    repeated Object objects = 2;
+    repeated TrialCondition startConditions = 3;
+    repeated TrialCondition endConditions = 4;
 }
 
 // Message structure for server responses (in a stream)
@@ -39,6 +39,57 @@ message TrialDataPoint {
     Vector3 devicePosition = 2;
     Vector3 proxyPosition = 3;
     Vector3 force = 4;
+    // Device kinematics (optional for clients)
+    Vector3 deviceVelocity = 5;
+    Vector3 deviceAngularVelocity = 6;
+    Quaternion deviceOrientation = 7; // quaternion (x,y,z,w)
+    // Object states in the scene for this sample
+    repeated ObjectState objects = 8;
+
+    // Extended data (optional)
+    Vector3 deviceAcceleration = 9;                    // linear acceleration (m/s^2)
+    Vector3 measuredForce = 10;                        // force measured at device (N)
+    uint64 messageIndex = 11;                          // monotonically increasing sample index
+    double wallTimestamp = 12;                         // wall clock seconds since epoch
+
+    // Robot kinematics (optional; if available)
+    repeated double robotQ = 13;                       // 7 joint positions
+    repeated double robotDQ = 14;                      // 7 joint velocities
+    repeated double robotTau = 15;                     // 7 joint torques
+    Pose eePose = 16;                                  // end-effector pose
+    Twist eeVelocity = 17;                             // end-effector velocity
+
+    // Forces breakdown and saturation flags (optional)
+    Vector3 springForce = 18;
+    Vector3 dampingForce = 19;
+    bool forceSaturated = 20;
+    bool maxForceReached = 21;
+
+    // Contacts (optional)
+    repeated Contact contacts = 22;
+
+    // Trial and haptics state (optional)
+    TrialState trial = 23;
+    HapticsState haptics = 24;
+    HomingInfo homing = 25;
+
+    // Diagnostics and stream/system metrics (optional)
+    string diagnostics = 26;
+    repeated string reflexFlags = 27;
+    int32 droppedFrames = 28;
+    int32 queueDepth = 29;
+    string cpuAffinity = 30;
+    string threadPriority = 31;
+    uint64 loopOverrunCount = 32;
+    double latencyComputeMs = 33;
+    double latencyApplyMs = 34;
+    double latencySendMs = 35;
+
+    // Units and frames (informational)
+    string coordinateFrame = 36;   // e.g., "world"
+    string unitsLinear = 37;       // e.g., "m"
+    string unitsForce = 38;        // e.g., "N"
+    string unitsTime = 39;         // e.g., "s"
 }
 
 // Utility data structures
@@ -52,6 +103,23 @@ message Vector3 {
     double x = 1;
     double y = 2;
     double z = 3;
+}
+
+message Quaternion {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message Pose {
+    Vector3 position = 1;
+    Quaternion orientation = 2;
+}
+
+message Twist {
+    Vector3 linear = 1;
+    Vector3 angular = 2;
 }
 
 // Object configuration messages
@@ -69,9 +137,57 @@ message ObjectParameter {
     string value = 2;
 }
 
-message EndCondition {
+message TrialCondition {
     string name = 1;
     bool success = 2;
     int32 priority = 3;
     repeated ObjectParameter params = 4;
+}
+
+// Runtime state of an object in the scene
+message ObjectState {
+    string id = 1;
+    Vector3 position = 2;       // world frame (m)
+    Quaternion orientation = 3; // world frame quaternion
+    // Optional extended fields
+    string type = 4;
+    Color color = 5;
+    bool active = 6;
+    bool collisionEnabled = 7;
+}
+
+message Contact {
+    string objectId = 1;
+    Vector3 point = 2;
+    Vector3 normal = 3;
+    double penetrationDepth = 4;
+    string frictionState = 5;
+}
+
+message TrialState {
+    string trialId = 1;
+    double elapsedTime = 2;
+    bool trialRunning = 3;
+    bool reachedGoal = 4;
+    double distanceToGoal = 5;
+    double goalTolerance = 6;
+}
+
+message HapticsState {
+    bool hapticsEnabled = 1;
+    double workspaceScaleFactor = 2;
+    double toolRadius = 3;
+    bool waitForSmallForce = 4;
+    double loopFrequencyHz = 5;
+    double dt = 6;
+}
+
+message HomingInfo {
+    bool homingActive = 1;
+    Vector3 target = 2;
+    double tolerance = 3;
+    double elapsed = 4;
+    double springConstant = 5;
+    double dampingConstant = 6;
+    double maxForce = 7;
 }

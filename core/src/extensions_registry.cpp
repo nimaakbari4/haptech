@@ -1,6 +1,4 @@
 #include "extensions_registry.h"
-#include "end_conditions/time_condition.h"
-#include "end_conditions/position_condition.h"
 #include <iostream>
 
 bool ExtensionsRegistry::registered_ = false;
@@ -47,9 +45,13 @@ void ExtensionsRegistry::registerAllExtensions() {
     registerTrialEndCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
         return std::make_unique<TimeCondition>(params, success, priority);
     });
-    
-    registerTrialEndCondition("position", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialEndCondition> {
+
+    registerTrialCondition("position", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         return std::make_unique<PositionCondition>(params, success, priority);
+    });
+    
+    registerTrialCondition("velocity", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+        return std::make_unique<VelocityCondition>(params, success, priority);
     });
     
     // TODO: Researchers can add their own extensions here
@@ -57,8 +59,8 @@ void ExtensionsRegistry::registerAllExtensions() {
     // CustomObjectRegistry::registerType("my_object", []() -> std::unique_ptr<CustomObjectInterface> {
     //     return std::make_unique<MyCustomObject>();
     // });
-    // EndConditionRegistry::registerCondition("my_condition", []() -> std::unique_ptr<TrialEndCondition> {
-    //     return std::make_unique<MyCondition>();
+    // TrialConditionRegistry::registerCondition("my_condition", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+    //     return std::make_unique<MyCondition>(params, success, priority);
     // });
     
     registered_ = true;
@@ -71,8 +73,8 @@ void ExtensionsRegistry::registerCustomObject(const std::string& typeName,
     std::cout << "[ExtensionsRegistry] Registered custom object: " << typeName << std::endl;
 }
 
-void ExtensionsRegistry::registerTrialEndCondition(const std::string& typeName, 
-                                             EndConditionRegistry::ConditionCreator creator) {
-    EndConditionRegistry::registerCondition(typeName, creator);
-    std::cout << "[ExtensionsRegistry] Registered trial end condition: " << typeName << std::endl;
+void ExtensionsRegistry::registerTrialCondition(const std::string& typeName, 
+                                             TrialConditionRegistry::ConditionCreator creator) {
+    TrialConditionRegistry::registerCondition(typeName, creator);
+    std::cout << "[ExtensionsRegistry] Registered trial condition: " << typeName << std::endl;
 }

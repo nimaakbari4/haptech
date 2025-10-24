@@ -1,14 +1,14 @@
 #ifndef TIME_CONDITION_H
 #define TIME_CONDITION_H
 
-#include "trial_end_condition.h"
+#include "trial_condition.h"
 
 /**
- * TimeCondition - A simple time-based trial end condition
- * Terminates the trial after a specified duration has elapsed
+ * TimeCondition - A simple time-based trial condition
+ * Can be used as either start or end condition based on type
  * Uses SimulationManager::trialContext.time for timing
  */
-class TimeCondition : public TrialEndCondition {
+class TimeCondition : public TrialConditionInterface {
 private:
     double _durationSeconds;
 

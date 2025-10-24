@@ -1,1 +1,1 @@
-taskset -c 6,7 /home/karissa/haptech/core/bin/core
+taskset -c 5,6 /home/haptech/Desktop/haptech/core/bin/core

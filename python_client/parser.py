@@ -23,11 +23,6 @@ class ObjectParameter:
     value: str
 
 @dataclass
-class HomePosition:
-    position: Position
-    tolerance: float
-
-@dataclass
 class Condition:
     name: str
     success: bool
@@ -37,6 +32,10 @@ class Condition:
     def __post_init__(self):
         if self.parameters is None:
             self.parameters = []
+
+@dataclass
+class StartConditions:
+    conditions: List[Condition]
 
 @dataclass
 class EndConditions:
@@ -80,7 +79,7 @@ class ObjectConfig:
 
 @dataclass
 class TrialConfig:
-    home: HomePosition
+    start_conditions: StartConditions
     end_conditions: EndConditions
     hud_text: HUDText
     scene_settings: SceneSettings
@@ -91,17 +90,27 @@ def xml_parser(xml_path: str) -> TrialConfig:
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-# HomePosition
-    home_elem = root.find("HomePosition")
-    pos_elem = home_elem.find("Position")
-    tol_elem = home_elem.find("Tolerance")
-    home = HomePosition(
-        position  = Position.from_elem(pos_elem),
-        tolerance = float(tol_elem.text)
-    )
+    #StartConditions
+    start_conds = []
+    for c in root.find("StartConditions").findall("Condition"):
+        # Parse parameters from Parameters element (consistent with Objects)
+        params = []
+        params_elem = c.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
+        cond = Condition(
+            name = c.get("name"),
+            success = c.get("success", "false").lower() == "true",
+            priority = int(c.get("priority", "0")),
+            parameters = params
+        )
+        start_conds.append(cond)
+
+    start_conditions = StartConditions(conditions=start_conds)
 
     # EndConditions
-    conds = []
+    end_conds = []
     for c in root.find("EndConditions").findall("Condition"):
         # Parse parameters from Parameters element (consistent with Objects)
         params = []
@@ -116,8 +125,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
             priority = int(c.get("priority", "0")),
             parameters = params
         )
-        conds.append(cond)
-    end_conditions = EndConditions(conditions=conds)
+        end_conds.append(cond)
+    end_conditions = EndConditions(conditions=end_conds)
 
     # HUDText
     hud = root.find("HUDText")
@@ -183,7 +192,7 @@ def xml_parser(xml_path: str) -> TrialConfig:
         ))
 
     return TrialConfig(
-        home           = home,
+        start_conditions = start_conditions,
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
@@ -194,7 +203,12 @@ def xml_parser(xml_path: str) -> TrialConfig:
 if __name__ == "__main__":
     cfg = xml_parser(sys.argv[1])
 
-    print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
+    print("\nStart Conditions:")
+    for c in cfg.start_conditions.conditions:
+        print(f" - {c.name} (success={c.success}, priority={c.priority})")
+        for param in c.parameters:
+            print(f"   {param.key}: {param.value}")
+
     print("\nEnd Conditions:")
     for c in cfg.end_conditions.conditions:
         print(f" - {c.name} (success={c.success}, priority={c.priority})")

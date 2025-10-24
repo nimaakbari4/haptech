@@ -1,0 +1,34 @@
+<TrialConfig>
+  <HomePosition>
+    <Position x="-0.5" y="0.0" z="0.0"/>
+    <Tolerance>0.05</Tolerance>
+  </HomePosition>
+
+  <EndConditions>
+    <Condition name="velocity" success="false" priority="1">
+      <Parameters max_velocity="2"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Move slowly! Don't exceed the velocity limit of 0.5 units/second</StartMessage>
+    <SuccessMessage>You moved too fast! Try to be more gentle.</SuccessMessage>
+    <FailureMessage>You exceeded the velocity limit. Try moving more slowly.</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+  </Objects>
+</TrialConfig>
