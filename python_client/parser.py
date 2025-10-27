@@ -49,10 +49,20 @@ class HUDText:
     failure_message: str
 
 @dataclass
+class Color:
+    r: float
+    g: float
+    b: float
+
+@dataclass
 class BackgroundColor:
     r: float
     g: float
     b: float
+
+@dataclass
+class CursorObject:
+    type: str
 
 @dataclass
 class Camera:
@@ -64,6 +74,11 @@ class Camera:
 class SceneSettings:
     background_color: BackgroundColor
     camera: Camera
+
+@dataclass
+class CursorSettings:
+    object_type: str
+    color: Color
 
 @dataclass
 class ObjectConfig:
@@ -111,6 +126,7 @@ class TrialConfig:
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
+    cursor_settings: Optional[CursorSettings] = None
     data_collection: Optional[DataCollectionConfig] = None
 
 
@@ -172,6 +188,26 @@ def xml_parser(xml_path: str) -> TrialConfig:
         background_color=background_color,
         camera=camera
     )
+
+    # CursorSettings (optional)
+    cursor_settings = None
+    cursor_elem = root.find("CursorSettings")
+    if cursor_elem is not None:
+        object_type = cursor_elem.get("object", "sphere")  # default to sphere
+        color_elem = cursor_elem.find("Color")
+        if color_elem is not None:
+            color = Color(
+                r=float(color_elem.get("r", 1.0)),
+                g=float(color_elem.get("g", 0.0)),
+                b=float(color_elem.get("b", 0.0))
+            )
+        else:
+            color = Color(r=1.0, g=0.0, b=0.0)  # default red
+        
+        cursor_settings = CursorSettings(
+            object_type=object_type,
+            color=color
+        )
 
     # Objects
     objs = []
@@ -245,6 +281,7 @@ def xml_parser(xml_path: str) -> TrialConfig:
         hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
+        cursor_settings = cursor_settings,
         data_collection = data_collection
     )
 
@@ -269,6 +306,11 @@ if __name__ == "__main__":
     print(" Camera pos:",       cfg.scene_settings.camera.position)
     print(" Camera look-at:",   cfg.scene_settings.camera.look_at)
     print(" Camera up:",        cfg.scene_settings.camera.up)
+
+    if cfg.cursor_settings:
+        print("\nCursor Settings:")
+        print(" Object type:", cfg.cursor_settings.object_type)
+        print(" Color:", cfg.cursor_settings.color)
 
     print("\nObjects:")
     for obj in cfg.objects:
