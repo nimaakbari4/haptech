@@ -1,5 +1,6 @@
 import grpc
 import csv
+import logging
 import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
@@ -10,6 +11,23 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
     # Add objects to the request if provided
     if objects:
         for obj in objects:
+            # Basic validation for object config
+            if obj.type == "box":
+                # Width/height/depth via params attributes
+                for k in ("width", "height", "depth"):
+                    try:
+                        val = float(next((p.value for p in obj.params if p.key == k), "nan"))
+                        if val <= 0:
+                            raise ValueError
+                    except Exception:
+                        raise ValueError(f"Invalid {k} for object '{obj.id}' (must be > 0)")
+            if obj.type == "sphere":
+                try:
+                    radius = float(next((p.value for p in obj.params if p.key in ("radius", "r")), "nan"))
+                    if radius <= 0:
+                        raise ValueError
+                except Exception:
+                    raise ValueError(f"Invalid radius for object '{obj.id}' (must be > 0)")
             # Create Object message
             obj_msg = request.objects.add()
             obj_msg.id = obj.id
@@ -35,6 +53,14 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
     
     if start_conditions:
         for condition in start_conditions:
+            # Basic validation for common start condition parameters
+            if condition.name == "time":
+                try:
+                    duration = float(next((p.value for p in condition.parameters if p.key in ("duration", "duration_seconds")), "nan"))
+                    if duration <= 0:
+                        raise ValueError
+                except Exception:
+                    raise ValueError("Start condition 'time' requires positive duration")
             # Create StartCondition message
             start_cond_msg = request.startConditions.add()
             start_cond_msg.name = condition.name
@@ -50,6 +76,21 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
     # Add end conditions to the request if provided
     if end_conditions:
         for condition in end_conditions:
+            # Basic validation for common end condition parameters
+            if condition.name == "time":
+                try:
+                    duration = float(next((p.value for p in condition.parameters if p.key in ("duration", "duration_seconds")), "nan"))
+                    if duration <= 0:
+                        raise ValueError
+                except Exception:
+                    raise ValueError("End condition 'time' requires positive duration")
+            if condition.name == "position":
+                try:
+                    tol = float(next((p.value for p in condition.parameters if p.key in ("tolerance", "tol")), "nan"))
+                    if tol <= 0:
+                        raise ValueError
+                except Exception:
+                    raise ValueError("End condition 'position' requires positive tolerance")
             # Create EndCondition message
             end_cond_msg = request.endConditions.add()
             end_cond_msg.name = condition.name
@@ -62,8 +103,17 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
                 param_msg.key = param.key
                 param_msg.value = param.value
     
-    response_stream = stub.RunTrial(request)
-    handle_stream(response_stream, output_csv_stream)
+    try:
+        response_stream = stub.RunTrial(request)
+        handle_stream(response_stream, output_csv_stream)
+    except grpc.RpcError as e:
+        logger = logging.getLogger("haptech")
+        code = e.code() if hasattr(e, 'code') else None
+        details = e.details() if hasattr(e, 'details') else str(e)
+        print(f"gRPC error while starting/streaming trial: {code} - {details}")
+        logger.error("gRPC error while running trial '%s': code=%s details=%s", trial_id, code, details)
+        logger.exception("gRPC exception in run_trial")
+        raise
 
 # Process messages coming from the stream
 def handle_stream(stream, output_csv_stream):
@@ -75,8 +125,14 @@ def handle_stream(stream, output_csv_stream):
 
 # Handle a TrialStatusUpdate
 def handle_status_update(status):
-    # TODO: Display status
-    print(f"Status Update: {status.message} (Status: {status.status})")
+    logger = logging.getLogger("haptech")
+    status_map = {0: "STARTED", 1: "ERROR", 2: "COMPLETED"}
+    name = status_map.get(status.status, str(status.status))
+    print(f"Status Update: {status.message} (Status: {name})")
+    if name == "ERROR":
+        logger.error("Server Error: %s", status.message)
+    else:
+        logger.info("Status: %s - %s", name, status.message)
 
 # Handle a TrialDataPoint
 def handle_data_point(data, output_csv_stream):
