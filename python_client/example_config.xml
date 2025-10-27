@@ -39,6 +39,29 @@
     <MouseCursor>true</MouseCursor>
   </Controls>
 
+  <!-- Collect everything: all device and per-object data enabled -->
+  <DataCollection>
+    <Device>
+      <Position enabled="true"/>
+      <Velocity enabled="true"/>
+      <AngularVelocity enabled="true"/>
+      <Orientation enabled="true"/>
+      <ProxyPosition enabled="true"/>
+      <Force enabled="true"/>
+    </Device>
+    <Objects>
+      <Position enabled="true"/>
+      <Orientation enabled="true"/>
+      <Contact enabled="true"/>
+      <ContactPoint enabled="true"/>
+      <ContactNormal enabled="true"/>
+      <PenetrationDepth enabled="true"/>
+      <Force enabled="true"/>
+      <SpringForce enabled="true"/>
+      <DampingForce enabled="true"/>
+    </Objects>
+  </DataCollection>
+
   <!-- F4.1.5: Scene Objects -->
   <Objects>
     <Object id="cursor" type="sphere">
