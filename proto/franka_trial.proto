@@ -9,6 +9,8 @@ message TrialRequest {
     string trial_id = 1;
     double trialDuration = 2;
     repeated Object objects = 3;
+    repeated EndCondition endConditions = 4;
+    DataCollectionConfig dataCollection = 5;  // What data to collect
 }
 
 // Message structure for server responses (in a stream)
@@ -38,6 +40,57 @@ message TrialDataPoint {
     Vector3 devicePosition = 2;
     Vector3 proxyPosition = 3;
     Vector3 force = 4;
+    // Device kinematics (optional for clients)
+    Vector3 deviceVelocity = 5;
+    Vector3 deviceAngularVelocity = 6;
+    Quaternion deviceOrientation = 7; // quaternion (x,y,z,w)
+    // Object states in the scene for this sample
+    repeated ObjectState objects = 8;
+
+    // Extended data (optional)
+    Vector3 deviceAcceleration = 9;                    // linear acceleration (m/s^2)
+    Vector3 measuredForce = 10;                        // force measured at device (N)
+    uint64 messageIndex = 11;                          // monotonically increasing sample index
+    double wallTimestamp = 12;                         // wall clock seconds since epoch
+
+    // Robot kinematics (optional; if available)
+    repeated double robotQ = 13;                       // 7 joint positions
+    repeated double robotDQ = 14;                      // 7 joint velocities
+    repeated double robotTau = 15;                     // 7 joint torques
+    Pose eePose = 16;                                  // end-effector pose
+    Twist eeVelocity = 17;                             // end-effector velocity
+
+    // Forces breakdown and saturation flags (optional)
+    Vector3 springForce = 18;
+    Vector3 dampingForce = 19;
+    bool forceSaturated = 20;
+    bool maxForceReached = 21;
+
+    // Contacts (optional)
+    repeated Contact contacts = 22;
+
+    // Trial and haptics state (optional)
+    TrialState trial = 23;
+    HapticsState haptics = 24;
+    HomingInfo homing = 25;
+
+    // Diagnostics and stream/system metrics (optional)
+    string diagnostics = 26;
+    repeated string reflexFlags = 27;
+    int32 droppedFrames = 28;
+    int32 queueDepth = 29;
+    string cpuAffinity = 30;
+    string threadPriority = 31;
+    uint64 loopOverrunCount = 32;
+    double latencyComputeMs = 33;
+    double latencyApplyMs = 34;
+    double latencySendMs = 35;
+
+    // Units and frames (informational)
+    string coordinateFrame = 36;   // e.g., "world"
+    string unitsLinear = 37;       // e.g., "m"
+    string unitsForce = 38;        // e.g., "N"
+    string unitsTime = 39;         // e.g., "s"
 }
 
 // Utility data structures
@@ -53,6 +106,23 @@ message Vector3 {
     double z = 3;
 }
 
+message Quaternion {
+    double x = 1;
+    double y = 2;
+    double z = 3;
+    double w = 4;
+}
+
+message Pose {
+    Vector3 position = 1;
+    Quaternion orientation = 2;
+}
+
+message Twist {
+    Vector3 linear = 1;
+    Vector3 angular = 2;
+}
+
 // Object configuration messages
 message Object {
     string id = 1;
@@ -60,30 +130,102 @@ message Object {
     Vector3 position = 3;
     Vector3 orientation = 4;  // roll, pitch, yaw in degrees
     Color color = 5;
-    oneof object_data {
-        Sphere sphere = 6;
-        Box box = 7;
-        Cylinder cylinder = 8;
-        Custom custom = 9;
-    }
+    repeated ObjectParameter params = 6;
 }
 
-message Sphere {
-    double radius = 1;
+message ObjectParameter {
+    string key = 1;
+    string value = 2;
 }
 
-message Box {
-    double width = 1;
-    double height = 2;
-    double depth = 3;
+message EndCondition {
+    string name = 1;
+    bool success = 2;
+    int32 priority = 3;
+    repeated ObjectParameter params = 4;
 }
 
-message Cylinder {
-    double radius = 1;
-    double height = 2;
+// Runtime state of an object in the scene
+message ObjectState {
+    string id = 1;
+    Vector3 position = 2;       // world frame (m)
+    Quaternion orientation = 3; // world frame quaternion
+    // Optional extended fields
+    string type = 4;
+    Color color = 5;
+    bool active = 6;
+    bool collisionEnabled = 7;
+    
+    // Contact and force data (per-object)
+    bool inContact = 8;                      // Is this object currently being touched?
+    Vector3 contactPoint = 9;                // Contact point in world frame
+    Vector3 contactNormal = 10;              // Contact surface normal
+    double penetrationDepth = 11;            // How far the tool penetrated
+    Vector3 force = 12;                      // Force contribution from this object
+    Vector3 springForce = 13;                // Spring force component
+    Vector3 dampingForce = 14;               // Damping force component
 }
 
-message Custom {
-    string file_path = 1;
-    Vector3 scale = 2;
+message Contact {
+    string objectId = 1;
+    Vector3 point = 2;
+    Vector3 normal = 3;
+    double penetrationDepth = 4;
+    string frictionState = 5;
+}
+
+message TrialState {
+    string trialId = 1;
+    double elapsedTime = 2;
+    bool trialRunning = 3;
+    bool reachedGoal = 4;
+    double distanceToGoal = 5;
+    double goalTolerance = 6;
+}
+
+message HapticsState {
+    bool hapticsEnabled = 1;
+    double workspaceScaleFactor = 2;
+    double toolRadius = 3;
+    bool waitForSmallForce = 4;
+    double loopFrequencyHz = 5;
+    double dt = 6;
+}
+
+message HomingInfo {
+    bool homingActive = 1;
+    Vector3 target = 2;
+    double tolerance = 3;
+    double elapsed = 4;
+    double springConstant = 5;
+    double dampingConstant = 6;
+    double maxForce = 7;
+}
+
+// Data Collection Configuration
+// Specifies which data fields should be collected during the trial
+message DataCollectionConfig {
+    DeviceDataConfig device = 1;
+    ObjectDataConfig objects = 2;
+}
+
+message DeviceDataConfig {
+    bool position = 1;              // Device position (x,y,z)
+    bool velocity = 2;              // Device linear velocity
+    bool angularVelocity = 3;       // Device angular velocity
+    bool orientation = 4;           // Device orientation (quaternion)
+    bool proxyPosition = 5;         // Proxy position in virtual world
+    bool force = 6;                 // Total haptic force
+}
+
+message ObjectDataConfig {
+    bool position = 1;              // Object positions
+    bool orientation = 2;           // Object orientations
+    bool contact = 3;               // Contact detection (yes/no)
+    bool contactPoint = 4;          // 3D contact point location
+    bool contactNormal = 5;         // Surface normal at contact
+    bool penetrationDepth = 6;      // Penetration depth
+    bool force = 7;                 // Total force from each object
+    bool springForce = 8;           // Spring force component
+    bool dampingForce = 9;          // Damping force component
 }

@@ -1,10 +1,11 @@
 #pragma once
 #ifndef SIMULATION_MANAGER_H
 #define SIMULATION_MANAGER_H
-#define DATA_POLL_FREQUENCY 1000 // Hz
+#define DATA_POLL_FREQUENCY 500 // Hz
 #define HAPTICS_LOOP_FREQUENCY 1000 // Hz
 
 #include "chai3d.h"
+#include "end_conditions/trial_end_condition.h"
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
@@ -103,8 +104,8 @@ struct TrialContext {
     double time = 0;
 
     std::string trialId = "";
-    double trialDuration = 0;
-    
+    std::vector<std::unique_ptr<TrialEndCondition>> endConditions;
+    std::unique_ptr<TrialEndCondition> endConditionMet;
 };
 
 // Singleton SimulationManager class
@@ -121,6 +122,10 @@ public:
 
     // sets debug mode
     static void setDebugMode(bool debug);
+
+    // checks trial end conditions - returns the one that was satisifed
+    // if it was true
+    static void checkEndConditions();
 
     // SCENE SETTINGS
     static bool reset();
@@ -143,7 +148,7 @@ public:
     static bool addObjectFromConfig(const std::string& id, const std::string& type, 
                                    double x, double y, double z, 
                                    double r, double g, double b,
-                                   const std::map<std::string, double>& sizeParams);
+                                   const std::map<std::string, std::string>& params);
     
     // ramp device force to zero over given milliseconds (exposed for server teardown)
     static void rampDeviceForceToZero(int durationMs);

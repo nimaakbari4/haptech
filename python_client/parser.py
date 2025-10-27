@@ -18,18 +18,25 @@ class Position:
         )
 
 @dataclass
+class ObjectParameter:
+    key: str
+    value: str
+
+@dataclass
 class HomePosition:
     position: Position
     tolerance: float
 
 @dataclass
 class Condition:
-    type: str
-    result: str
-    value: Optional[float] = None
-    position: Optional[Position] = None
-    tolerance: Optional[float] = None
-    max_velocity: Optional[float] = None
+    name: str
+    success: bool
+    priority: int
+    parameters: List[ObjectParameter] = None
+    
+    def __post_init__(self):
+        if self.parameters is None:
+            self.parameters = []
 
 @dataclass
 class EndConditions:
@@ -63,11 +70,39 @@ class ObjectConfig:
     id: str
     type: str
     position: Position
-    orientation: Position
-    size: dict
+    orientation: Position  # roll, pitch, yaw in degrees
     color: Optional[BackgroundColor] = None
-    file: Optional[str] = None
-    scale: Optional[Position] = None
+    params: List[ObjectParameter] = None
+    
+    def __post_init__(self):
+        if self.params is None:
+            self.params = []
+
+@dataclass
+class DeviceDataConfig:
+    position: bool = True
+    velocity: bool = True
+    angular_velocity: bool = True
+    orientation: bool = True
+    proxy_position: bool = True
+    force: bool = True
+
+@dataclass
+class ObjectDataConfig:
+    position: bool = True
+    orientation: bool = True
+    contact: bool = True
+    contact_point: bool = True
+    contact_normal: bool = True
+    penetration_depth: bool = True
+    force: bool = True
+    spring_force: bool = True
+    damping_force: bool = True
+
+@dataclass
+class DataCollectionConfig:
+    device: DeviceDataConfig
+    objects: ObjectDataConfig
 
 @dataclass
 class TrialConfig:
@@ -76,6 +111,7 @@ class TrialConfig:
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
+    data_collection: Optional[DataCollectionConfig] = None
 
 
 def xml_parser(xml_path: str) -> TrialConfig:
@@ -94,17 +130,19 @@ def xml_parser(xml_path: str) -> TrialConfig:
     # EndConditions
     conds = []
     for c in root.find("EndConditions").findall("Condition"):
+        # Parse parameters from Parameters element (consistent with Objects)
+        params = []
+        params_elem = c.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
+        
         cond = Condition(
-            type = c.get("type"),
-            result = c.get("result"),
-            value = float(c.get("value")) if c.get("value") else None
+            name = c.get("name"),
+            success = c.get("success", "false").lower() == "true",
+            priority = int(c.get("priority", "0")),
+            parameters = params
         )
-        if c.find("Position") is not None:
-            cond.position  = Position.from_elem(c.find("Position"))
-        if c.find("Tolerance") is not None:
-            cond.tolerance = float(c.findtext("Tolerance"))
-        if c.find("MaxVelocity") is not None:
-            cond.max_velocity = float(c.findtext("MaxVelocity"))
         conds.append(cond)
     end_conditions = EndConditions(conditions=conds)
 
@@ -140,25 +178,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
     for obj in root.find("Objects").findall("Object"):
         position    = Position.from_elem(obj.find("Position"))
         orientation = Position.from_elem(obj.find("Orientation"))
-
-        size_elem = obj.find("Size")
-        if size_elem is not None:
-            size = {k: float(v) for k, v in size_elem.attrib.items()}
-        else:
-           size = {}
         
-        # Handle custom objects - add file path and scale to size dict
-        if obj.get("type") == "custom":
-            file_elem = obj.find("File")
-            if file_elem is not None:
-                size["file_path"] = file_elem.text
-            
-            scale_elem = obj.find("Scale")
-            if scale_elem is not None:
-                size["scale_x"] = float(scale_elem.get("x", 1.0))
-                size["scale_y"] = float(scale_elem.get("y", 1.0))
-                size["scale_z"] = float(scale_elem.get("z", 1.0))
-
+        # Convert color
         color_elem = obj.find("Color")
         color = (
             BackgroundColor(
@@ -169,32 +190,62 @@ def xml_parser(xml_path: str) -> TrialConfig:
             if color_elem is not None
             else None
         )
-
-        file = obj.findtext("File")
-
-        scale_elem = obj.find("Scale")
-        if scale_elem is not None:
-            scale = Position.from_elem(scale_elem) 
-        else:
-            scale = None
+        
+        # Convert all parameters from the Parameters XML element
+        params = []
+        
+        # Handle the new Parameters element
+        params_elem = obj.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
 
         objs.append(ObjectConfig(
             id          = obj.get("id"),
             type        = obj.get("type"),
             position    = position,
             orientation = orientation,
-            size        = size,
             color       = color,
-            file        = file,
-            scale       = scale
+            params      = params
         ))
+
+    # DataCollection (optional - defaults to collecting everything)
+    data_collection = None
+    dc_elem = root.find("DataCollection")
+    if dc_elem is not None:
+        # Device data config
+        device_elem = dc_elem.find("Device")
+        device_config = DeviceDataConfig()
+        if device_elem is not None:
+            for child in device_elem:
+                enabled = child.get("enabled", "true").lower() == "true"
+                field_name = child.tag[0].lower() + child.tag[1:]  # Convert to camelCase
+                # Convert camelCase to snake_case
+                field_name = ''.join(['_' + c.lower() if c.isupper() else c for c in field_name]).lstrip('_')
+                if hasattr(device_config, field_name):
+                    setattr(device_config, field_name, enabled)
+        
+        # Object data config
+        objects_elem = dc_elem.find("Objects")
+        objects_config = ObjectDataConfig()
+        if objects_elem is not None:
+            for child in objects_elem:
+                enabled = child.get("enabled", "true").lower() == "true"
+                field_name = child.tag[0].lower() + child.tag[1:]  # Convert to camelCase
+                # Convert camelCase to snake_case
+                field_name = ''.join(['_' + c.lower() if c.isupper() else c for c in field_name]).lstrip('_')
+                if hasattr(objects_config, field_name):
+                    setattr(objects_config, field_name, enabled)
+        
+        data_collection = DataCollectionConfig(device=device_config, objects=objects_config)
 
     return TrialConfig(
         home           = home,
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
-        objects        = objs
+        objects        = objs,
+        data_collection = data_collection
     )
 
 
@@ -204,12 +255,9 @@ if __name__ == "__main__":
     print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
     print("\nEnd Conditions:")
     for c in cfg.end_conditions.conditions:
-        print(f" - {c.type} → {c.result}", end="")
-        if c.value:         print(f", value={c.value}", end="")
-        if c.position:      print(f", at {c.position}", end="")
-        if c.tolerance:     print(f", tol={c.tolerance}", end="")
-        if c.max_velocity:  print(f", max_vel={c.max_velocity}", end="")
-        print()
+        print(f" - {c.name} (success={c.success}, priority={c.priority})")
+        for param in c.parameters:
+            print(f"   {param.key}: {param.value}")
 
     print("\nHUD Messages:")
     print(" Start:",   cfg.hud_text.start_message)
@@ -227,7 +275,8 @@ if __name__ == "__main__":
         print(f" • [{obj.type}] {obj.id}")
         print("    Position:",    obj.position)
         print("    Orientation:", obj.orientation)
-        print("    Size:",        obj.size)
         if obj.color:    print("    Color:", obj.color)
-        if obj.file:     print("    File:",  obj.file)
-        if obj.scale:    print("    Scale:", obj.scale)
+        if obj.params:
+            print("    Parameters:")
+            for param in obj.params:
+                print(f"      {param.key}: {param.value}")

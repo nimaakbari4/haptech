@@ -1,4 +1,6 @@
 #include "simulation_manager.h"
+#include "objects/custom_object_interface.h"
+#include "extensions_registry.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -119,7 +121,7 @@ bool SimulationManager::run() {
     simContext.world->addChild(simContext.camera);
 
     // position and orient the camera
-    simContext.camera->set( cVector3d (0.5, 0.0, 0.0),    // camera position (eye)
+    simContext.camera->set( cVector3d (1.0, 0.0, 0.0),    // camera position (eye)
                  cVector3d (0.0, 0.0, 0.0),    // look at position (target)
                  cVector3d (0.0, 0.0, 1.0));   // direction of the (up) vector
 
@@ -192,8 +194,8 @@ bool SimulationManager::run() {
     simContext.hapticsThread->start(updateHaptics, CTHREAD_PRIORITY_HAPTICS);
 
     // start debug loop
-    simContext.dataThread = new cThread();
-    simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
+    // simContext.dataThread = new cThread();
+    // simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
 
     simContext.simulationRunning = true;
     // setup callback when application exits
@@ -238,6 +240,17 @@ void SimulationManager::setDebugMode(bool debug) {
     simContext.debug = debug;
 }
 
+void SimulationManager::checkEndConditions() {
+    if (trialContext.trialRunning && trialContext.endConditionMet == nullptr) {
+        for (auto& condition : trialContext.endConditions) {
+            if (condition->evaluate()) {
+                trialContext.endConditionMet = std::move(condition);
+                break;
+            }
+        }
+    }
+}
+
 // SIMULATION MANIPULATION //
 
 bool SimulationManager::reset() {
@@ -258,6 +271,7 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+    trialContext.endConditions.clear();
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {
@@ -371,52 +385,91 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
                                            double x, double y, double z, 
                                            double r, double g, double b,
-                                           const std::map<std::string, double>& sizeParams) {
+                                           const std::map<std::string, std::string>& params) {
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
     }
 
+    // First, try to create using custom object system
+    if (CustomObjectRegistry::isTypeRegistered(type)) {
+        std::cout << "[DEBUG] Creating custom object: " << type << std::endl;
+        
+        auto customObj = CustomObjectRegistry::createObject(type);
+        if (customObj) {
+            cGenericObject* chaiObj = customObj->createObject(params, x, y, z, r, g, b);
+            if (chaiObj) {
+                // Add to world and object map
+                simContext.world->addChild(chaiObj);
+                simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
+                return true;
+            }
+        }
+        std::cout << "[ERROR] Failed to create custom object: " << type << std::endl;
+        return false;
+    }
+
+    // Fall back to built-in object types
     std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
     
     if (type == "sphere") {
-        auto radiusIt = sizeParams.find("radius");
-        if (radiusIt == sizeParams.end()) {
+        auto radiusIt = params.find("radius");
+        if (radiusIt == params.end()) {
             std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
             return false;
         }
-        cCreateSphere(mesh.get(), radiusIt->second);
-        mesh->createAABBCollisionDetector(radiusIt->second);
+        double radius = std::stod(radiusIt->second);
+        cCreateSphere(mesh.get(), radius);
+        mesh->createAABBCollisionDetector(radius);
     }
     else if (type == "box") {
-        auto widthIt = sizeParams.find("width");
-        auto heightIt = sizeParams.find("height");
-        auto depthIt = sizeParams.find("depth");
+        auto widthIt = params.find("width");
+        auto heightIt = params.find("height");
+        auto depthIt = params.find("depth");
         
-        if (widthIt == sizeParams.end() || heightIt == sizeParams.end() || depthIt == sizeParams.end()) {
+        if (widthIt == params.end() || heightIt == params.end() || depthIt == params.end()) {
             std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
             return false;
         }
-        cCreateBox(mesh.get(), widthIt->second, heightIt->second, depthIt->second);
-        double maxDim = std::max({widthIt->second, heightIt->second, depthIt->second});
+        double width = std::stod(widthIt->second);
+        double height = std::stod(heightIt->second);
+        double depth = std::stod(depthIt->second);
+        cCreateBox(mesh.get(), width, height, depth);
+        double maxDim = std::max({width, height, depth});
         mesh->createAABBCollisionDetector(maxDim);
     }
     else if (type == "cylinder") {
-        auto radiusIt = sizeParams.find("radius");
-        auto heightIt = sizeParams.find("height");
-        
-        if (radiusIt == sizeParams.end() || heightIt == sizeParams.end()) {
+        auto radiusIt = params.find("radius");
+        auto heightIt = params.find("height");
+
+        if (radiusIt == params.end() || heightIt == params.end()) {
             std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
             return false;
         }
-        cCreateCylinder(mesh.get(), radiusIt->second, heightIt->second);
-        double maxDim = std::max(radiusIt->second, heightIt->second);
+        double radius = std::stod(radiusIt->second);
+        double height = std::stod(heightIt->second);
+        cCreateCylinder(mesh.get(), radius, height);
+        double maxDim = std::max(radius, height);
         mesh->createAABBCollisionDetector(maxDim);
     }
-    else if (type == "custom") {
-        // Temporarily skip custom objects
-        std::cout << "[INFO] Skipping custom object '" << id << "' for now." << std::endl;
-        return true;
+    else if (type == "ball") {
+        // Custom ball object with bounciness
+        auto radiusIt = params.find("radius");
+        if (radiusIt == params.end()) {
+            std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
+            return false;
+        }
+        double radius = std::stod(radiusIt->second);
+        cCreateSphere(mesh.get(), radius);
+        mesh->createAABBCollisionDetector(radius);
+        
+        // Set bounciness if provided
+        auto bouncinessIt = params.find("bounciness");
+        if (bouncinessIt != params.end()) {
+            double bounciness = std::stod(bouncinessIt->second);
+            mesh->m_material->setDamping(50.0 * (1.0 - bounciness)); // Less damping = more bouncy
+        }
     }
     else {
         std::cout << "[ERROR] Unknown object type: " << type << std::endl;
@@ -428,7 +481,10 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
     mesh->m_material->m_diffuse.set(r, g, b);
     mesh->m_material->m_specular.set(r, g, b);
 
-    return addObject(id, mesh.release(), x, y, z);
+    std::cout << "[DEBUG] About to call addObject for: " << id << std::endl;
+    bool result = addObject(id, mesh.release(), x, y, z);
+    std::cout << "[DEBUG] addObject result: " << (result ? "SUCCESS" : "FAILED") << std::endl;
+    return result;
 }
 
 // PRIVATE CALLBACKS //
@@ -609,13 +665,7 @@ void SimulationManager::dataPollingThread() {
                 cVector3d deviceForce;
                 simContext.hapticDevice->getForce(deviceForce);
                 
-                if (simContext.debug) {
-                    std::cout << "[DEBUG] t: " << trialContext.time
-                            << " | Device pos: " << devicePos
-                            << " | Proxy pos: " << proxyPos
-                            << " | Device force: " << deviceForce
-                            << " | Computed force: " << computedForce << std::endl;
-                }
+                // Debug output removed
             }
 
             cSleepMs(1000 / DATA_POLL_FREQUENCY);
