@@ -1,0 +1,56 @@
+<TrialConfig>
+  <StartConditions>
+    <Condition name="position" success="true" priority="1">
+      <Parameters target_x="0.0" target_y="-0.5" target_z="0.0" tolerance="0.1"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+  <Condition name="velocity" success="false" priority="1">
+      <Parameters max_velocity=".5"/>
+    </Condition>
+    <Condition name="position" success="true" priority="1">
+      <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Move to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
+    <SuccessMessage>Great! You reached the target position!</SuccessMessage>
+    <FailureMessage>You didn't reach the target position.</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <Object id="home" type="box">
+      <Position x="0.0" y="-0.5" z="0.0"/>
+      <Orientation x="45" y="0" z="0"/>
+      <Parameters width="0.1" height="0.1" depth="0.1"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
+    <Object id="target" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation x="0" y="45" z="0"/>
+      <Parameters width="0.1" height="0.1" depth="0.1"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+    </Object>
+    <!-- <Object id="spring1" type="spring">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation x="20" y="30" z="10"/>
+      <Color r="1.0" g="1.0" b="0.0"/>
+      <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
+    </Object> -->
+  </Objects>
+</TrialConfig>
