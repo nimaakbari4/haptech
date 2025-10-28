@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrialConfig>
+  <!-- Test configuration for line objects -->
+
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="0.0"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <!-- Give plenty of time to explore line objects -->
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="60.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Test magnetic line objects! Feel the magnetic attraction guiding you along the lines.</StartMessage>
+    <SuccessMessage>Great exploration of magnetic lines!</SuccessMessage>
+    <FailureMessage>Time's up! You can restart to continue exploring.</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.1" g="0.1" b="0.15"/>
+    <Camera>
+      <Position x="1.5" y="1.5" z="1.5"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <!-- ===== LINE OBJECTS ===== -->
+    <!-- Horizontal line (X-axis) -->
+    <Object id="horizontal_line" type="line">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+      <Parameters 
+        point_a_x="-0.3" point_a_y="0.0" point_a_z="0.0"
+        point_b_x="0.3" point_b_y="0.0" point_b_z="0.0"
+        line_width="3.0"
+        magnet_max_distance="0.2"
+        magnet_max_force="1"
+        stiffness="600"/>
+    </Object>
+  </Objects>
+</TrialConfig>
