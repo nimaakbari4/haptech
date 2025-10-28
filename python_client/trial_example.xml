@@ -1,17 +1,15 @@
 <TrialConfig>
+  
   <StartConditions>
-    <Condition name="position" success="true" priority="1">
-      <Parameters target_x="0.0" target_y="-0.5" target_z="0.0" tolerance="0.1"/>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="2.0"/>
     </Condition>
   </StartConditions>
 
   <EndConditions>
-  <Condition name="velocity" success="false" priority="1">
-      <Parameters max_velocity=".5"/>
-    </Condition>
-    <Condition name="position" success="true" priority="1">
-      <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
-    </Condition>
+  <Condition name="time" success="false" priority="1">
+    <Parameters duration_seconds="120.0"/>
+  </Condition>
   </EndConditions>
 
   <HUDText>
@@ -33,6 +31,29 @@
     <MouseCursor>true</MouseCursor>
   </Controls>
 
+  <!-- Collect everything: all device and per-object data enabled -->
+  <DataCollection>
+    <Device>
+      <Position enabled="true"/>
+      <Velocity enabled="true"/>
+      <AngularVelocity enabled="true"/>
+      <Orientation enabled="true"/>
+      <ProxyPosition enabled="true"/>
+      <Force enabled="true"/>
+    </Device>
+    <Objects>
+      <Position enabled="true"/>
+      <Orientation enabled="true"/>
+      <Contact enabled="true"/>
+      <ContactPoint enabled="true"/>
+      <ContactNormal enabled="true"/>
+      <PenetrationDepth enabled="true"/>
+      <Force enabled="true"/>
+      <SpringForce enabled="true"/>
+      <DampingForce enabled="true"/>
+    </Objects>
+  </DataCollection>
+
   <Objects>
     <Object id="home" type="box">
       <Position x="0.0" y="-0.5" z="0.0"/>
@@ -46,11 +67,11 @@
       <Parameters width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
-    <!-- <Object id="spring1" type="spring">
+    <Object id="spring1" type="spring">
       <Position x="0.0" y="0.0" z="0.0"/>
       <Orientation x="20" y="30" z="10"/>
       <Color r="1.0" g="1.0" b="0.0"/>
       <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
-    </Object> -->
+    </Object>
   </Objects>
 </TrialConfig>
