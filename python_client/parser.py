@@ -78,12 +78,39 @@ class ObjectConfig:
             self.params = []
 
 @dataclass
+class DeviceDataConfig:
+    position: bool = True
+    velocity: bool = True
+    angular_velocity: bool = True
+    orientation: bool = True
+    proxy_position: bool = True
+    force: bool = True
+
+@dataclass
+class ObjectDataConfig:
+    position: bool = True
+    orientation: bool = True
+    contact: bool = True
+    contact_point: bool = True
+    contact_normal: bool = True
+    penetration_depth: bool = True
+    force: bool = True
+    spring_force: bool = True
+    damping_force: bool = True
+
+@dataclass
+class DataCollectionConfig:
+    device: DeviceDataConfig
+    objects: ObjectDataConfig
+
+@dataclass
 class TrialConfig:
     start_conditions: StartConditions
     end_conditions: EndConditions
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
+    data_collection: Optional[DataCollectionConfig] = None
 
 
 def xml_parser(xml_path: str) -> TrialConfig:
@@ -191,12 +218,42 @@ def xml_parser(xml_path: str) -> TrialConfig:
             params      = params
         ))
 
+    # Optional DataCollection section
+    data_collection = None
+    dc_elem = root.find("DataCollection")
+    if dc_elem is not None:
+        # Device config
+        device_cfg = DeviceDataConfig()
+        device_elem = dc_elem.find("Device")
+        if device_elem is not None:
+            for child in device_elem:
+                enabled = child.get("enabled", "true").lower() == "true"
+                # Convert CamelCase tag to snake_case field
+                name = child.tag[0].lower() + child.tag[1:]
+                name = ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+                if hasattr(device_cfg, name):
+                    setattr(device_cfg, name, enabled)
+
+        # Objects config
+        objects_cfg = ObjectDataConfig()
+        objects_elem = dc_elem.find("Objects")
+        if objects_elem is not None:
+            for child in objects_elem:
+                enabled = child.get("enabled", "true").lower() == "true"
+                name = child.tag[0].lower() + child.tag[1:]
+                name = ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+                if hasattr(objects_cfg, name):
+                    setattr(objects_cfg, name, enabled)
+
+        data_collection = DataCollectionConfig(device=device_cfg, objects=objects_cfg)
+
     return TrialConfig(
         start_conditions = start_conditions,
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
-        objects        = objs
+        objects        = objs,
+        data_collection = data_collection
     )
 
 
