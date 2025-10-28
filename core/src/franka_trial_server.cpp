@@ -286,7 +286,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         */
 
         if (SimulationManager::simContext.debug) {
-            std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
         }
 
         double dt = clock.getCurrentTimeSeconds();
