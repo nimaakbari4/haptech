@@ -46,6 +46,12 @@
       <Parameters width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
+    <Object id="physics_cube" type="box">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters width="0.08" height="0.08" depth="0.08" enablePhysics="true" inertia="0.3" maxAngVel="15.0" damping="0.15"/>
+      <Color r="0.0" g="0.0" b="1.0"/>
+    </Object>
     <Object id="spring1" type="spring">
       <Position x="0.0" y="0.0" z="0.0"/>
       <Orientation x="20" y="30" z="10"/>
