@@ -39,8 +39,13 @@ python_client/*results.csv
 proto/compile_commands.txt
 compile_commands.json
 
-## Generated protobuf files
+## Generated protobuf files (C++)
 *.pb.h
 *.pb.cc
-*_grpc.pb.h
-*_grpc.pb.cc
+*.grpc.pb.h
+*.grpc.pb.cc
+
+## Generated protobuf files (Python)
+*_pb2.py
+*_pb2_grpc.py
+*_pb2.pyi

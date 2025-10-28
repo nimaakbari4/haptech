@@ -1,6 +1,5 @@
 #include "simulation_manager.h"
 #include "franka_trial_server.h"
-#include "extensions_registry.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -8,10 +7,7 @@
 #define C_ENABLE_FRANKA_DEVICE_SUPPORT
 
 int main() {
-    SimulationManager::setDebugMode(false);
-    
-    // Register all extensions (custom objects, trial conditions, etc.)
-    ExtensionsRegistry::registerAllExtensions();
+    SimulationManager::setDebugMode(true);
 
     // Launch test thread (so that simulation is on main thread)
     std::thread serverThread(runServer);
