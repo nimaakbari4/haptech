@@ -28,6 +28,13 @@ public:
                                         double r, double g, double b) = 0;
     
     /**
+     * Update physics for this object (called each simulation step)
+     * @param object The CHAI3D object to update
+     * @param deltaTime Time elapsed since last update (in seconds)
+     */
+    virtual void updatePhysics(cGenericObject* object, double deltaTime) = 0;
+    
+    /**
      * Get the object type name (used in XML)
      */
     virtual std::string getTypeName() const = 0;

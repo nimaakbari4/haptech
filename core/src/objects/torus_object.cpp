@@ -37,6 +37,11 @@ cGenericObject* TorusObject::createObject(const std::map<std::string, std::strin
     return torus;
 }
 
+void TorusObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement torus physics (e.g., rolling motion, gravity, complex rotational dynamics)
+    // This is a stub implementation - no physics applied yet
+}
+
 double TorusObject::getInnerRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("inner_radius");
     if (it == params.end()) {

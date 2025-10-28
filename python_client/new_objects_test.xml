@@ -8,14 +8,17 @@
   </HomePosition>
 
   <StartConditions>
-    <Condition name="time" success="false" priority="1">
+    <Condition name="time" success="true" priority="1">
       <Parameters duration_seconds="0.0"/>
     </Condition>
   </StartConditions>
 
   <EndConditions>
-    <Condition name="time" success="false" priority="1">
-      <Parameters duration_seconds="10.0"/>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="120.0"/>
+    </Condition>
+    <Condition name="velocity" success="false" priority="1">
+      <Parameters max_velocity="2"/>
     </Condition>
   </EndConditions>
 
@@ -63,46 +66,6 @@
       <Orientation x="45" y="45" z="0"/>
       <Color r="0.8" g="0.2" b="0.8"/>
       <Parameters inner_radius="0.02" outer_radius="0.07" num_sides="20" num_rings="24"/>
-    </Object>
-
-    <!-- Large high-quality torus -->
-    <Object id="large_torus" type="torus">
-      <Position x="0.0" y="-0.15" z="0.0"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Color r="0.2" g="0.6" b="1.0"/>
-      <Parameters inner_radius="0.04" outer_radius="0.09" num_sides="32" num_rings="40"/>
-    </Object>
-
-    <!-- Small torus with low resolution (for performance comparison) -->
-    <Object id="low_res_torus" type="torus">
-      <Position x="0.12" y="0.12" z="0.0"/>
-      <Orientation x="0" y="0" z="90"/>
-      <Color r="0.6" g="0.6" b="0.6"/>
-      <Parameters inner_radius="0.015" outer_radius="0.035" num_sides="6" num_rings="8"/>
-    </Object>
-
-    <!-- Tiny torus (almost like a thick ring) -->
-    <Object id="tiny_torus" type="torus">
-      <Position x="-0.12" y="0.12" z="0.0"/>
-      <Orientation x="0" y="90" z="0"/>
-      <Color r="1.0" g="0.4" b="0.1"/>
-      <Parameters inner_radius="0.01" outer_radius="0.025" num_sides="10" num_rings="12"/>
-    </Object>
-
-    <!-- Very thin torus (almost like a wire ring) -->
-    <Object id="wire_ring" type="torus">
-      <Position x="0.12" y="-0.12" z="0.0"/>
-      <Orientation x="90" y="0" z="0"/>
-      <Color r="0.9" g="0.1" b="0.1"/>
-      <Parameters inner_radius="0.03" outer_radius="0.032" num_sides="16" num_rings="20"/>
-    </Object>
-
-    <!-- Elevated torus (different Z position) -->
-    <Object id="elevated_torus" type="torus">
-      <Position x="-0.12" y="-0.12" z="0.05"/>
-      <Orientation x="40" y="0" z="30"/>
-      <Color r="0.1" g="0.9" b="0.5"/>
-      <Parameters inner_radius="0.02" outer_radius="0.045" num_sides="18" num_rings="22"/>
     </Object>
 
     <!-- ===== REFERENCE OBJECTS ===== -->

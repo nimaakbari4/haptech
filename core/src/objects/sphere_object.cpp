@@ -27,6 +27,11 @@ cGenericObject* SphereObject::createObject(const std::map<std::string, std::stri
     return sphere;
 }
 
+void SphereObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement sphere physics (e.g., gravity, bouncing, rolling)
+    // This is a stub implementation - no physics applied yet
+}
+
 double SphereObject::getRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius");
     if (it == params.end()) {

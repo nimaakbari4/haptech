@@ -30,6 +30,11 @@ cGenericObject* CylinderObject::createObject(const std::map<std::string, std::st
     return cylinder;
 }
 
+void CylinderObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement cylinder physics (e.g., rolling, gravity, angular motion)
+    // This is a stub implementation - no physics applied yet
+}
+
 double CylinderObject::getRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius");
     if (it == params.end()) {

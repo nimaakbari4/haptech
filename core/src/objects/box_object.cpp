@@ -31,6 +31,11 @@ cGenericObject* BoxObject::createObject(const std::map<std::string, std::string>
     return box;
 }
 
+void BoxObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement box physics (e.g., gravity, collision response, rotation)
+    // This is a stub implementation - no physics applied yet
+}
+
 double BoxObject::getWidth(const std::map<std::string, std::string>& params) const {
     auto it = params.find("width");
     if (it == params.end()) {

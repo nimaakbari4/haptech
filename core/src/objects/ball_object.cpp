@@ -31,6 +31,11 @@ cGenericObject* BallObject::createObject(const std::map<std::string, std::string
     return ball;
 }
 
+void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement ball physics (e.g., bouncing with configurable bounciness, gravity, velocity damping)
+    // This is a stub implementation - no physics applied yet
+}
+
 double BallObject::getRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius");
     if (it == params.end()) {

@@ -83,6 +83,11 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     return spring;
 }
 
+void SpringObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement spring physics (e.g., oscillation, compression/extension dynamics)
+    // This is a stub implementation - no physics applied yet
+}
+
 double SpringObject::getStiffness(const std::map<std::string, std::string>& params) const {
     auto it = params.find("stiffness");
     return (it != params.end()) ? std::stod(it->second) : 1000.0; // Default stiffness

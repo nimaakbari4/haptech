@@ -19,6 +19,8 @@ public:
                                 double x, double y, double z,
                                 double r, double g, double b) override;
     
+    void updatePhysics(cGenericObject* object, double deltaTime) override;
+    
     std::string getTypeName() const override { return "sphere"; }
 
 private:
