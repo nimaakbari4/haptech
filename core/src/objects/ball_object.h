@@ -24,8 +24,13 @@ public:
     std::string getTypeName() const override { return "ball"; }
 
 private:
+    double _velocity = 0.0;
+    double _gravityScale = 1.0;
+    double _radius = 0.05;
+    double _bounciness = 0.5;
     double getRadius(const std::map<std::string, std::string>& params) const;
     double getBounciness(const std::map<std::string, std::string>& params) const;
+    double getGravityScale(const std::map<std::string, std::string>& params) const;
 };
 
 #endif // BALL_OBJECT_H

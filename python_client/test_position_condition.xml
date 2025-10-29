@@ -43,5 +43,11 @@
       <Parameters width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
+    <Object id="bouncy bouncy" type="ball">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.05" gravity_scale="1" bounciness="0.5"/>
+      <Color r="1.0" g="0.5" b="0.2"/>
+    </Object>
   </Objects>
 </TrialConfig>
