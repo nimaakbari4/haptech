@@ -72,6 +72,11 @@ cGenericObject* LineObject::createObject(const std::map<std::string, std::string
     return line;
 }
 
+void LineObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement line physics (e.g., magnetic field simulation, dynamic line properties)
+    // This is a stub implementation - no physics applied yet
+}
+
 cVector3d LineObject::getPointA(const std::map<std::string, std::string>& params) const {
     double x = 0.0, y = 0.0, z = 0.0;
     

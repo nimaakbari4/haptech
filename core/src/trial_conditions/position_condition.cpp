@@ -47,6 +47,12 @@ PositionCondition::PositionCondition(std::map<std::string, std::string>& params,
 }
 
 bool PositionCondition::evaluate() {
+    // Check if tool is available before accessing it
+    if (!SimulationManager::simContext.tool) {
+        std::cerr << "[PositionCondition] Tool not initialized yet, cannot evaluate position condition" << std::endl;
+        return false;
+    }
+    
     // Get current device position from simulation manager
     cVector3d devicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
     
@@ -60,6 +66,11 @@ bool PositionCondition::evaluate() {
 }
 
 std::string PositionCondition::getMessage() {
+    // Check if tool is available before accessing it
+    if (!SimulationManager::simContext.tool) {
+        return "PositionCondition: Tool not initialized yet";
+    }
+    
     cVector3d devicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
     double dx = devicePos.x() - _targetX;
     double dy = devicePos.y() - _targetY;

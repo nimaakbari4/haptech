@@ -49,6 +49,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     for (auto& pair : SimulationManager::simContext.objectMap) {
         if (pair.second) {
             SimulationManager::simContext.world->removeChild(pair.second.get());
+            SimulationManager::simContext.objectInterfaceMap.erase(pair.first);
         }
     }
     

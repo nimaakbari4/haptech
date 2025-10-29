@@ -36,6 +36,11 @@ cGenericObject* EllipsoidObject::createObject(const std::map<std::string, std::s
     return ellipsoid;
 }
 
+void EllipsoidObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement ellipsoid physics (e.g., complex rotation dynamics, gravity, buoyancy effects)
+    // This is a stub implementation - no physics applied yet
+}
+
 double EllipsoidObject::getRadiusX(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius_x");
     if (it == params.end()) {

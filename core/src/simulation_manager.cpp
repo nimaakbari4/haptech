@@ -458,6 +458,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                 material->setStiffness(maxStiffness);
                 
                 simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                simContext.objectInterfaceMap[id] = std::move(customObj);
                 std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
                 return true;
             }
@@ -599,10 +600,22 @@ void SimulationManager::updateGraphics(void) {
 void SimulationManager::updateHaptics(void) {
     simContext.simulationRunning = true;
     simContext.simulationFinished = false;
+    cPrecisionClock clock;
+    double deltaTime;
+    clock.start();
 
     std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
 
     while (simContext.simulationRunning) {
+        // update delta time
+        clock.stop();
+
+        deltaTime = clock.getCurrentTimeSeconds();
+
+        clock.reset();
+        clock.start();
+
+        // HAPTICS
         if (!simContext.hapticsEnabled) {
             // wait until haptics is enabled
             cSleepMs(100);
@@ -623,6 +636,23 @@ void SimulationManager::updateHaptics(void) {
 
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
+
+        // PHYSICS
+        // Update physics for all objects that have custom interfaces
+        for (const auto& objPair : simContext.objectMap) {
+            const std::string& objId = objPair.first;
+            cGenericObject* chaiObj = objPair.second.get();
+            
+            // Look for corresponding custom object interface
+            auto interfaceIt = simContext.objectInterfaceMap.find(objId);
+            if (interfaceIt != simContext.objectInterfaceMap.end()) {
+                CustomObjectInterface* customInterface = interfaceIt->second.get();
+                if (customInterface && chaiObj) {
+                    // Call physics update with deltaTime
+                    customInterface->updatePhysics(chaiObj, deltaTime);
+                }
+            }
+        }
 
         cSleepMs(1000 / HAPTICS_LOOP_FREQUENCY);
     }
