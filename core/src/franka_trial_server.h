@@ -1,5 +1,6 @@
 #include <grpcpp/grpcpp.h>
-#include "proto/franka_trial.grpc.pb.h"
+#include "franka_trial.pb.h"
+#include "franka_trial.grpc.pb.h"
 #include "simulation_manager.h"
 #include "trial_conditions/trial_condition.h"
 

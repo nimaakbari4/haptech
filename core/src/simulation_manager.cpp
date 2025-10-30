@@ -426,6 +426,8 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
 
     // First, try to create using custom object system
     if (CustomObjectRegistry::isTypeRegistered(type)) {
+        std::cout << "[DEBUG] Creating custom object: " << type << std::endl;
+        
         auto customObj = CustomObjectRegistry::createObject(type);
         if (customObj) {
             cGenericObject* chaiObj = customObj->createObject(params, px, py, pz, r, g, b);
@@ -449,7 +451,6 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         std::cout << "[ERROR] Failed to create custom object: " << type << std::endl;
         return false;
     }
-    
 
     // Fall back to built-in object types
     std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();

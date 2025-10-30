@@ -54,13 +54,27 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     
     SimulationManager::simContext.objectMap.clear();
 
-    // Change the background color to a light blue
-    if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
+    // Set background color from scene settings
+    if (request->has_scenesettings() && request->scenesettings().has_backgroundcolor()) {
+        const auto& bg_color = request->scenesettings().backgroundcolor();
+        if (!SimulationManager::setBackgroundColor(bg_color.r(), bg_color.g(), bg_color.b())) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Background color set to RGB(" << bg_color.r() << ", " << bg_color.g() << ", " << bg_color.b() << ")" << std::endl;
+    } else {
+        // Default background color if not specified
+        if (!SimulationManager::setBackgroundColor(0.0, 0.0, 0.0)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting default background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Using default background color (black)" << std::endl;
     }
 
     // Add objects from the request configuration

@@ -10,6 +10,7 @@ message TrialRequest {
     repeated Object objects = 2;
     repeated TrialCondition startConditions = 3;
     repeated TrialCondition endConditions = 4;
+    SceneSettings sceneSettings = 5;
 }
 
 // Message structure for server responses (in a stream)
@@ -190,4 +191,16 @@ message HomingInfo {
     double springConstant = 5;
     double dampingConstant = 6;
     double maxForce = 7;
+}
+
+// Scene configuration
+message SceneSettings {
+    Color backgroundColor = 1;
+    Camera camera = 2;
+}
+
+message Camera {
+    Vector3 position = 1;
+    Vector3 lookAt = 2;
+    Vector3 up = 3;
 }
