@@ -48,8 +48,8 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
     pos.set(pos.x(), pos.y(), pos.z() + _velocity * deltaTime);
     
     // Check for ground collision (assuming ground at z=0)
-    if (pos.z() - _radius < 0.0) {
-        pos.set(pos.x(), pos.y(), _radius); // Reset position to above ground
+    if (pos.z() - _radius < -0.4) {
+        pos.set(pos.x(), pos.y(), -0.4 + _radius); // Reset position to above ground
         _velocity = -_velocity * _bounciness; // Reverse velocity with bounciness factor
     }
     

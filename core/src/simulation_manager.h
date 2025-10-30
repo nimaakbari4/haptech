@@ -65,6 +65,9 @@ struct SimulationContext {
     // Set of object IDs pending deletion (processed by graphics thread)
     std::set<std::string> pendingDelete;
 
+    // Mutex to protect shared object maps from race conditions between threads
+    std::mutex objectMapMutex;
+
     // flag to indicate if the haptic simulation currently running
     bool simulationRunning = true;
 

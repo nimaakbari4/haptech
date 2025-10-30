@@ -290,10 +290,15 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
-    trialContext.startConditions.clear();
-    trialContext.endConditions.clear();
-    trialContext.startConditionMet = nullptr;
-    trialContext.endConditionMet = nullptr;
+    
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        // Clear all containers
+        trialContext.startConditions.clear();
+        trialContext.endConditions.clear();
+        trialContext.startConditionMet = nullptr;
+        trialContext.endConditionMet = nullptr;
+    }
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {
@@ -362,7 +367,10 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj,
     material->setStiffness(maxStiffness);
 
     // Add the object to the map using unique_ptr
-    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
+    }
     std::cout << "[DEBUG] Added object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
 
     return true;
@@ -377,16 +385,19 @@ bool SimulationManager::removeObject(std::string id) {
     bool success;
 
 	// Defer deletion: mark for removal and let graphics thread remove safely
-	auto it = simContext.objectMap.find(id);
-	if (it != simContext.objectMap.end() && it->second) {
-		cGenericObject* obj = it->second.get();
-		std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
-		obj->setLocalPos(10000, 10000, 10000);
-		success = true;
-	} else {
-		std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
-		success = false;
-	}
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        auto it = simContext.objectMap.find(id);
+        if (it != simContext.objectMap.end() && it->second) {
+            cGenericObject* obj = it->second.get();
+            std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
+            obj->setLocalPos(10000, 10000, 10000);
+            success = true;
+        } else {
+            std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
+            success = false;
+        }
+    }
 
     return success;
 }
@@ -397,8 +408,14 @@ bool SimulationManager::removeAllObjects() {
         return false;
     }
 
-    for (const auto& pair : simContext.objectMap) {
-        removeObject(pair.first);
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        for (const auto& pair : simContext.objectMap) {
+            // Note: We need to call removeObject without the lock, so we'll just move objects far away
+            if (pair.second) {
+                pair.second->setLocalPos(10000, 10000, 10000);
+            }
+        }
     }
 
     // All objects are now removed and deleted by unique_ptr
@@ -457,8 +474,11 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                 }
                 material->setStiffness(maxStiffness);
                 
-                simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
-                simContext.objectInterfaceMap[id] = std::move(customObj);
+                {
+                    std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+                    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                    simContext.objectInterfaceMap[id] = std::move(customObj);
+                }
                 std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
                 return true;
             }
@@ -639,17 +659,20 @@ void SimulationManager::updateHaptics(void) {
 
         // PHYSICS
         // Update physics for all objects that have custom interfaces
-        for (const auto& objPair : simContext.objectMap) {
-            const std::string& objId = objPair.first;
-            cGenericObject* chaiObj = objPair.second.get();
-            
-            // Look for corresponding custom object interface
-            auto interfaceIt = simContext.objectInterfaceMap.find(objId);
-            if (interfaceIt != simContext.objectInterfaceMap.end()) {
-                CustomObjectInterface* customInterface = interfaceIt->second.get();
-                if (customInterface && chaiObj) {
-                    // Call physics update with deltaTime
-                    customInterface->updatePhysics(chaiObj, deltaTime);
+        if (trialContext.trialRunning) {
+            std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+            for (const auto& objPair : simContext.objectMap) {
+                const std::string& objId = objPair.first;
+                cGenericObject* chaiObj = objPair.second.get();
+                
+                // Look for corresponding custom object interface
+                auto interfaceIt = simContext.objectInterfaceMap.find(objId);
+                if (interfaceIt != simContext.objectInterfaceMap.end()) {
+                    CustomObjectInterface* customInterface = interfaceIt->second.get();
+                    if (customInterface && chaiObj) {
+                        // Call physics update with deltaTime
+                        customInterface->updatePhysics(chaiObj, deltaTime);
+                    }
                 }
             }
         }
