@@ -1,0 +1,40 @@
+#pragma once
+#ifndef TOOL_MESH_H
+#define TOOL_MESH_H
+
+#include "chai3d.h"
+
+using namespace chai3d;
+
+// Mesh-based multi-point haptic tool. Visuals are provided by m_image; haptics by sampled cHapticPoints.
+class cToolMesh : public cGenericTool {
+public:
+    cToolMesh(cWorld* world, cMultiMesh* visualMesh,
+              int numSamples,
+              double contactRadius);
+
+    virtual ~cToolMesh();
+
+    // Keep the visual mesh at the device pose
+    void updateToolImagePosition() override;
+
+    // Aggregate forces from all sampled haptic points
+    void computeInteractionForces() override;
+
+    // Render haptic points and the visual mesh
+    void render(cRenderOptions& a_options) override;
+
+private:
+    struct Sample {
+        cVector3d localPos;
+        cHapticPoint* point;
+    };
+
+    std::vector<Sample> m_samples;
+
+    void generateSamplesFromMesh(cMultiMesh* mesh, int numRequested);
+};
+
+#endif // TOOL_MESH_H
+
+

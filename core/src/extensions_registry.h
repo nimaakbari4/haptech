@@ -1,13 +1,16 @@
 #ifndef EXTENSIONS_REGISTRY_H
 #define EXTENSIONS_REGISTRY_H
 
-#include "end_conditions/trial_end_condition.h"
+#include "trial_conditions/trial_condition.h"
+#include "trial_conditions/time_condition.h"
+#include "trial_conditions/position_condition.h"
+#include "trial_conditions/velocity_condition.h"
 #include "objects/custom_object_interface.h"
 #include "objects/spring_object.h"
 #include "objects/cup_object.h"
 
 /**
- * Registry for extensions including custom objects and trial end conditions
+ * Registry for extensions including custom objects and trial conditions
  * Researchers add their custom objects and trial conditions here
  */
 class ExtensionsRegistry {
@@ -26,11 +29,11 @@ public:
                                     std::function<std::unique_ptr<CustomObjectInterface>()> creator);
 
     /**
-     * Register a trial end condition type
+     * Register a trial condition type
      * Researchers can call this to add their own conditions
      */
-    static void registerTrialEndCondition(const std::string& typeName, 
-                                    EndConditionRegistry::ConditionCreator creator);
+    static void registerTrialCondition(const std::string& typeName, 
+                                    TrialConditionRegistry::ConditionCreator creator);
 private:
     static bool registered_;
 };

@@ -4,14 +4,20 @@
     <Tolerance>0.05</Tolerance>
   </HomePosition>
 
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="1"/>
+    </Condition>
+  </StartConditions>
+  
   <EndConditions>
     <Condition name="time" success="false" priority="1">
-      <Parameters duration_seconds="5.0"/>
+      <Parameters duration_seconds="1000.0"/>
     </Condition>
   </EndConditions>
 
   <HUDText>
-    <StartMessage>Testing time condition - should end after 5 seconds</StartMessage>
+    <StartMessage>Testing time condition - should end after 10 seconds</StartMessage>
     <SuccessMessage>Time condition test passed!</SuccessMessage>
     <FailureMessage>Time condition test failed!</FailureMessage>
   </HUDText>
@@ -30,5 +36,11 @@
   </Controls>
 
   <Objects>
+    <Object id="cube" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Parameters width="0.05" height="0.08" depth="0.05" enablePhysics="true" inertia="0.4" maxAngVel="10.0" damping="0.1"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
   </Objects>
 </TrialConfig>

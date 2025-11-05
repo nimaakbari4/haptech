@@ -39,6 +39,10 @@ class Condition:
             self.parameters = []
 
 @dataclass
+class StartConditions:
+    conditions: List[Condition]
+
+@dataclass
 class EndConditions:
     conditions: List[Condition]
 
@@ -59,10 +63,6 @@ class BackgroundColor:
     r: float
     g: float
     b: float
-
-@dataclass
-class CursorObject:
-    type: str
 
 @dataclass
 class Camera:
@@ -121,11 +121,12 @@ class DataCollectionConfig:
 
 @dataclass
 class TrialConfig:
-    home: HomePosition
+    start_conditions: StartConditions
     end_conditions: EndConditions
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
+    home: Optional[HomePosition] = None
     cursor_settings: Optional[CursorSettings] = None
     data_collection: Optional[DataCollectionConfig] = None
 
@@ -134,17 +135,40 @@ def xml_parser(xml_path: str) -> TrialConfig:
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-# HomePosition
+    # StartConditions
+    start_conds = []
+    start_conditions_elem = root.find("StartConditions")
+    if start_conditions_elem is not None:
+        for c in start_conditions_elem.findall("Condition"):
+            # Parse parameters from Parameters element (consistent with Objects)
+            params = []
+            params_elem = c.find("Parameters")
+            if params_elem is not None:
+                for key, value in params_elem.attrib.items():
+                    params.append(ObjectParameter(key=key, value=value))
+            cond = Condition(
+                name = c.get("name"),
+                success = c.get("success", "false").lower() == "true",
+                priority = int(c.get("priority", "0")),
+                parameters = params
+            )
+            start_conds.append(cond)
+    start_conditions = StartConditions(conditions=start_conds)
+
+    # HomePosition (optional - for backward compatibility)
+    home = None
     home_elem = root.find("HomePosition")
-    pos_elem = home_elem.find("Position")
-    tol_elem = home_elem.find("Tolerance")
-    home = HomePosition(
-        position  = Position.from_elem(pos_elem),
-        tolerance = float(tol_elem.text)
-    )
+    if home_elem is not None:
+        pos_elem = home_elem.find("Position")
+        tol_elem = home_elem.find("Tolerance")
+        if pos_elem is not None and tol_elem is not None:
+            home = HomePosition(
+                position  = Position.from_elem(pos_elem),
+                tolerance = float(tol_elem.text)
+            )
 
     # EndConditions
-    conds = []
+    end_conds = []
     for c in root.find("EndConditions").findall("Condition"):
         # Parse parameters from Parameters element (consistent with Objects)
         params = []
@@ -159,8 +183,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
             priority = int(c.get("priority", "0")),
             parameters = params
         )
-        conds.append(cond)
-    end_conditions = EndConditions(conditions=conds)
+        end_conds.append(cond)
+    end_conditions = EndConditions(conditions=end_conds)
 
     # HUDText
     hud = root.find("HUDText")
@@ -245,42 +269,42 @@ def xml_parser(xml_path: str) -> TrialConfig:
             params      = params
         ))
 
-    # DataCollection (optional - defaults to collecting everything)
+    # Optional DataCollection section
     data_collection = None
     dc_elem = root.find("DataCollection")
     if dc_elem is not None:
-        # Device data config
+        # Device config
+        device_cfg = DeviceDataConfig()
         device_elem = dc_elem.find("Device")
-        device_config = DeviceDataConfig()
         if device_elem is not None:
             for child in device_elem:
                 enabled = child.get("enabled", "true").lower() == "true"
-                field_name = child.tag[0].lower() + child.tag[1:]  # Convert to camelCase
-                # Convert camelCase to snake_case
-                field_name = ''.join(['_' + c.lower() if c.isupper() else c for c in field_name]).lstrip('_')
-                if hasattr(device_config, field_name):
-                    setattr(device_config, field_name, enabled)
-        
-        # Object data config
+                # Convert CamelCase tag to snake_case field
+                name = child.tag[0].lower() + child.tag[1:]
+                name = ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+                if hasattr(device_cfg, name):
+                    setattr(device_cfg, name, enabled)
+
+        # Objects config
+        objects_cfg = ObjectDataConfig()
         objects_elem = dc_elem.find("Objects")
-        objects_config = ObjectDataConfig()
         if objects_elem is not None:
             for child in objects_elem:
                 enabled = child.get("enabled", "true").lower() == "true"
-                field_name = child.tag[0].lower() + child.tag[1:]  # Convert to camelCase
-                # Convert camelCase to snake_case
-                field_name = ''.join(['_' + c.lower() if c.isupper() else c for c in field_name]).lstrip('_')
-                if hasattr(objects_config, field_name):
-                    setattr(objects_config, field_name, enabled)
-        
-        data_collection = DataCollectionConfig(device=device_config, objects=objects_config)
+                name = child.tag[0].lower() + child.tag[1:]
+                name = ''.join(['_' + c.lower() if c.isupper() else c for c in name]).lstrip('_')
+                if hasattr(objects_cfg, name):
+                    setattr(objects_cfg, name, enabled)
+
+        data_collection = DataCollectionConfig(device=device_cfg, objects=objects_cfg)
 
     return TrialConfig(
-        home           = home,
+        start_conditions = start_conditions,
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
+        home           = home,
         cursor_settings = cursor_settings,
         data_collection = data_collection
     )
@@ -289,7 +313,15 @@ def xml_parser(xml_path: str) -> TrialConfig:
 if __name__ == "__main__":
     cfg = xml_parser(sys.argv[1])
 
-    print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
+    if cfg.home:
+        print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
+
+    print("\nStart Conditions:")
+    for c in cfg.start_conditions.conditions:
+        print(f" - {c.name} (success={c.success}, priority={c.priority})")
+        for param in c.parameters:
+            print(f"   {param.key}: {param.value}")
+
     print("\nEnd Conditions:")
     for c in cfg.end_conditions.conditions:
         print(f" - {c.name} (success={c.success}, priority={c.priority})")

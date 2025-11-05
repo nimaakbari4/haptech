@@ -1,4 +1,5 @@
 #include "simulation_manager.h"
+#include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
 #include "extensions_registry.h"
 #include <iostream>
@@ -240,10 +241,28 @@ void SimulationManager::setDebugMode(bool debug) {
     simContext.debug = debug;
 }
 
+void SimulationManager::checkTrialConditions() {
+    checkStartConditions();
+    checkEndConditions();
+}
+
+void SimulationManager::checkStartConditions() {
+    if (trialContext.trialRunning && trialContext.startConditionMet == nullptr) {
+        for (size_t i = 0; i < trialContext.startConditions.size(); ++i) {
+            auto& condition = trialContext.startConditions[i];
+            if (condition && condition->evaluate()) {
+                trialContext.startConditionMet = std::move(condition);
+                break;
+            }
+        }
+    }
+}
+
 void SimulationManager::checkEndConditions() {
     if (trialContext.trialRunning && trialContext.endConditionMet == nullptr) {
-        for (auto& condition : trialContext.endConditions) {
-            if (condition->evaluate()) {
+        for (size_t i = 0; i < trialContext.endConditions.size(); ++i) {
+            auto& condition = trialContext.endConditions[i];
+            if (condition && condition->evaluate()) {
                 trialContext.endConditionMet = std::move(condition);
                 break;
             }
@@ -271,7 +290,10 @@ bool SimulationManager::reset() {
 
     setBackgroundColor(0.0, 0.0, 0.0);
     removeAllObjects();
+    trialContext.startConditions.clear();
     trialContext.endConditions.clear();
+    trialContext.startConditionMet = nullptr;
+    trialContext.endConditionMet = nullptr;
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {
@@ -299,7 +321,9 @@ bool SimulationManager::setBackgroundColor(double r, double g, double b) {
     return true;
 }
 
-bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x, double y, double z) {
+bool SimulationManager::addObject(std::string id, cGenericObject* obj, 
+        double px, double py, double pz,
+        double rx, double ry, double rz) {
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
@@ -317,21 +341,29 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj, double x,
 
     // Add the object into the world immediately
     simContext.world->addChild(obj);
-    obj->setLocalPos(x, y, z);
+    obj->setLocalPos(px, py, pz);
+    
+    // Set rotation using Euler angles (in radians)
+    cMatrix3d rotMatrix;
+    rotMatrix.setExtrinsicEulerRotationRad(rx, ry, rz, C_EULER_ORDER_XYZ);
+    obj->setLocalRot(rotMatrix);
 
     // Get workspace scale
     double workspaceScaleFactor = simContext.tool->getWorkspaceScaleFactor();
     cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
     double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
 
-    // Assign material
-    cMaterialPtr material = cMaterial::create();
+    // Preserve existing material or create new one
+    cMaterialPtr material = obj->m_material;
+    if (!material) {
+        material = cMaterial::create();
+        obj->setMaterial(material);
+    }
     material->setStiffness(maxStiffness);
-    obj->setMaterial(material);
 
     // Add the object to the map using unique_ptr
     simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
-    std::cout << "[DEBUG] Added object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
+    std::cout << "[DEBUG] Added object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
 
     return true;
 }
@@ -379,11 +411,12 @@ bool SimulationManager::addSphere(std::string id, double radius, double x, doubl
     cCreateSphere(sphere.get(), radius);
     sphere->createAABBCollisionDetector(radius);
 
-    return addObject(id, sphere.release(), x, y, z);
+    return addObject(id, sphere.release(), x, y, z, 0, 0, 0);
 }
 
 bool SimulationManager::addObjectFromConfig(const std::string& id, const std::string& type, 
-                                           double x, double y, double z, 
+                                           double px, double py, double pz,
+                                           double rx, double ry, double rz,
                                            double r, double g, double b,
                                            const std::map<std::string, std::string>& params) {
     if (!simContext.simulationRunning) {
@@ -397,12 +430,21 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         
         auto customObj = CustomObjectRegistry::createObject(type);
         if (customObj) {
-            cGenericObject* chaiObj = customObj->createObject(params, x, y, z, r, g, b);
+            cGenericObject* chaiObj = customObj->createObject(params, px, py, pz, r, g, b);
+            
             if (chaiObj) {
+                // Set position
+                chaiObj->setLocalPos(px, py, pz);
+
+                // Set rotation using Euler angles (in radians)
+                cMatrix3d rotMatrix;
+                rotMatrix.setExtrinsicEulerRotationRad(rx, ry, rz, C_EULER_ORDER_XYZ);
+                chaiObj->setLocalRot(rotMatrix);
+
                 // Add to world and object map
                 simContext.world->addChild(chaiObj);
                 simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
-                std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << x << ", " << y << ", " << z << ")." << std::endl;
+                std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
                 return true;
             }
         }
@@ -476,13 +518,25 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         return false;
     }
 
-    // Set color
-    mesh->m_material->m_ambient.set(r, g, b);
-    mesh->m_material->m_diffuse.set(r, g, b);
-    mesh->m_material->m_specular.set(r, g, b);
+    // Set color - ensure material exists first
+    if (!mesh->m_material) {
+        mesh->m_material = cMaterial::create();
+    }
+    
+    // Clamp color values to [0,1] range for CHAI3D
+    double red = std::max(0.0, std::min(1.0, r));
+    double green = std::max(0.0, std::min(1.0, g));
+    double blue = std::max(0.0, std::min(1.0, b));
+    
+    // Set material color properties
+    mesh->m_material->setColorf(red, green, blue);
+    mesh->m_material->m_specular.set(0.3, 0.3, 0.3);
+    mesh->m_material->setShininess(100);
+    
+    std::cout << "[DEBUG] Set color: r=" << red << ", g=" << green << ", b=" << blue << std::endl;
 
     std::cout << "[DEBUG] About to call addObject for: " << id << std::endl;
-    bool result = addObject(id, mesh.release(), x, y, z);
+    bool result = addObject(id, mesh.release(), px, py, pz, rx, ry, rz);
     std::cout << "[DEBUG] addObject result: " << (result ? "SUCCESS" : "FAILED") << std::endl;
     return result;
 }
@@ -733,18 +787,32 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    // create a tool (cursor) and insert into the world
-    simContext.tool = new cToolCursor(simContext.world);
+    // create a tool (mesh-based cursor) and insert into the world
+    
+
+    auto teapotMulti = new cMultiMesh();
+    {
+        cMesh* sub = teapotMulti->newMesh();
+        cCreateTeaPot(sub, 0.5, 10, cVector3d(0,0,0), cMatrix3d(0, 0, 0, C_EULER_ORDER_XYZ), cColorf(1, 0,0));
+        teapotMulti->m_material->setWhite();
+    }
+
+    auto boxMulti = new cMultiMesh();
+    {
+        cMesh* sub = boxMulti->newMesh();
+        cCreateBox(sub, 0.02, 0.02, 0.02);
+        boxMulti->m_material->setWhite();
+    }
+
+    // Instantiate cToolMesh with sampling and contact radius
+    const int sampleCount = 24;
+    const double contactRadius = 0.01;
+    simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
+
     simContext.world->addChild(simContext.tool);
 
     // connect the haptic device to the virtual tool
     simContext.tool->setHapticDevice(simContext.hapticDevice);
-
-    // define a larger radius for the virtual tool (display + contact)
-    simContext.tool->setRadius(0.05);
-    simContext.tool->setRadiusDisplay(0.05);
-    // show proxy/goal spheres for visibility
-    // simContext.tool->setShowContactPoints(true, true);
 
     // map the physical workspace of the haptic device to a larger virtual workspace.
     simContext.tool->setWorkspaceRadius(1.0);
