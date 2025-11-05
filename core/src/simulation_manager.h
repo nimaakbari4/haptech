@@ -157,6 +157,18 @@ public:
                                    double r, double g, double b,
                                    const std::map<std::string, std::string>& params);
     
+    // CURSOR CONFIG
+    // Apply cursor (tool) visual and haptic parameters from registry type + params
+    // Expected params (all optional unless noted):
+    //  - type (required): registry object type to use as visual
+    //  - radius: haptic proxy radius (meters)
+    //  - display_radius: visual proxy sphere radius (meters)
+    //  - show_contact_points: "true"/"false"
+    //  - scale: uniform visual scale factor
+    //  - rot_x/rot_y/rot_z: degrees to rotate the visual about local axes
+    static bool applyCursorConfig(const std::string& visualType,
+                                  const std::map<std::string, std::string>& params);
+    
     // ramp device force to zero over given milliseconds (exposed for server teardown)
     static void rampDeviceForceToZero(int durationMs);
 

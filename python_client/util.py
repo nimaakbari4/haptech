@@ -5,9 +5,31 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream,
+              objects=None, start_conditions=None, end_conditions=None, cursor_settings=None):
     request = pb2.TrialRequest(trial_id=trial_id)
     
+    # Emit a special cursor object if provided via config
+    if cursor_settings is not None:
+        cursor_obj = request.objects.add()
+        cursor_obj.id = "cursor"
+        cursor_obj.type = "cursor"
+        # Pass the desired visual type via params
+        p = cursor_obj.params.add()
+        p.key = "visual_type"
+        p.value = str(cursor_settings.object_type)
+        # Optionally expose as_cursor flag for server-side detection (redundant but harmless)
+        p2 = cursor_obj.params.add()
+        p2.key = "as_cursor"
+        p2.value = "1"
+        # Forward any additional cursor parameters (e.g., radius, height, stiffness, damping,
+        # sample_count, contact_radius, scale, rot_x/rot_y/rot_z)
+        if hasattr(cursor_settings, "params") and cursor_settings.params:
+            for param in cursor_settings.params:
+                fp = cursor_obj.params.add()
+                fp.key = str(param.key)
+                fp.value = str(param.value)
+
     # Add objects to the request if provided
     if objects:
         for obj in objects:

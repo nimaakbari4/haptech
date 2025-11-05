@@ -34,8 +34,10 @@
   </SceneSettings>
 
   <!-- Cursor Settings -->
-  <CursorSettings object="sphere">
-    <Color r="0.0" g="1.0" b="1.0" />
+  <CursorSettings object="spring">
+    <!-- Optional: spring parameters (match SpringObject: radius, height, stiffness, damping) -->
+    <Parameters radius="0.02" height="0.12" stiffness="1000" damping="50" />
+    <Color r="0.8" g="0.8" b="0.0" />
   </CursorSettings>
 
   <!-- F4.1.5: Scene Objects -->

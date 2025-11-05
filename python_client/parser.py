@@ -79,6 +79,11 @@ class SceneSettings:
 class CursorSettings:
     object_type: str
     color: Color
+    params: List[ObjectParameter] = None
+
+    def __post_init__(self):
+        if self.params is None:
+            self.params = []
 
 @dataclass
 class ObjectConfig:
@@ -227,10 +232,17 @@ def xml_parser(xml_path: str) -> TrialConfig:
             )
         else:
             color = Color(r=1.0, g=0.0, b=0.0)  # default red
-        
+        # Parse optional Parameters for the cursor
+        cursor_params: List[ObjectParameter] = []
+        params_elem = cursor_elem.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                cursor_params.append(ObjectParameter(key=key, value=value))
+
         cursor_settings = CursorSettings(
             object_type=object_type,
-            color=color
+            color=color,
+            params=cursor_params
         )
 
     # Objects

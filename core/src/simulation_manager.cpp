@@ -781,6 +781,136 @@ void SimulationManager::rampDeviceForceToZero(int durationMs) {
     simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
 }
 
+bool SimulationManager::applyCursorConfig(const std::string& visualType,
+                                  const std::map<std::string, std::string>& params) {
+    // Pause haptics loop to avoid races with the haptics thread while swapping tools
+    simContext.hapticsEnabled = false;
+    cSleepMs(100);
+
+    // Destroy existing tool if any
+    destroyHapticTool();
+
+    // Build visual mesh via registry if possible
+    cGenericObject* visual = nullptr;
+
+    // Try registry
+    if (!visualType.empty() && CustomObjectRegistry::isTypeRegistered(visualType)) {
+        auto customObj = CustomObjectRegistry::createObject(visualType);
+        if (customObj) {
+            // Create object at origin, white color (visual only)
+            cGenericObject* obj = customObj->createObject(params, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+            // Accept any scene-graph object as the visual (mesh or segments)
+            if (auto mm = dynamic_cast<cMultiMesh*>(obj)) {
+                visual = mm;
+            } else if (auto m = dynamic_cast<cMesh*>(obj)) {
+                cMultiMesh* wrap = new cMultiMesh();
+                wrap->addMesh(m);
+                visual = wrap;
+            } else if (auto segs = dynamic_cast<cMultiSegment*>(obj)) {
+                visual = segs;
+            } else {
+                visual = obj; // fallback generic
+            }
+        }
+    }
+
+    // Built-in primitive support when not using the registry
+    if (!visual && !visualType.empty()) {
+        std::string vt = visualType;
+        std::transform(vt.begin(), vt.end(), vt.begin(), ::tolower);
+
+        if (vt == "sphere") {
+            double radius = 0.01; // default ~2cm diameter to match prior cube
+            auto itR = params.find("radius");
+            if (itR != params.end()) {
+                double rParsed = atof(itR->second.c_str());
+                if (rParsed > 0.0) radius = rParsed;
+            }
+            cMultiMesh* mm = new cMultiMesh(); visual = mm;
+            cMesh* sub = mm->newMesh();
+            cCreateSphere(sub, radius);
+            mm->m_material->setWhite();
+        } else if (vt == "box") {
+            double w = 0.02, h = 0.02, d = 0.02; // defaults
+            auto itW = params.find("width"); if (itW != params.end()) { double v = atof(itW->second.c_str()); if (v > 0.0) w = v; }
+            auto itH = params.find("height"); if (itH != params.end()) { double v = atof(itH->second.c_str()); if (v > 0.0) h = v; }
+            auto itD = params.find("depth"); if (itD != params.end()) { double v = atof(itD->second.c_str()); if (v > 0.0) d = v; }
+            cMultiMesh* mm = new cMultiMesh(); visual = mm;
+            cMesh* sub = mm->newMesh();
+            cCreateBox(sub, w, h, d);
+            mm->m_material->setWhite();
+        } else if (vt == "cylinder") {
+            double radius = 0.01, height = 0.02; // defaults
+            auto itR = params.find("radius"); if (itR != params.end()) { double v = atof(itR->second.c_str()); if (v > 0.0) radius = v; }
+            auto itH = params.find("height"); if (itH != params.end()) { double v = atof(itH->second.c_str()); if (v > 0.0) height = v; }
+            cMultiMesh* mm = new cMultiMesh(); visual = mm;
+            cMesh* sub = mm->newMesh();
+            cCreateCylinder(sub, radius, height);
+            mm->m_material->setWhite();
+        }
+    }
+
+    // Fallback: simple box
+    if (!visual) {
+        cMultiMesh* mm = new cMultiMesh(); visual = mm;
+        cMesh* sub = mm->newMesh();
+        cCreateBox(sub, 0.02, 0.02, 0.02);
+        mm->m_material->setWhite();
+    }
+
+    // Apply optional transforms
+    auto itScale = params.find("scale");
+    if (itScale != params.end()) {
+        double s = atof(itScale->second.c_str());
+        if (s > 0.0) visual->scale(s);
+    }
+    auto itRx = params.find("rot_x");
+    auto itRy = params.find("rot_y");
+    auto itRz = params.find("rot_z");
+    double rx = itRx != params.end() ? atof(itRx->second.c_str()) : 0.0;
+    double ry = itRy != params.end() ? atof(itRy->second.c_str()) : 0.0;
+    double rz = itRz != params.end() ? atof(itRz->second.c_str()) : 0.0;
+    if (rx != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(1,0,0), rx);
+    if (ry != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(0,1,0), ry);
+    if (rz != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(0,0,1), rz);
+
+    // Sampling/contact parameters
+    int sampleCount = 24;
+    auto itSamples = params.find("sample_count");
+    if (itSamples != params.end()) {
+        sampleCount = std::max(1, atoi(itSamples->second.c_str()));
+    }
+    double contactRadius = 0.005;
+    auto itContact = params.find("contact_radius");
+    if (itContact != params.end()) {
+        contactRadius = std::max(1e-4, atof(itContact->second.c_str()));
+    }
+
+    // Create mesh-based tool and attach device
+    simContext.tool = new cToolMesh(simContext.world, visual, sampleCount, contactRadius);
+    simContext.world->addChild(simContext.tool);
+    simContext.tool->setHapticDevice(simContext.hapticDevice);
+    simContext.tool->setWorkspaceRadius(1.0);
+
+    // Optional proxy visuals
+    auto itShow = params.find("show_contact_points");
+    if (itShow != params.end() && (itShow->second == "true" || itShow->second == "1")) {
+        simContext.tool->setShowContactPoints(true, true);
+    } else {
+        simContext.tool->setShowContactPoints(false, false);
+    }
+
+    // Start tool
+    simContext.tool->start();
+    std::cout << "[CURSOR] Applied cursor visual type: " << visualType
+              << ", samples: " << sampleCount
+              << ", contact_radius: " << contactRadius << std::endl;
+
+    // Resume haptics loop
+    simContext.hapticsEnabled = true;
+    return true;
+}
+
 void SimulationManager::createHapticTool() {
     if (!simContext.handler || !simContext.world) {
         std::cout << "[ERROR] Cannot create haptic tool: handler or world is null." << std::endl;
@@ -807,7 +937,7 @@ void SimulationManager::createHapticTool() {
     // Instantiate cToolMesh with sampling and contact radius
     const int sampleCount = 24;
     const double contactRadius = 0.01;
-    simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
+    simContext.tool = new cToolMesh(simContext.world, static_cast<cGenericObject*>(boxMulti), sampleCount, contactRadius);
 
     simContext.world->addChild(simContext.tool);
 

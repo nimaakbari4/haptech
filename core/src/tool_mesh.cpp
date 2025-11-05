@@ -2,12 +2,12 @@
 
 using namespace chai3d;
 
-cToolMesh::cToolMesh(cWorld* world, cMultiMesh* visualMesh,
+cToolMesh::cToolMesh(cWorld* world, cGenericObject* visualObject,
                      int numSamples,
                      double contactRadius)
     : cGenericTool(world)
 {
-    m_image = visualMesh;
+    m_image = visualObject;
 
     if (m_image) {
         // Ensure image is not nullptr and belongs to our scene graph
@@ -15,7 +15,7 @@ cToolMesh::cToolMesh(cWorld* world, cMultiMesh* visualMesh,
         m_image->setLocalRot(cIdentity3d());
     }
 
-    generateSamplesFromMesh(visualMesh, numSamples);
+    generateSamplesFromObject(visualObject, numSamples);
 
     // Set contact/display radii for all haptic points
     setRadius(contactRadius);
@@ -89,14 +89,13 @@ void cToolMesh::render(cRenderOptions& a_options)
     }
 }
 
-void cToolMesh::generateSamplesFromMesh(cMultiMesh* mesh, int numRequested)
+void cToolMesh::generateSamplesFromObject(cGenericObject* object, int numRequested)
 {
     std::vector<cVector3d> points;
-    if (mesh) {
+    if (auto mesh = dynamic_cast<cMultiMesh*>(object)) {
         for (unsigned int mi = 0; mi < mesh->getNumMeshes(); ++mi) {
             cMesh* sub = mesh->getMesh(mi);
             if (!sub || !sub->m_triangles || !sub->m_vertices) continue;
-
             const size_t triCount = sub->m_triangles->getNumElements();
             if (triCount == 0) continue;
             size_t step = std::max<size_t>(1, triCount / std::max(1, numRequested));
@@ -111,6 +110,20 @@ void cToolMesh::generateSamplesFromMesh(cMultiMesh* mesh, int numRequested)
                 if ((int)points.size() >= numRequested) break;
             }
             if ((int)points.size() >= numRequested) break;
+        }
+    } else if (auto segs = dynamic_cast<cMultiSegment*>(object)) {
+        // Sample along line segments: take every Nth segment midpoint
+        const int segmentCount = (int)segs->getNumSegments();
+        if (segmentCount > 0) {
+            int step = std::max(1, segmentCount / std::max(1, numRequested));
+            for (int si = 0; si < segmentCount; si += step) {
+                int ia = segs->m_segments->getVertexIndex(si, 0);
+                int ib = segs->m_segments->getVertexIndex(si, 1);
+                cVector3d va = segs->m_vertices->getLocalPos((unsigned int)ia);
+                cVector3d vb = segs->m_vertices->getLocalPos((unsigned int)ib);
+                points.push_back((va + vb) * 0.5);
+                if ((int)points.size() >= numRequested) break;
+            }
         }
     }
 

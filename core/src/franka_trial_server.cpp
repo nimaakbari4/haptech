@@ -71,6 +71,27 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             params[param.key()] = param.value();
         }
         
+        // Handle cursor configuration objects specially
+        bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
+        if (isCursor) {
+            // Determine visual type from params (visual_type or type key)
+            std::string visualType;
+            auto itVT = params.find("visual_type");
+            if (itVT != params.end()) visualType = itVT->second; else {
+                auto itType = params.find("type");
+                if (itType != params.end()) visualType = itType->second; else visualType = "";
+            }
+            if (!SimulationManager::applyCursorConfig(visualType, params)) {
+                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+                status->set_status(TrialStatus::ERROR);
+                status->set_message("Failed to apply cursor configuration");
+                writer->Write(statusMsg);
+                return grpc::Status::OK;
+            }
+            // Do not add this as a world object
+            continue;
+        }
+        
         // Get color values
         double r = obj.has_color() ? obj.color().r() : 1.0;
         double g = obj.has_color() ? obj.color().g() : 1.0;

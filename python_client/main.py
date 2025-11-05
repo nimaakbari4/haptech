@@ -63,13 +63,21 @@ def main():
         stub = pb2_grpc.FrankaTrialServiceStub(channel)
 
         # call run_trial with those values
-        condition_types = [c.name for c in start_conditions]
+        condition_types = [(c.name or "Unknown") for c in start_conditions]
         print(f"Starting trial '{trial_id}' (start conditions: {', '.join(condition_types)})...")
 
-        condition_types = [c.name for c in end_conditions]
+        condition_types = [(c.name or "Unknown") for c in end_conditions]
         print(f"Starting trial '{trial_id}' (end conditions: {', '.join(condition_types)})...")
 
-        util.run_trial(stub, trial_id, output_filestream, config.objects, config.start_conditions.conditions, config.end_conditions.conditions)
+        util.run_trial(
+            stub,
+            trial_id,
+            output_filestream,
+            config.objects,
+            config.start_conditions.conditions,
+            config.end_conditions.conditions,
+            config.cursor_settings,
+        )
         print("Trial completed.")
         logger.info("Trial '%s' completed successfully", trial_id)
     except grpc.RpcError as e:
