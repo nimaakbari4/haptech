@@ -60,8 +60,8 @@ def main():
         
         trial_id = input("Trial ID: ")
     else:
-        trial_subject = "Tests"
-        trial_id = f"Test_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        trial_subject = "TEST"
+        trial_id = f"TEST_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     end_conditions = config.end_conditions.conditions
     start_conditions = config.start_conditions.conditions
@@ -91,8 +91,6 @@ def main():
             "device_ang_vel_x,device_ang_vel_y,device_ang_vel_z,"
             "device_quat_x,device_quat_y,device_quat_z,device_quat_w\n"
         )
-    else:
-        print("[TEST MODE] File writing suppressed")
 
     try:
         # connect to the server
@@ -107,16 +105,16 @@ def main():
         # print(f"Starting trial '{trial_id}' (end conditions: {', '.join(condition_types)})...")
 
         metadata = {
+            "trial_subject": trial_subject,
             "trial_id": trial_id,
             "configuration_file": config_file_path,
             "started_at": datetime.datetime.now(),
         }
 
+        print("Starting trial...\n")
         util.run_trial(stub, trial_id, output_filestream, config.objects, 
                        config.start_conditions.conditions, config.end_conditions.conditions, 
                        metadata)
-        
-        print("Trial completed.")
 
         metadata["ended_at"] = datetime.datetime.now()
         metadata["configuration"] = asdict(config)
@@ -124,14 +122,54 @@ def main():
         # Only write metadata file if not in test mode
         if not config.test:
             json.dump(metadata, open(metadata_file_path, 'w'), default=str, indent=4)
+            print_trial_summary(metadata, csv_file_path, metadata_file_path)
         else:
-            print("[TEST MODE] Metadata file writing suppressed")   
+            print_trial_summary(metadata)
+
+        print("Trial complete.")
     except Exception:
         print("Something went wrong.")
         traceback.print_exc()
     finally:
         if output_filestream:
             output_filestream.close()
+
+def print_trial_summary(metadata, csv_file_path=None, metadata_file_path=None):
+    # Calculate duration
+    duration = metadata.get("trial_duration")
+    minutes = duration // 60
+    seconds = duration % 60
+    duration_str = f"{minutes}m {seconds:.1f}s" if minutes > 0 else f"{seconds:.1f}s"
+    
+    # Table data
+    table_data = [
+        ("Subject", metadata.get("trial_subject", "Unknown")),
+        ("Trial ID", metadata.get("trial_id", "Unknown")),
+        ("Duration", duration_str),
+        ("Config File", metadata.get("configuration_file", "Unknown")),
+    ]
+    
+    # Add file paths if they exist
+    if csv_file_path:
+        table_data.append(("Results CSV", os.path.relpath(csv_file_path)))
+    if metadata_file_path:
+        table_data.append(("Metadata JSON", os.path.relpath(metadata_file_path)))
+
+    # Calculate column widths
+    max_label_width = max(len(label) for label, _ in table_data)
+    max_value_width = max(len(str(value)) for _, value in table_data)
+    total_table_width = max_label_width + max_value_width + 7 
+
+    # Create the table
+    print("\n" + "=" * total_table_width)
+    print(" " * (total_table_width // 2 - 7) + "TRIAL SUMMARY")
+    print("=" * total_table_width)
+
+    # Print the table
+    for label, value in table_data:
+        print(f"│ {label:<{max_label_width}} │ {value:<{max_value_width}} │")
+
+    print("=" * total_table_width + "\n")
 
 if __name__ == "__main__":
     main()

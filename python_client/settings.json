@@ -3,6 +3,6 @@
     "results_path": "results",
     "server_host": "localhost",
     "server_port": 50051,
-    "trial_subject": "ptr",
+    "trial_subject": "demo",
     "last_configuration_file": "test_position_condition.xml"
 }
