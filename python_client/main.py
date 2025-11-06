@@ -1,12 +1,26 @@
+import json
 import util
 import grpc
 import franka_trial_pb2_grpc as pb2_grpc
 import traceback
 from parser import xml_parser
+import settings
+import datetime
+from dataclasses import asdict
 
 def main():
-    # Take user input for trial ID, trial duration from config
+    # Get needed settings
+    server_host = settings.get_setting("server_host")
+    server_port = settings.get_setting("server_port")
 
+    if not server_host:
+        print("[ERROR] Need to specify 'server_host' in settings.json")
+        return
+    
+    if not server_port:
+        print("[ERROR] Need to specify 'server_port' in settings.json")
+        return
+    
     # Get user input
     trial_id = input("Enter a trial ID: ")
     config_file_path = input("Enter a path to your config file: ")
@@ -15,19 +29,19 @@ def main():
     end_conditions = config.end_conditions.conditions
     start_conditions = config.start_conditions.conditions
     
-    # Display all start conditions that will be used
-    print(f"Found {len(start_conditions)} start condition(s):")
-    for condition in start_conditions:
-        print(f"  - {condition.name} (success={condition.success}, priority={condition.priority})")
-        for param in condition.parameters:
-            print(f"    {param.key}: {param.value}")
+    # # Display all start conditions that will be used
+    # print(f"Found {len(start_conditions)} start condition(s):")
+    # for condition in start_conditions:
+    #     print(f"  - {condition.name} (success={condition.success}, priority={condition.priority})")
+    #     for param in condition.parameters:
+    #         print(f"    {param.key}: {param.value}")
 
-    # Display all end conditions that will be used
-    print(f"Found {len(end_conditions)} end condition(s):")
-    for condition in end_conditions:
-        print(f"  - {condition.name} (success={condition.success}, priority={condition.priority})")
-        for param in condition.parameters:
-            print(f"    {param.key}: {param.value}")
+    # # Display all end conditions that will be used
+    # print(f"Found {len(end_conditions)} end condition(s):")
+    # for condition in end_conditions:
+    #     print(f"  - {condition.name} (success={condition.success}, priority={condition.priority})")
+    #     for param in condition.parameters:
+    #         print(f"    {param.key}: {param.value}")
     
     output_filestream = open(f"{trial_id}_results.csv", 'w')
     output_filestream.write(
@@ -42,19 +56,31 @@ def main():
 
     try:
         # connect to the server
-        channel = grpc.insecure_channel('localhost:50051')
-        #channel = grpc.insecure_channel('134.114.232.201:50051')
+        channel = grpc.insecure_channel(f"{server_host}:{server_port}")
         stub = pb2_grpc.FrankaTrialServiceStub(channel)
 
         # call run_trial with those values
         condition_types = [c.name for c in start_conditions]
-        print(f"Starting trial '{trial_id}' (start conditions: {', '.join(condition_types)})...")
+        # print(f"Starting trial '{trial_id}' (start conditions: {', '.join(condition_types)})...")
 
         condition_types = [c.name for c in end_conditions]
-        print(f"Starting trial '{trial_id}' (end conditions: {', '.join(condition_types)})...")
+        # print(f"Starting trial '{trial_id}' (end conditions: {', '.join(condition_types)})...")
 
-        util.run_trial(stub, trial_id, output_filestream, config.objects, config.start_conditions.conditions, config.end_conditions.conditions)
+        metadata = {
+            "trial_id": trial_id,
+            "configuration_file": config_file_path,
+            "started_at": datetime.datetime.now(),
+        }
+
+        util.run_trial(stub, trial_id, output_filestream, config.objects, 
+                       config.start_conditions.conditions, config.end_conditions.conditions, 
+                       metadata)
         print("Trial completed.")
+
+        metadata["ended_at"] = datetime.datetime.now()
+        metadata["configuration"] = asdict(config)
+
+        json.dump(metadata, open(f"{trial_id}_metadata.json", 'w'), default=str, indent=4)   
     except Exception:
         print("Something went wrong.")
         traceback.print_exc()

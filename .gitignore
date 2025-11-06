@@ -34,6 +34,8 @@ venv/
 *.log
 python_client/*_results.csv
 python_client/*results.csv
+python_client/*_metadata.json
+python_client/*metadata.json
 
 ## Proto / compile database artifacts
 proto/compile_commands.txt

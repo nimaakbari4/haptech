@@ -4,7 +4,8 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, 
+              objects=None, start_conditions=None, end_conditions=None, metadata={}):
     request = pb2.TrialRequest(trial_id=trial_id)
     
     # Add objects to the request if provided
@@ -63,23 +64,26 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
                 param_msg.value = param.value
     
     response_stream = stub.RunTrial(request)
-    handle_stream(response_stream, output_csv_stream)
+    handle_stream(response_stream, output_csv_stream, metadata)
 
 # Process messages coming from the stream
-def handle_stream(stream, output_csv_stream):
+def handle_stream(stream, output_csv_stream, metadata={}):
     for message in stream:
         if message.HasField("statusUpdate"):
-            handle_status_update(message.statusUpdate)
+            handle_status_update(message.statusUpdate, metadata)
         elif message.HasField("dataPoint"):
-            handle_data_point(message.dataPoint, output_csv_stream)
+            handle_data_point(message.dataPoint, output_csv_stream, metadata)
 
 # Handle a TrialStatusUpdate
-def handle_status_update(status):
-    # TODO: Display status
+def handle_status_update(status, metadata):
+    if not "status_updates" in metadata:
+        metadata["status_updates"] = []
+
+    metadata["status_updates"].append({"message": status.message, "status": status.status})
     print(f"Status Update: {status.message} (Status: {status.status})")
 
 # Handle a TrialDataPoint
-def handle_data_point(data, output_csv_stream):
+def handle_data_point(data, output_csv_stream, metadata):
     timestamp = data.timestamp
     device_pos = data.devicePosition
     proxy_pos = data.proxyPosition
