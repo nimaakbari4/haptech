@@ -2,5 +2,7 @@
     "config_path": "config",
     "results_path": "results",
     "server_host": "localhost",
-    "server_port": 50051
+    "server_port": 50051,
+    "trial_subject": "ptr",
+    "last_configuration_file": "test_position_condition.xml"
 }

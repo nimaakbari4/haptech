@@ -1,0 +1,6 @@
+{
+    "config_path": "config",
+    "results_path": "results",
+    "server_host": "localhost",
+    "server_port": 50051
+}

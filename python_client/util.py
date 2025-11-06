@@ -101,27 +101,30 @@ def handle_data_point(data, output_csv_stream, metadata):
     # print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
 
     # log to CSV file
-    writer = csv.writer(output_csv_stream)
-    row = [
-        timestamp,
-        device_pos.x, device_pos.y, device_pos.z,
-        proxy_pos.x, proxy_pos.y, proxy_pos.z,
-        force.x, force.y, force.z,
-    ]
+    if output_csv_stream:
+        writer = csv.writer(output_csv_stream)
+        row = [
+            timestamp,
+            device_pos.x, device_pos.y, device_pos.z,
+            proxy_pos.x, proxy_pos.y, proxy_pos.z,
+            force.x, force.y, force.z,
+        ]
 
-    if device_vel:
-        row += [device_vel.x, device_vel.y, device_vel.z]
-    else:
-        row += ["", "", ""]
+        if device_vel:
+            row += [device_vel.x, device_vel.y, device_vel.z]
+        else:
+            row += ["", "", ""]
 
-    if device_ang_vel:
-        row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
-    else:
-        row += ["", "", ""]
+        if device_ang_vel:
+            row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
+        else:
+            row += ["", "", ""]
 
-    if device_quat:
-        row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
-    else:
-        row += ["", "", "", ""]
+        if device_quat:
+            row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
+        else:
+            row += ["", "", "", ""]
 
-    writer.writerow(row)
+        writer.writerow(row)
+
+    metadata["trial_duration"] = data.timestamp

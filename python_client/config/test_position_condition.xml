@@ -1,4 +1,5 @@
 <TrialConfig>
+  <Test>true</Test>
   <StartConditions>
     <Condition name="position" success="true" priority="1">
       <Parameters target_x="0.0" target_y="-0.5" target_z="0.0" tolerance="0.1"/>

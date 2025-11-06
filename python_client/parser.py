@@ -84,11 +84,17 @@ class TrialConfig:
     hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
-
+    test: Optional[bool] = False
 
 def xml_parser(xml_path: str) -> TrialConfig:
     tree = ET.parse(xml_path)
     root = tree.getroot()
+
+    #Test mode
+    test_mode = root.find("Test")
+    test = False
+    if test_mode is not None and test_mode.text is not None:
+        test = test_mode.text.lower() == "true"
 
     #StartConditions
     start_conds = []
@@ -196,7 +202,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
         end_conditions = end_conditions,
         hud_text       = hud_text,
         scene_settings = scene_settings,
-        objects        = objs
+        objects        = objs,
+        test           = test
     )
 
 
