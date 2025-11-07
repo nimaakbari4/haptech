@@ -17,6 +17,7 @@ cGenericObject* BoxObject::createObject(const std::map<std::string, std::string>
     cCreateBox(box, width, height, depth);
     double maxDim = std::max({width, height, depth});
     box->createAABBCollisionDetector(maxDim);
+    box->setShowCollisionDetector(true);
     
     // Set color
     box->m_material->m_ambient.set(r, g, b);
