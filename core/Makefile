@@ -28,7 +28,7 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(SRC_DIR)/proto \
 	-I$(SRC_DIR)/objects \
 	-I$(SRC_DIR)/trial_conditions \
-	-I/tmp/protobuf-3.6.1/src \
+	-I/tmp/protobuf-3.6.1/include \
 	-I/usr/include \
 	-I/usr/local/include \
 	-I/usr/include/eigen3 \
@@ -43,7 +43,7 @@ endif
 LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(GLFW_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
-	-L/tmp/protobuf-3.6.1/src/.libs \
+	-L/tmp/protobuf-3.6.1/lib \
 	-L/usr/lib/x86_64-linux-gnu
 
 

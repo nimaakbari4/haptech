@@ -289,6 +289,7 @@ bool SimulationManager::reset() {
     cSleepMs(100);
 
     setBackgroundColor(0.0, 0.0, 0.0);
+    clearTextOverlays();
     removeAllObjects();
     trialContext.startConditions.clear();
     trialContext.endConditions.clear();
@@ -318,6 +319,59 @@ bool SimulationManager::setBackgroundColor(double r, double g, double b) {
     simContext.world->m_backgroundColor.setR(r);
     simContext.world->m_backgroundColor.setG(g);
     simContext.world->m_backgroundColor.setB(b);
+    return true;
+}
+
+bool SimulationManager::addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b) {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    // Create font with specified size (CHAI3D has preset sizes: 20, 32, 40)
+    cFontPtr font = NEW_CFONTCALIBRI20();
+    if (fontSize > 0) {
+        if (fontSize >= 36) {
+            font = NEW_CFONTCALIBRI40();
+        } else if (fontSize >= 26) {
+            font = NEW_CFONTCALIBRI32();
+        } else {
+            font = NEW_CFONTCALIBRI20();
+        }
+    }
+
+    // Create label
+    cLabel* label = new cLabel(font);
+    label->setText(text);
+    label->m_fontColor.setR(r);
+    label->m_fontColor.setG(g);
+    label->m_fontColor.setB(b);
+    label->setLocalPos((int)x, (int)y);
+    
+    // Add to camera front layer
+    simContext.camera->m_frontLayer->addChild(label);
+    
+    // Store in custom overlays vector
+    simContext.customTextOverlays.push_back(label);
+    
+    std::cout << "[SimulationManager] Added text overlay: \"" << text << "\" at (" << x << ", " << y << ")" << std::endl;
+    return true;
+}
+
+bool SimulationManager::clearTextOverlays() {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    // Remove all custom text overlays
+    for (auto* label : simContext.customTextOverlays) {
+        simContext.camera->m_frontLayer->removeChild(label);
+        delete label;
+    }
+    simContext.customTextOverlays.clear();
+    
+    std::cout << "[SimulationManager] Cleared all text overlays" << std::endl;
     return true;
 }
 

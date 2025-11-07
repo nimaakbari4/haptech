@@ -197,6 +197,15 @@ message HomingInfo {
 message SceneSettings {
     Color backgroundColor = 1;
     Camera camera = 2;
+    repeated TextOverlay textOverlays = 3;
+}
+
+message TextOverlay {
+    string text = 1;
+    double x = 2;           // x position in pixels (0 = left edge)
+    double y = 3;           // y position in pixels (0 = top edge)
+    double fontSize = 4;    // font size in points (default: 20)
+    Color color = 5;        // text color (default: white)
 }
 
 message Camera {

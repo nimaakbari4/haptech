@@ -77,6 +77,28 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         std::cout << "[INFO] Using default background color (black)" << std::endl;
     }
 
+    // Clear any existing text overlays
+    SimulationManager::clearTextOverlays();
+
+    // Add text overlays from scene settings
+    if (request->has_scenesettings()) {
+        for (const auto& overlay : request->scenesettings().textoverlays()) {
+            double r = overlay.has_color() ? overlay.color().r() : 1.0;
+            double g = overlay.has_color() ? overlay.color().g() : 1.0;
+            double b = overlay.has_color() ? overlay.color().b() : 1.0;
+            double fontSize = overlay.fontsize() > 0 ? overlay.fontsize() : 20.0;
+            
+            if (!SimulationManager::addTextOverlay(overlay.text(), overlay.x(), overlay.y(), fontSize, r, g, b)) {
+                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+                status->set_status(TrialStatus::ERROR);
+                status->set_message("Failed to add text overlay: " + overlay.text());
+                writer->Write(statusMsg);
+                return grpc::Status::OK;
+            }
+        }
+        std::cout << "[INFO] Added " << request->scenesettings().textoverlays_size() << " text overlay(s)" << std::endl;
+    }
+
     // Add objects from the request configuration
     for (const auto& obj : request->objects()) {
         std::map<std::string, std::string> params;

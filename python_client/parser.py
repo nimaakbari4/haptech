@@ -79,9 +79,22 @@ class Camera:
     up: Position
 
 @dataclass
+class TextOverlay:
+    text: str
+    x: float
+    y: float
+    font_size: float = 20.0
+    color: Optional[BackgroundColor] = None
+
+@dataclass
 class SceneSettings:
     background_color: BackgroundColor
     camera: Camera
+    text_overlays: List[TextOverlay] = None
+    
+    def __post_init__(self):
+        if self.text_overlays is None:
+            self.text_overlays = []
 
 @dataclass
 class ObjectConfig:
@@ -206,9 +219,36 @@ def xml_parser(xml_path: str) -> TrialConfig:
         look_at = Position.from_elem(cam.find("LookAt")),
         up = Position.from_elem(cam.find("Up"))
     )
+    
+    # Parse text overlays
+    text_overlays = []
+    for overlay_elem in ss.findall("TextOverlay"):
+        text = overlay_elem.findtext("Text", "")
+        x = float(overlay_elem.findtext("X", "0"))
+        y = float(overlay_elem.findtext("Y", "0"))
+        font_size = float(overlay_elem.findtext("FontSize", "20"))
+        
+        # Parse color if present
+        color_elem = overlay_elem.find("Color")
+        overlay_color = None
+        if color_elem is not None:
+            r = float(color_elem.get("r", "1.0"))
+            g = float(color_elem.get("g", "1.0"))
+            b = float(color_elem.get("b", "1.0"))
+            overlay_color = BackgroundColor.from_rgb_float(r, g, b)
+        
+        text_overlays.append(TextOverlay(
+            text=text,
+            x=x,
+            y=y,
+            font_size=font_size,
+            color=overlay_color
+        ))
+    
     scene_settings = SceneSettings(
         background_color=background_color,
-        camera=camera
+        camera=camera,
+        text_overlays=text_overlays
     )
 
     # Objects
