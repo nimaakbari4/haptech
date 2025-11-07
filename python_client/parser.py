@@ -52,6 +52,25 @@ class BackgroundColor:
     r: float
     g: float
     b: float
+    
+    @classmethod
+    def from_rgb_255(cls, r: int, g: int, b: int) -> "BackgroundColor":
+        """Create BackgroundColor from 0-255 RGB values"""
+        return cls(r=r/255.0, g=g/255.0, b=b/255.0)
+    
+    @classmethod
+    def from_rgb_float(cls, r: float, g: float, b: float) -> "BackgroundColor":
+        """Create BackgroundColor from 0.0-1.0 RGB values"""
+        return cls(r=r, g=g, b=b)
+    
+    def to_rgb_255(self) -> tuple[int, int, int]:
+        """Convert to 0-255 RGB values"""
+        return (int(self.r * 255), int(self.g * 255), int(self.b * 255))
+    
+    def __str__(self) -> str:
+        """String representation showing both 0-1 and 0-255 values"""
+        r255, g255, b255 = self.to_rgb_255()
+        return f"RGB({self.r:.2f}, {self.g:.2f}, {self.b:.2f}) = RGB({r255}, {g255}, {b255})"
 
 @dataclass
 class Camera:
@@ -60,9 +79,22 @@ class Camera:
     up: Position
 
 @dataclass
+class TextOverlay:
+    text: str
+    x: float
+    y: float
+    font_size: float = 20.0
+    color: Optional[BackgroundColor] = None
+
+@dataclass
 class SceneSettings:
     background_color: BackgroundColor
     camera: Camera
+    text_overlays: List[TextOverlay] = None
+    
+    def __post_init__(self):
+        if self.text_overlays is None:
+            self.text_overlays = []
 
 @dataclass
 class ObjectConfig:
@@ -166,20 +198,57 @@ def xml_parser(xml_path: str) -> TrialConfig:
     # SceneSettings
     ss = root.find("SceneSettings")
     bg = ss.find("BackgroundColor")
-    background_color = BackgroundColor(
-        r=float(bg.get("r")),
-        g=float(bg.get("g")),
-        b=float(bg.get("b"))
-    )
+    
+    # Parse RGB values - support both 0-1 and 0-255 ranges
+    r_val = float(bg.get("r", "0.0"))
+    g_val = float(bg.get("g", "0.0"))
+    b_val = float(bg.get("b", "0.0"))
+    
+    # Check if values are in 0-255 range (common for users)
+    if r_val > 1.0 or g_val > 1.0 or b_val > 1.0:
+        # Convert from 0-255 to 0-1 range
+        background_color = BackgroundColor.from_rgb_255(int(r_val), int(g_val), int(b_val))
+        print(f"[INFO] Converted RGB values from 0-255 range: {background_color}")
+    else:
+        # Use as 0-1 range
+        background_color = BackgroundColor.from_rgb_float(r_val, g_val, b_val)
+        print(f"[INFO] Using RGB values in 0-1 range: {background_color}")
     cam = ss.find("Camera")
     camera = Camera(
         position = Position.from_elem(cam.find("Position")),
         look_at = Position.from_elem(cam.find("LookAt")),
         up = Position.from_elem(cam.find("Up"))
     )
+    
+    # Parse text overlays
+    text_overlays = []
+    for overlay_elem in ss.findall("TextOverlay"):
+        text = overlay_elem.findtext("Text", "")
+        x = float(overlay_elem.findtext("X", "0"))
+        y = float(overlay_elem.findtext("Y", "0"))
+        font_size = float(overlay_elem.findtext("FontSize", "20"))
+        
+        # Parse color if present
+        color_elem = overlay_elem.find("Color")
+        overlay_color = None
+        if color_elem is not None:
+            r = float(color_elem.get("r", "1.0"))
+            g = float(color_elem.get("g", "1.0"))
+            b = float(color_elem.get("b", "1.0"))
+            overlay_color = BackgroundColor.from_rgb_float(r, g, b)
+        
+        text_overlays.append(TextOverlay(
+            text=text,
+            x=x,
+            y=y,
+            font_size=font_size,
+            color=overlay_color
+        ))
+    
     scene_settings = SceneSettings(
         background_color=background_color,
-        camera=camera
+        camera=camera,
+        text_overlays=text_overlays
     )
 
     # Objects

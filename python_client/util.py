@@ -5,7 +5,7 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None, scene_settings=None):
     request = pb2.TrialRequest(trial_id=trial_id)
     
     # Add objects to the request if provided
@@ -102,6 +102,52 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
                 param_msg = end_cond_msg.params.add()
                 param_msg.key = param.key
                 param_msg.value = param.value
+    
+    # Add scene settings if provided
+    if scene_settings:
+        scene_msg = pb2.SceneSettings()
+        
+        # Set background color
+        if scene_settings.background_color:
+            scene_msg.backgroundColor.r = scene_settings.background_color.r
+            scene_msg.backgroundColor.g = scene_settings.background_color.g
+            scene_msg.backgroundColor.b = scene_settings.background_color.b
+        
+        # Set camera
+        if scene_settings.camera:
+            scene_msg.camera.position.x = scene_settings.camera.position.x
+            scene_msg.camera.position.y = scene_settings.camera.position.y
+            scene_msg.camera.position.z = scene_settings.camera.position.z
+            
+            scene_msg.camera.lookAt.x = scene_settings.camera.look_at.x
+            scene_msg.camera.lookAt.y = scene_settings.camera.look_at.y
+            scene_msg.camera.lookAt.z = scene_settings.camera.look_at.z
+            
+            scene_msg.camera.up.x = scene_settings.camera.up.x
+            scene_msg.camera.up.y = scene_settings.camera.up.y
+            scene_msg.camera.up.z = scene_settings.camera.up.z
+        
+        # Set text overlays
+        if scene_settings.text_overlays:
+            for overlay in scene_settings.text_overlays:
+                overlay_msg = scene_msg.textOverlays.add()
+                overlay_msg.text = overlay.text
+                overlay_msg.x = overlay.x
+                overlay_msg.y = overlay.y
+                overlay_msg.fontSize = overlay.font_size
+                if overlay.color:
+                    overlay_msg.color.r = overlay.color.r
+                    overlay_msg.color.g = overlay.color.g
+                    overlay_msg.color.b = overlay.color.b
+                else:
+                    # Default to white
+                    overlay_msg.color.r = 1.0
+                    overlay_msg.color.g = 1.0
+                    overlay_msg.color.b = 1.0
+            print(f"[INFO] Added {len(scene_settings.text_overlays)} text overlay(s)")
+        
+        request.sceneSettings.CopyFrom(scene_msg)
+        print(f"[INFO] Scene settings applied: Background {scene_settings.background_color}")
     
     try:
         response_stream = stub.RunTrial(request)

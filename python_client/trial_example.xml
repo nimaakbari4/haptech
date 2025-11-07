@@ -7,8 +7,8 @@
   </StartConditions>
 
   <EndConditions>
-  <Condition name="time" success="false" priority="1">
-    <Parameters duration_seconds="120.0"/>
+  <Condition name="position" success="true" priority="1">
+    <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
   </Condition>
   </EndConditions>
 
@@ -19,12 +19,26 @@
   </HUDText>
 
   <SceneSettings>
-    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <BackgroundColor r="106" g="137" b="167"/>
     <Camera>
       <Position x="1.0" y="1.0" z="2.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
       <Up x="0.0" y="1.0" z="0.0"/>
     </Camera>
+    <TextOverlay>
+      <Text>Move to target position (0, 0.5, 0)</Text>
+      <X>400</X>
+      <Y>50</Y>
+      <FontSize>32</FontSize>
+      <Color r="255" g="255" b="255"/>
+    </TextOverlay>
+    <TextOverlay>
+      <Text>Green box = Home | Red box = Target</Text>
+      <X>50</X>
+      <Y>100</Y>
+      <FontSize>50</FontSize>
+      <Color r="255" g="255" b="255"/>
+    </TextOverlay>
   </SceneSettings>
 
   <Controls>
