@@ -9,7 +9,7 @@ SRC_DIR = src
 BIN_DIR = bin
 HDR_DIR = $(SRC_DIR)
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
-PROTO_SRCS = $(SRC_DIR)/proto/franka_trial.pb.cc $(SRC_DIR)/proto/franka_trial.grpc.pb.cc
+PROTO_SRCS = $(SRC_DIR)/franka_trial.pb.cc $(SRC_DIR)/franka_trial.grpc.pb.cc
 PROTO_OBJS = $(BIN_DIR)/franka_trial.pb.o $(BIN_DIR)/franka_trial.grpc.pb.o
 # Create object file names by replacing src/ with bin/ and .cpp with .o
 MAIN_OBJS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BIN_DIR)/%.o)
@@ -103,10 +103,10 @@ $(BIN_DIR)/trial_conditions/%.o: $(SRC_DIR)/trial_conditions/%.cpp | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile protobuf/gRPC generated files
-$(BIN_DIR)/franka_trial.pb.o: $(SRC_DIR)/proto/franka_trial.pb.cc $(SRC_DIR)/proto/franka_trial.pb.h | $(BIN_DIR)
+$(BIN_DIR)/franka_trial.pb.o: $(SRC_DIR)/franka_trial.pb.cc $(SRC_DIR)/franka_trial.pb.h | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BIN_DIR)/franka_trial.grpc.pb.o: $(SRC_DIR)/proto/franka_trial.grpc.pb.cc $(SRC_DIR)/proto/franka_trial.grpc.pb.h | $(BIN_DIR)
+$(BIN_DIR)/franka_trial.grpc.pb.o: $(SRC_DIR)/franka_trial.grpc.pb.cc $(SRC_DIR)/franka_trial.grpc.pb.h | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BIN_DIR):
