@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import sys
 
 @dataclass
@@ -63,7 +63,7 @@ class BackgroundColor:
         """Create BackgroundColor from 0.0-1.0 RGB values"""
         return cls(r=r, g=g, b=b)
     
-    def to_rgb_255(self) -> tuple[int, int, int]:
+    def to_rgb_255(self) -> Tuple[int, int, int]:
         """Convert to 0-255 RGB values"""
         return (int(self.r * 255), int(self.g * 255), int(self.b * 255))
     
