@@ -797,6 +797,8 @@ void SimulationManager::createHapticTool() {
     // connect the haptic device to the virtual tool
     simContext.tool->setHapticDevice(simContext.hapticDevice);
 
+    simContext.tool->enableDynamicObjects(true);
+
     // map the physical workspace of the haptic device to a larger virtual workspace.
     simContext.tool->setWorkspaceRadius(1.0);
 

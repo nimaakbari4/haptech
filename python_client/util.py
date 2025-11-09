@@ -98,7 +98,7 @@ def handle_data_point(data, output_csv_stream, metadata):
     force_str = f"[{force.x:.4f}, {force.y:.4f}, {force.z:.4f}]"
 
     # display data point
-    # print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
+    print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
 
     # log to CSV file
     if output_csv_stream:

@@ -26,7 +26,7 @@
 [TrialConditionRegistry] Registered trial condition: velocity
 [ExtensionsRegistry] Registered trial condition: velocity
 [ExtensionsRegistry] Registration complete!
-[SimulationManager] simContext address: 0x56447ffb26c0
+[SimulationManager] simContext address: 0x55e35568b6c0
 
 -----------------------------------
 CHAI3D
@@ -43,310 +43,28 @@ Keyboard Options:
 [Server] Listening on 0.0.0.0:50051
 1 Blank devices found
 in cGenericTool::updateFromDevice: m_hapticDevice is null or not enabled...
-     m_hapticDevice: 0x56449b13ea20
+     m_hapticDevice: 0x55e358122c80
      m_enabled: 0
 in cGenericTool::start: hapticDevice->open() succeeded... m_enabled: 1
 [DEBUG] Created and started new haptic tool.
 Haptics thread started, simRunning = 1
-[SERVER] simContext address: 0x56447ffb26c0
-[DEBUG] Object color - R: 0, G: 0, B: 0
+[SERVER] simContext address: 0x55e35568b6c0
+[DEBUG] Object color - R: 0.5, G: 0.5, B: 0.5
 [DEBUG] Creating object using custom object system: box
 [BoxObject] Creating box object!
-[BoxObject] Box created with dimensions: 0.1x0.1x0.1
-[DEBUG] Added custom object with ID platform at position (0, 0, -0.2) with rotation (0, 0, 0).
+[BoxObject] Box created with dimensions: 2x2x0.1
+[DEBUG] Added custom object with ID ground at position (0, 0, -0.1) with rotation (0, 0, 0).
 [DEBUG] Object color - R: 1, G: 0, B: 0
 [DEBUG] Creating object using custom object system: box
 [BoxObject] Creating box object!
 [BoxObject] Box created with dimensions: 0.1x0.1x0.1
 [DEBUG] Added custom object with ID target at position (0, 0.5, 0) with rotation (0, 0, 0).
-[DEBUG] Object color - R: 1, G: 0.5, B: 0.2
+[DEBUG] Object color - R: 0.2, G: 0.8, B: 1
 [DEBUG] Creating object using custom object system: ball
-[BallObject] Creating ball object with bounciness!
-[BallObject] Ball created with radius=0.05, bounciness=0.8
-[DEBUG] Added custom object with ID bouncy bouncy at position (0, 0, 1) with rotation (0, 0, 0).
+[BallObject] Creating pushable ball object with friction!
+[BallObject] Pushable ball created with radius=0.05, friction=0.8
+[DEBUG] Added custom object with ID pushable_ball at position (0, 0, 0.05) with rotation (0, 0, 0).
 [DEBUG] Adding 1 start conditions.
 [DEBUG] Adding 1 end conditions.
-[TRIAL] Trial created: TEST_20251107_150439 (start conditions: 1 condition(s), end conditions: 1 condition(s))
+[TRIAL] Trial created: TEST_20251107_164552 (start conditions: 1 condition(s), end conditions: 1 condition(s))
 [TRIAL] Trial started after 0.000000 seconds: Time condition reached: 0.000000/0.000000 seconds
-[BallObject] Frame 60 Pos: (0, 0, 0.833081) Vel: 1.79441 OnSurf: 0 Grav: 1
-[BallObject] Frame 120 Pos: (0, 0, 0.332681) Vel: 3.60316 OnSurf: 0 Grav: 1
-[BallObject] Frame 180 Pos: (7.28963e-18, -7.28963e-18, 0.206157) Vel: 2.48231 OnSurf: 0 Grav: 1
-[BallObject] Frame 240 Pos: (2.14658e-17, -2.14658e-17, 0.494628) Vel: 0.668317 OnSurf: 0 Grav: 1
-[BallObject] Frame 300 Pos: (3.48716e-17, -3.48716e-17, 0.437799) Vel: 1.2248 OnSurf: 0 Grav: 1
-[BallObject] Frame 360 Pos: (4.64618e-17, -4.64618e-17, 0.0667491) Vel: 2.95459 OnSurf: 0 Grav: 1
-[BallObject] Frame 420 Pos: (7.9817e-16, -7.9817e-16, 0.205473) Vel: 1.13152 OnSurf: 0 Grav: 1
-[BallObject] Frame 480 Pos: (1.69201e-15, -1.69201e-15, 0.236866) Vel: 0.775791 OnSurf: 0 Grav: 1
-[BallObject] Frame 540 Pos: (2.45239e-15, -2.45239e-15, -0.0835835) Vel: 2.61383 OnSurf: 0 Grav: 1
-[BallObject] Frame 600 Pos: (4.05265e-14, -4.05265e-14, 0.140395) Vel: 0.137863 OnSurf: 0 Grav: 1
-[BallObject] Frame 660 Pos: (7.17639e-14, -7.17639e-14, -0.00671725) Vel: 1.68793 OnSurf: 0 Grav: 1
-[BallObject] Frame 720 Pos: (8.53214e-13, -8.53214e-13, 0.0735179) Vel: 0.231658 OnSurf: 0 Grav: 1
-[BallObject] Frame 780 Pos: (1.76526e-12, -1.76526e-12, -0.0904388) Vel: 1.78602 OnSurf: 0 Grav: 1
-[BallObject] Frame 840 Pos: (2.26581e-11, -2.26581e-11, 0.0183237) Vel: 0.658802 OnSurf: 0 Grav: 1
-[BallObject] Frame 900 Pos: (2.06007e-10, -2.06007e-10, 0.0223557) Vel: 0.326886 OnSurf: 0 Grav: 1
-[BallObject] Frame 960 Pos: (4.6586e-10, -4.6586e-10, -0.0384759) Vel: 1.07757 OnSurf: 0 Grav: 1
-[BallObject] Frame 1020 Pos: (6.23068e-10, -6.23068e-10, -0.00744162) Vel: 0.705827 OnSurf: 0 Grav: 1
-[BallObject] Frame 1080 Pos: (7.50924e-10, -7.50924e-10, 0.0159991) Vel: 0.0129407 OnSurf: 0 Grav: 1
-[BallObject] Frame 1140 Pos: (8.36722e-10, -8.36722e-10, -0.00709033) Vel: 0.650503 OnSurf: 0 Grav: 1
-[BallObject] Frame 1200 Pos: (8.92909e-10, -8.92909e-10, -0.0592409) Vel: 1.17883 OnSurf: 0 Grav: 1
-[BallObject] Frame 1260 Pos: (9.35466e-10, -9.35466e-10, -0.0120888) Vel: 0.65678 OnSurf: 0 Grav: 1
-[BallObject] Frame 1320 Pos: (9.62759e-10, -9.62759e-10, 0.011745) Vel: 0.0741523 OnSurf: 0 Grav: 1
-[BallObject] Frame 1380 Pos: (9.8151e-10, -9.8151e-10, -0.015778) Vel: 0.73698 OnSurf: 0 Grav: 1
-[BallObject] Frame 1440 Pos: (9.93644e-10, -9.93644e-10, -0.0491853) Vel: 1.06926 OnSurf: 0 Grav: 1
-[BallObject] Frame 1500 Pos: (1.00223e-09, -1.00223e-09, 0.00314218) Vel: 0.386897 OnSurf: 0 Grav: 1
-[BallObject] Frame 1560 Pos: (1.00822e-09, -1.00822e-09, 0.00503984) Vel: 0.382876 OnSurf: 0 Grav: 1
-[BallObject] Frame 1620 Pos: (1.0127e-09, -1.0127e-09, -0.0998548) Vel: 1.46529 OnSurf: 0 Grav: 1
-[BallObject] Frame 1680 Pos: (1.01554e-09, -1.01554e-09, -0.0145795) Vel: 0.709756 OnSurf: 0 Grav: 1
-[BallObject] Frame 1740 Pos: (1.01764e-09, -1.01764e-09, 0.0107294) Vel: 0.109092 OnSurf: 0 Grav: 1
-[BallObject] Frame 1800 Pos: (1.01919e-09, -1.01919e-09, -0.0251601) Vel: 0.867802 OnSurf: 0 Grav: 1
-[BallObject] Frame 1860 Pos: (1.0203e-09, -1.0203e-09, -0.0401726) Vel: 0.994558 OnSurf: 0 Grav: 1
-[BallObject] Frame 1920 Pos: (1.02118e-09, -1.02118e-09, -0.00579626) Vel: 0.55194 OnSurf: 0 Grav: 1
-[BallObject] Frame 1980 Pos: (1.02183e-09, -1.02183e-09, 0.00811568) Vel: 0.213998 OnSurf: 0 Grav: 1
-[BallObject] Frame 2040 Pos: (1.02225e-09, -1.02225e-09, 0.00911712) Vel: 0.150098 OnSurf: 0 Grav: 1
-[BallObject] Frame 2100 Pos: (1.0225e-09, -1.0225e-09, -0.00778424) Vel: 0.622162 OnSurf: 0 Grav: 1
-[BallObject] Frame 2160 Pos: (1.02269e-09, -1.02269e-09, -0.0277247) Vel: 0.892838 OnSurf: 0 Grav: 1
-[BallObject] Frame 2220 Pos: (1.0228e-09, -1.0228e-09, -0.0733407) Vel: 1.26995 OnSurf: 0 Grav: 1
-[BallObject] Frame 2280 Pos: (1.02287e-09, -1.02287e-09, -0.02774) Vel: 0.843258 OnSurf: 0 Grav: 1
-[BallObject] Frame 2340 Pos: (1.02293e-09, -1.02293e-09, -0.00971373) Vel: 0.620623 OnSurf: 0 Grav: 1
-[BallObject] Frame 2400 Pos: (1.02296e-09, -1.02296e-09, 0.00523073) Vel: 0.325367 OnSurf: 0 Grav: 1
-[BallObject] Frame 2460 Pos: (1.02298e-09, -1.02298e-09, 0.00998551) Vel: 0.00769066 OnSurf: 0 Grav: 1
-[BallObject] Frame 2520 Pos: (1.023e-09, -1.023e-09, 0.00937226) Vel: 0.169464 OnSurf: 0 Grav: 1
-[BallObject] Frame 2580 Pos: (1.02301e-09, -1.02301e-09, 0.00346581) Vel: 0.402022 OnSurf: 0 Grav: 1
-[BallObject] Frame 2640 Pos: (1.02301e-09, -1.02301e-09, -0.0141631) Vel: 0.701302 OnSurf: 0 Grav: 1
-[BallObject] Frame 2700 Pos: (1.02302e-09, -1.02302e-09, -0.0415665) Vel: 1.01694 OnSurf: 0 Grav: 1
-[BallObject] Frame 2760 Pos: (1.02302e-09, -1.02302e-09, -0.0579589) Vel: 1.13054 OnSurf: 0 Grav: 1
-[BallObject] Frame 2820 Pos: (1.02302e-09, -1.02302e-09, -0.0282726) Vel: 0.856589 OnSurf: 0 Grav: 1
-[BallObject] Frame 2880 Pos: (1.02303e-09, -1.02303e-09, -0.00718835) Vel: 0.526489 OnSurf: 0 Grav: 1
-[BallObject] Frame 2940 Pos: (1.02303e-09, -1.02303e-09, -0.00685874) Vel: 0.529858 OnSurf: 0 Grav: 1
-[BallObject] Frame 3000 Pos: (1.02303e-09, -1.02303e-09, -0.017864) Vel: 0.734183 OnSurf: 0 Grav: 1
-[BallObject] Frame 3060 Pos: (1.02303e-09, -1.02303e-09, -0.0924074) Vel: 1.3877 OnSurf: 0 Grav: 1
-[BallObject] Frame 3120 Pos: (1.02303e-09, -1.02303e-09, -0.0742852) Vel: 1.24985 OnSurf: 0 Grav: 1
-[BallObject] Frame 3180 Pos: (1.02303e-09, -1.02303e-09, -0.0540474) Vel: 1.09429 OnSurf: 0 Grav: 1
-[BallObject] Frame 3240 Pos: (1.02303e-09, -1.02303e-09, -0.0289935) Vel: 0.857591 OnSurf: 0 Grav: 1
-[BallObject] Frame 3300 Pos: (1.02303e-09, -1.02303e-09, -0.0110974) Vel: 0.609966 OnSurf: 0 Grav: 1
-[BallObject] Frame 3360 Pos: (1.02303e-09, -1.02303e-09, 0.00278007) Vel: 0.363042 OnSurf: 0 Grav: 1
-[BallObject] Frame 3420 Pos: (1.02303e-09, -1.02303e-09, 0.0100439) Vel: 0.00155597 OnSurf: 0 Grav: 1
-[BallObject] Frame 3480 Pos: (1.02303e-09, -1.02303e-09, 0.00384297) Vel: 0.37352 OnSurf: 0 Grav: 1
-[BallObject] Frame 3540 Pos: (1.02303e-09, -1.02303e-09, -0.00463493) Vel: 0.546166 OnSurf: 0 Grav: 1
-[BallObject] Frame 3600 Pos: (1.02303e-09, -1.02303e-09, -0.0271767) Vel: 0.882156 OnSurf: 0 Grav: 1
-[BallObject] Frame 3660 Pos: (1.02303e-09, -1.02303e-09, -0.0900704) Vel: 1.38744 OnSurf: 0 Grav: 1
-[BallObject] Frame 3720 Pos: (1.02303e-09, -1.02303e-09, -0.0528401) Vel: 1.09368 OnSurf: 0 Grav: 1
-[BallObject] Frame 3780 Pos: (1.02303e-09, -1.02303e-09, -0.0197433) Vel: 0.736629 OnSurf: 0 Grav: 1
-[BallObject] Frame 3840 Pos: (1.02303e-09, -1.02303e-09, -0.000626603) Vel: 0.460351 OnSurf: 0 Grav: 1
-[BallObject] Frame 3900 Pos: (1.02303e-09, -1.02303e-09, 0.0114111) Vel: 0.0324191 OnSurf: 0 Grav: 1
-[BallObject] Frame 3960 Pos: (1.02303e-09, -1.02303e-09, 0.00639849) Vel: 0.279826 OnSurf: 0 Grav: 1
-[BallObject] Frame 4020 Pos: (1.02303e-09, -1.02303e-09, -0.0143458) Vel: 0.712477 OnSurf: 0 Grav: 1
-[BallObject] Frame 4080 Pos: (1.02303e-09, -1.02303e-09, -0.0318938) Vel: 0.948595 OnSurf: 0 Grav: 1
-[BallObject] Frame 4140 Pos: (1.02303e-09, -1.02303e-09, -0.0791324) Vel: 1.319 OnSurf: 0 Grav: 1
-[BallObject] Frame 4200 Pos: (1.02303e-09, -1.02303e-09, -0.0439461) Vel: 1.00952 OnSurf: 0 Grav: 1
-[BallObject] Frame 4260 Pos: (1.02303e-09, -1.02303e-09, -0.0106133) Vel: 0.618325 OnSurf: 0 Grav: 1
-[BallObject] Frame 4320 Pos: (1.02303e-09, -1.02303e-09, 0.00632167) Vel: 0.280184 OnSurf: 0 Grav: 1
-[BallObject] Frame 4380 Pos: (1.02303e-09, -1.02303e-09, 0.00975267) Vel: 0.0958566 OnSurf: 0 Grav: 1
-[BallObject] Frame 4440 Pos: (1.02303e-09, -1.02303e-09, 0.00252161) Vel: 0.393445 OnSurf: 0 Grav: 1
-[BallObject] Frame 4500 Pos: (1.02303e-09, -1.02303e-09, -0.0208628) Vel: 0.809613 OnSurf: 0 Grav: 1
-[BallObject] Frame 4560 Pos: (1.02303e-09, -1.02303e-09, -0.0344054) Vel: 0.951186 OnSurf: 0 Grav: 1
-[BallObject] Frame 4620 Pos: (1.02303e-09, -1.02303e-09, -0.0991181) Vel: 1.4415 OnSurf: 0 Grav: 1
-[BallObject] Frame 4680 Pos: (1.02303e-09, -1.02303e-09, -0.0809762) Vel: 1.31872 OnSurf: 0 Grav: 1
-[BallObject] Frame 4740 Pos: (1.02303e-09, -1.02303e-09, -0.058653) Vel: 1.14364 OnSurf: 0 Grav: 1
-[BallObject] Frame 4800 Pos: (1.02303e-09, -1.02303e-09, -0.0368566) Vel: 0.935245 OnSurf: 0 Grav: 1
-[BallObject] Frame 4860 Pos: (1.02303e-09, -1.02303e-09, -0.0126742) Vel: 0.644377 OnSurf: 0 Grav: 1
-[BallObject] Frame 4920 Pos: (1.02303e-09, -1.02303e-09, 0.00309707) Vel: 0.316685 OnSurf: 0 Grav: 1
-[BallObject] Frame 4980 Pos: (1.02303e-09, -1.02303e-09, 0.00995127) Vel: 0.000349514 OnSurf: 0 Grav: 1
-[BallObject] Frame 5040 Pos: (1.02303e-09, -1.02303e-09, 0.00717505) Vel: 0.245505 OnSurf: 0 Grav: 1
-[BallObject] Frame 5100 Pos: (1.02303e-09, -1.02303e-09, -0.00549732) Vel: 0.580934 OnSurf: 0 Grav: 1
-[BallObject] Frame 5160 Pos: (1.02303e-09, -1.02303e-09, -0.0301757) Vel: 0.909173 OnSurf: 0 Grav: 1
-[BallObject] Frame 5220 Pos: (1.02303e-09, -1.02303e-09, -0.0925531) Vel: 1.40004 OnSurf: 0 Grav: 1
-[BallObject] Frame 5280 Pos: (1.02303e-09, -1.02303e-09, -0.0653571) Vel: 1.19696 OnSurf: 0 Grav: 1
-[BallObject] Frame 5340 Pos: (1.02303e-09, -1.02303e-09, -0.0481268) Vel: 1.03883 OnSurf: 0 Grav: 1
-[BallObject] Frame 5400 Pos: (1.02303e-09, -1.02303e-09, -0.0239588) Vel: 0.795514 OnSurf: 0 Grav: 1
-[BallObject] Frame 5460 Pos: (1.02303e-09, -1.02303e-09, -0.00345094) Vel: 0.4914 OnSurf: 0 Grav: 1
-[BallObject] Frame 5520 Pos: (1.02303e-09, -1.02303e-09, 0.00118551) Vel: 0.390207 OnSurf: 0 Grav: 1
-[BallObject] Frame 5580 Pos: (1.02303e-09, -1.02303e-09, 0.0102767) Vel: 0.0867837 OnSurf: 0 Grav: 1
-[BallObject] Frame 5640 Pos: (1.02303e-09, -1.02303e-09, 0.0111255) Vel: 0.114865 OnSurf: 0 Grav: 1
-[BallObject] Frame 5700 Pos: (1.02303e-09, -1.02303e-09, -0.000110054) Vel: 0.472245 OnSurf: 0 Grav: 1
-[BallObject] Frame 5760 Pos: (1.02303e-09, -1.02303e-09, -0.0176731) Vel: 0.769931 OnSurf: 0 Grav: 1
-[BallObject] Frame 5820 Pos: (1.02303e-09, -1.02303e-09, -0.0408279) Vel: 1.02445 OnSurf: 0 Grav: 1
-[BallObject] Frame 5880 Pos: (1.02303e-09, -1.02303e-09, -0.078835) Vel: 1.30522 OnSurf: 0 Grav: 1
-[BallObject] Frame 5940 Pos: (1.02303e-09, -1.02303e-09, -0.0633883) Vel: 1.17199 OnSurf: 0 Grav: 1
-[BallObject] Frame 6000 Pos: (1.02303e-09, -1.02303e-09, -0.0380613) Vel: 0.962215 OnSurf: 0 Grav: 1
-[BallObject] Frame 6060 Pos: (1.02303e-09, -1.02303e-09, -0.010571) Vel: 0.620348 OnSurf: 0 Grav: 1
-[BallObject] Frame 6120 Pos: (1.02303e-09, -1.02303e-09, 0.00220325) Vel: 0.363379 OnSurf: 0 Grav: 1
-[BallObject] Frame 6180 Pos: (1.02303e-09, -1.02303e-09, 0.00924105) Vel: 0.0999203 OnSurf: 0 Grav: 1
-[BallObject] Frame 6240 Pos: (1.02303e-09, -1.02303e-09, 0.00714098) Vel: 0.26728 OnSurf: 0 Grav: 1
-[BallObject] Frame 6300 Pos: (1.02303e-09, -1.02303e-09, -0.0049812) Vel: 0.578394 OnSurf: 0 Grav: 1
-[BallObject] Frame 6360 Pos: (1.02303e-09, -1.02303e-09, -0.0370059) Vel: 0.991737 OnSurf: 0 Grav: 1
-[BallObject] Frame 6420 Pos: (1.02303e-09, -1.02303e-09, -0.0810015) Vel: 1.32505 OnSurf: 0 Grav: 1
-[BallObject] Frame 6480 Pos: (1.02303e-09, -1.02303e-09, -0.056829) Vel: 1.12652 OnSurf: 0 Grav: 1
-[BallObject] Frame 6540 Pos: (1.02303e-09, -1.02303e-09, -0.026324) Vel: 0.82161 OnSurf: 0 Grav: 1
-[BallObject] Frame 6600 Pos: (1.02303e-09, -1.02303e-09, -0.00218914) Vel: 0.4586 OnSurf: 0 Grav: 1
-[BallObject] Frame 6660 Pos: (1.02303e-09, -1.02303e-09, 0.00921275) Vel: 0.174939 OnSurf: 0 Grav: 1
-[BallObject] Frame 6720 Pos: (1.02303e-09, -1.02303e-09, 0.00995783) Vel: 0.0101225 OnSurf: 0 Grav: 1
-[BallObject] Frame 6780 Pos: (1.02303e-09, -1.02303e-09, 0.00797675) Vel: 0.232047 OnSurf: 0 Grav: 1
-[BallObject] Frame 6840 Pos: (1.02303e-09, -1.02303e-09, -0.00473396) Vel: 0.580963 OnSurf: 0 Grav: 1
-[BallObject] Frame 6900 Pos: (1.02303e-09, -1.02303e-09, -0.0325792) Vel: 0.956929 OnSurf: 0 Grav: 1
-[BallObject] Frame 6960 Pos: (1.02303e-09, -1.02303e-09, -0.0767682) Vel: 1.30267 OnSurf: 0 Grav: 1
-[BallObject] Frame 7020 Pos: (1.02303e-09, -1.02303e-09, -0.0422166) Vel: 1.01032 OnSurf: 0 Grav: 1
-[BallObject] Frame 7080 Pos: (1.02303e-09, -1.02303e-09, -0.0268576) Vel: 0.836913 OnSurf: 0 Grav: 1
-[BallObject] Frame 7140 Pos: (1.02303e-09, -1.02303e-09, -0.000961273) Vel: 0.475757 OnSurf: 0 Grav: 1
-[BallObject] Frame 7200 Pos: (1.02303e-09, -1.02303e-09, 0.00593429) Vel: 0.25806 OnSurf: 0 Grav: 1
-[BallObject] Frame 7260 Pos: (1.02303e-09, -1.02303e-09, 0.0104887) Vel: 0.119434 OnSurf: 0 Grav: 1
-[BallObject] Frame 7320 Pos: (1.02303e-09, -1.02303e-09, 0.00320148) Vel: 0.39425 OnSurf: 0 Grav: 1
-[BallObject] Frame 7380 Pos: (1.02303e-09, -1.02303e-09, -0.0154863) Vel: 0.739281 OnSurf: 0 Grav: 1
-[BallObject] BOUNCE! Speed: 1.07138
-[BallObject] Frame 7440 Pos: (1.02303e-09, -1.02303e-09, -0.045) Vel: 1.07138 OnSurf: 0 Grav: 1
-[BallObject] Frame 7500 Pos: (1.02303e-09, -1.02303e-09, -0.0708452) Vel: 1.25057 OnSurf: 0 Grav: 1
-[BallObject] Frame 7560 Pos: (1.02303e-09, -1.02303e-09, -0.061658) Vel: 1.15932 OnSurf: 0 Grav: 1
-[BallObject] Frame 7620 Pos: (1.02303e-09, -1.02303e-09, -0.0330975) Vel: 0.895024 OnSurf: 0 Grav: 1
-[BallObject] Frame 7680 Pos: (1.02303e-09, -1.02303e-09, -0.0182446) Vel: 0.705808 OnSurf: 0 Grav: 1
-[BallObject] Frame 7740 Pos: (1.02303e-09, -1.02303e-09, -0.00903271) Vel: 0.601814 OnSurf: 0 Grav: 1
-[BallObject] Frame 7800 Pos: (1.02303e-09, -1.02303e-09, 0.00148754) Vel: 0.398045 OnSurf: 0 Grav: 1
-[BallObject] Frame 7860 Pos: (1.02303e-09, -1.02303e-09, 0.00825843) Vel: 0.128959 OnSurf: 0 Grav: 1
-[BallObject] Frame 7920 Pos: (1.02303e-09, -1.02303e-09, 0.0109473) Vel: 0.1203 OnSurf: 0 Grav: 1
-[BallObject] Frame 7980 Pos: (1.02303e-09, -1.02303e-09, 0.00496897) Vel: 0.363879 OnSurf: 0 Grav: 1
-[BallObject] Frame 8040 Pos: (1.02303e-09, -1.02303e-09, -0.0109752) Vel: 0.677911 OnSurf: 0 Grav: 1
-[BallObject] Frame 8100 Pos: (1.02303e-09, -1.02303e-09, -0.0375979) Vel: 0.997753 OnSurf: 0 Grav: 1
-[BallObject] Frame 8160 Pos: (1.02303e-09, -1.02303e-09, -0.0633814) Vel: 1.19187 OnSurf: 0 Grav: 1
-[BallObject] Frame 8220 Pos: (1.02303e-09, -1.02303e-09, -0.0353877) Vel: 0.942849 OnSurf: 0 Grav: 1
-[BallObject] Frame 8280 Pos: (1.02303e-09, -1.02303e-09, -0.0425323) Vel: 0.986079 OnSurf: 0 Grav: 1
-[BallObject] Frame 8340 Pos: (1.02303e-09, -1.02303e-09, -0.0489509) Vel: 1.04497 OnSurf: 0 Grav: 1
-[BallObject] Frame 8400 Pos: (1.02303e-09, -1.02303e-09, -0.0285065) Vel: 0.842931 OnSurf: 0 Grav: 1
-[BallObject] Frame 8460 Pos: (1.02303e-09, -1.02303e-09, -0.0121846) Vel: 0.625015 OnSurf: 0 Grav: 1
-[BallObject] Frame 8520 Pos: (1.02303e-09, -1.02303e-09, 0.00303891) Vel: 0.337792 OnSurf: 0 Grav: 1
-[BallObject] Frame 8580 Pos: (1.02303e-09, -1.02303e-09, 0.00878068) Vel: 0.095628 OnSurf: 0 Grav: 1
-[BallObject] Frame 8640 Pos: (1.02303e-09, -1.02303e-09, 0.0075201) Vel: 0.222979 OnSurf: 0 Grav: 1
-[BallObject] Frame 8700 Pos: (1.02303e-09, -1.02303e-09, -0.00742826) Vel: 0.615806 OnSurf: 0 Grav: 1
-[BallObject] Frame 8760 Pos: (1.02303e-09, -1.02303e-09, -0.0259502) Vel: 0.871961 OnSurf: 0 Grav: 1
-[BallObject] Frame 8820 Pos: (1.02303e-09, -1.02303e-09, 0.0027166) Vel: 0.482629 OnSurf: 0 Grav: 1
-[BallObject] Frame 8880 Pos: (1.02303e-09, -1.02303e-09, 0.00641762) Vel: 0.31764 OnSurf: 0 Grav: 1
-[BallObject] Frame 8940 Pos: (1.02303e-09, -1.02303e-09, -0.00286061) Vel: 0.558062 OnSurf: 0 Grav: 1
-[BallObject] Frame 9000 Pos: (1.02303e-09, -1.02303e-09, -0.0273556) Vel: 0.888192 OnSurf: 0 Grav: 1
-[BallObject] Frame 9060 Pos: (1.02303e-09, -1.02303e-09, -0.081126) Vel: 1.327 OnSurf: 0 Grav: 1
-[BallObject] Frame 9120 Pos: (1.02303e-09, -1.02303e-09, -0.0437458) Vel: 1.02141 OnSurf: 0 Grav: 1
-[BallObject] Frame 9180 Pos: (1.02303e-09, -1.02303e-09, -0.010161) Vel: 0.648977 OnSurf: 0 Grav: 1
-[BallObject] Frame 9240 Pos: (1.02303e-09, -1.02303e-09, 0.00670033) Vel: 0.302789 OnSurf: 0 Grav: 1
-[BallObject] Frame 9300 Pos: (1.02303e-09, -1.02303e-09, 0.0120255) Vel: 0.0292184 OnSurf: 0 Grav: 1
-[BallObject] Frame 9360 Pos: (1.02303e-09, -1.02303e-09, 0.00611533) Vel: 0.360918 OnSurf: 0 Grav: 1
-[BallObject] Frame 9420 Pos: (1.02303e-09, -1.02303e-09, -0.00990119) Vel: 0.644057 OnSurf: 0 Grav: 1
-[BallObject] Frame 9480 Pos: (1.02303e-09, -1.02303e-09, -0.0175073) Vel: 0.744913 OnSurf: 0 Grav: 1
-[BallObject] Frame 9540 Pos: (1.02303e-09, -1.02303e-09, -0.0415511) Vel: 1.03068 OnSurf: 0 Grav: 1
-[BallObject] Frame 9600 Pos: (1.02303e-09, -1.02303e-09, -0.0656477) Vel: 1.20439 OnSurf: 0 Grav: 1
-[BallObject] Frame 9660 Pos: (1.02303e-09, -1.02303e-09, -0.034173) Vel: 0.93466 OnSurf: 0 Grav: 1
-[BallObject] Frame 9720 Pos: (1.02303e-09, -1.02303e-09, -0.0103184) Vel: 0.623117 OnSurf: 0 Grav: 1
-[BallObject] Frame 9780 Pos: (1.02303e-09, -1.02303e-09, 0.00725799) Vel: 0.275091 OnSurf: 0 Grav: 1
-[BallObject] Frame 9840 Pos: (1.02303e-09, -1.02303e-09, 0.0105222) Vel: 0.00236677 OnSurf: 0 Grav: 1
-[BallObject] Frame 9900 Pos: (1.02303e-09, -1.02303e-09, 0.00651424) Vel: 0.236846 OnSurf: 0 Grav: 1
-[BallObject] Frame 9960 Pos: (1.02303e-09, -1.02303e-09, -0.000238319) Vel: 0.463802 OnSurf: 0 Grav: 1
-[BallObject] Frame 10020 Pos: (1.02303e-09, -1.02303e-09, -0.0169817) Vel: 0.76602 OnSurf: 0 Grav: 1
-[BallObject] Frame 10080 Pos: (1.02303e-09, -1.02303e-09, -0.0375631) Vel: 0.992966 OnSurf: 0 Grav: 1
-[BallObject] Frame 10140 Pos: (1.02303e-09, -1.02303e-09, -0.0862937) Vel: 1.35969 OnSurf: 0 Grav: 1
-[BallObject] Frame 10200 Pos: (1.02303e-09, -1.02303e-09, -0.0566216) Vel: 1.12598 OnSurf: 0 Grav: 1
-[BallObject] Frame 10260 Pos: (1.02303e-09, -1.02303e-09, -0.0367438) Vel: 0.927152 OnSurf: 0 Grav: 1
-[BallObject] Frame 10320 Pos: (1.02303e-09, -1.02303e-09, -0.012528) Vel: 0.643169 OnSurf: 0 Grav: 1
-[BallObject] Frame 10380 Pos: (1.02303e-09, -1.02303e-09, 0.00459293) Vel: 0.313077 OnSurf: 0 Grav: 1
-[BallObject] Frame 10440 Pos: (1.02303e-09, -1.02303e-09, 0.0107936) Vel: 0.0716799 OnSurf: 0 Grav: 1
-[BallObject] Frame 10500 Pos: (1.02303e-09, -1.02303e-09, 0.00708504) Vel: 0.295798 OnSurf: 0 Grav: 1
-[BallObject] Frame 10560 Pos: (1.02303e-09, -1.02303e-09, -0.00921384) Vel: 0.624496 OnSurf: 0 Grav: 1
-[BallObject] Frame 10620 Pos: (1.02303e-09, -1.02303e-09, -0.0164722) Vel: 0.732767 OnSurf: 0 Grav: 1
-[BallObject] Frame 10680 Pos: (1.02303e-09, -1.02303e-09, -0.0218211) Vel: 0.803316 OnSurf: 0 Grav: 1
-[BallObject] BOUNCE! Speed: 1.05757
-[BallObject] Frame 10740 Pos: (1.02303e-09, -1.02303e-09, -0.045) Vel: 1.05757 OnSurf: 0 Grav: 1
-[BallObject] Frame 10800 Pos: (1.02303e-09, -1.02303e-09, -0.0696616) Vel: 1.23049 OnSurf: 0 Grav: 1
-[BallObject] Frame 10860 Pos: (1.02303e-09, -1.02303e-09, -0.0424191) Vel: 0.982868 OnSurf: 0 Grav: 1
-[BallObject] Frame 10920 Pos: (1.02303e-09, -1.02303e-09, -0.0168814) Vel: 0.704775 OnSurf: 0 Grav: 1
-[BallObject] Frame 10980 Pos: (1.02303e-09, -1.02303e-09, -0.00702886) Vel: 0.533653 OnSurf: 0 Grav: 1
-[BallObject] Frame 11040 Pos: (1.02303e-09, -1.02303e-09, -0.0057477) Vel: 0.492559 OnSurf: 0 Grav: 1
-[BallObject] Frame 11100 Pos: (1.02303e-09, -1.02303e-09, 0.00624276) Vel: 0.194344 OnSurf: 0 Grav: 1
-[BallObject] Frame 11160 Pos: (1.02303e-09, -1.02303e-09, 0.0086178) Vel: 0.0587683 OnSurf: 0 Grav: 1
-[BallObject] Frame 11220 Pos: (1.02303e-09, -1.02303e-09, 0.00759155) Vel: 0.211299 OnSurf: 0 Grav: 1
-[BallObject] Frame 11280 Pos: (1.02303e-09, -1.02303e-09, 0.00145823) Vel: 0.38573 OnSurf: 0 Grav: 1
-[BallObject] Frame 11340 Pos: (1.02303e-09, -1.02303e-09, -0.0186512) Vel: 0.779751 OnSurf: 0 Grav: 1
-[BallObject] Frame 11400 Pos: (1.02303e-09, -1.02303e-09, -0.0912391) Vel: 1.39723 OnSurf: 0 Grav: 1
-[BallObject] Frame 11460 Pos: (1.02303e-09, -1.02303e-09, -0.083468) Vel: 1.33754 OnSurf: 0 Grav: 1
-[BallObject] Frame 11520 Pos: (1.02303e-09, -1.02303e-09, -0.0862482) Vel: 1.35348 OnSurf: 0 Grav: 1
-[BallObject] Frame 11580 Pos: (1.02303e-09, -1.02303e-09, -0.0875279) Vel: 1.36388 OnSurf: 0 Grav: 1
-[BallObject] BOUNCE! Speed: 1.05
-[BallObject] Frame 11640 Pos: (1.02303e-09, -1.02303e-09, -0.045) Vel: 1.05 OnSurf: 0 Grav: 1
-[BallObject] Frame 11700 Pos: (1.02303e-09, -1.02303e-09, -0.0953009) Vel: 1.40974 OnSurf: 0 Grav: 1
-[BallObject] Frame 11760 Pos: (1.02303e-09, -1.02303e-09, -0.0924778) Vel: 1.38968 OnSurf: 0 Grav: 1
-[BallObject] Frame 11820 Pos: (1.02303e-09, -1.02303e-09, -0.0794179) Vel: 1.306 OnSurf: 0 Grav: 1
-[BallObject] Frame 11880 Pos: (1.02303e-09, -1.02303e-09, -0.0596117) Vel: 1.14558 OnSurf: 0 Grav: 1
-[BallObject] Frame 11940 Pos: (1.02303e-09, -1.02303e-09, -0.0316087) Vel: 0.87421 OnSurf: 0 Grav: 1
-[BallObject] Frame 12000 Pos: (1.02303e-09, -1.02303e-09, -0.0177661) Vel: 0.72255 OnSurf: 0 Grav: 1
-[BallObject] Frame 12060 Pos: (1.02303e-09, -1.02303e-09, 0.00346906) Vel: 0.368605 OnSurf: 0 Grav: 1
-[BallObject] Frame 12120 Pos: (1.02303e-09, -1.02303e-09, 0.00962024) Vel: 0.160265 OnSurf: 0 Grav: 1
-[BallObject] Frame 12180 Pos: (1.02303e-09, -1.02303e-09, 0.00994436) Vel: 0.124265 OnSurf: 0 Grav: 1
-[BallObject] Frame 12240 Pos: (1.02303e-09, -1.02303e-09, 0.000602378) Vel: 0.480339 OnSurf: 0 Grav: 1
-[BallObject] Frame 12300 Pos: (1.02303e-09, -1.02303e-09, -0.0214414) Vel: 0.820568 OnSurf: 0 Grav: 1
-[BallObject] Frame 12360 Pos: (1.02303e-09, -1.02303e-09, -0.0332013) Vel: 0.946603 OnSurf: 0 Grav: 1
-[BallObject] Frame 12420 Pos: (1.02303e-09, -1.02303e-09, -0.091306) Vel: 1.39403 OnSurf: 0 Grav: 1
-[BallObject] Frame 12480 Pos: (1.02303e-09, -1.02303e-09, -0.0642444) Vel: 1.19399 OnSurf: 0 Grav: 1
-[BallObject] Frame 12540 Pos: (1.02303e-09, -1.02303e-09, -0.0331304) Vel: 0.914539 OnSurf: 0 Grav: 1
-[BallObject] Frame 12600 Pos: (1.02303e-09, -1.02303e-09, -0.00693089) Vel: 0.60167 OnSurf: 0 Grav: 1
-[BallObject] Frame 12660 Pos: (1.02303e-09, -1.02303e-09, 0.00670317) Vel: 0.29702 OnSurf: 0 Grav: 1
-[BallObject] Frame 12720 Pos: (1.02303e-09, -1.02303e-09, 0.0118765) Vel: 0.0591804 OnSurf: 0 Grav: 1
-[BallObject] Frame 12780 Pos: (1.02303e-09, -1.02303e-09, 0.00509064) Vel: 0.392625 OnSurf: 0 Grav: 1
-[BallObject] Frame 12840 Pos: (1.02303e-09, -1.02303e-09, -0.0129823) Vel: 0.697819 OnSurf: 0 Grav: 1
-[BallObject] Frame 12900 Pos: (1.02303e-09, -1.02303e-09, -0.037399) Vel: 0.979883 OnSurf: 0 Grav: 1
-[BallObject] Frame 12960 Pos: (1.02303e-09, -1.02303e-09, -0.0926349) Vel: 1.39586 OnSurf: 0 Grav: 1
-[BallObject] Frame 13020 Pos: (1.02303e-09, -1.02303e-09, -0.0537763) Vel: 1.09694 OnSurf: 0 Grav: 1
-[BallObject] Frame 13080 Pos: (1.02303e-09, -1.02303e-09, -0.0279348) Vel: 0.846973 OnSurf: 0 Grav: 1
-[BallObject] Frame 13140 Pos: (1.02303e-09, -1.02303e-09, -0.0121593) Vel: 0.653227 OnSurf: 0 Grav: 1
-[BallObject] Frame 13200 Pos: (1.02303e-09, -1.02303e-09, 0.00498705) Vel: 0.326302 OnSurf: 0 Grav: 1
-[BallObject] Frame 13260 Pos: (1.02303e-09, -1.02303e-09, 0.0117512) Vel: 0.00329363 OnSurf: 0 Grav: 1
-[BallObject] Frame 13320 Pos: (1.02303e-09, -1.02303e-09, 0.00875523) Vel: 0.245366 OnSurf: 0 Grav: 1
-[BallObject] Frame 13380 Pos: (1.02303e-09, -1.02303e-09, 0.00142689) Vel: 0.425734 OnSurf: 0 Grav: 1
-[BallObject] Frame 13440 Pos: (1.02303e-09, -1.02303e-09, -0.0140102) Vel: 0.692131 OnSurf: 0 Grav: 1
-[BallObject] Frame 13500 Pos: (1.02303e-09, -1.02303e-09, 0.0107839) Vel: 0.174677 OnSurf: 0 Grav: 1
-[BallObject] Frame 13560 Pos: (1.02303e-09, -1.02303e-09, 0.0111523) Vel: 0.0979765 OnSurf: 0 Grav: 1
-[BallObject] Frame 13620 Pos: (1.02303e-09, -1.02303e-09, 0.0102638) Vel: 0.0801988 OnSurf: 0 Grav: 1
-[BallObject] Frame 13680 Pos: (1.02303e-09, -1.02303e-09, 0.006372) Vel: 0.291855 OnSurf: 0 Grav: 1
-[BallObject] Frame 13740 Pos: (1.02303e-09, -1.02303e-09, -0.00328896) Vel: 0.544446 OnSurf: 0 Grav: 1
-[BallObject] Frame 13800 Pos: (1.02303e-09, -1.02303e-09, -0.0188455) Vel: 0.783477 OnSurf: 0 Grav: 1
-[BallObject] Frame 13860 Pos: (1.02303e-09, -1.02303e-09, -0.0959545) Vel: 1.42976 OnSurf: 0 Grav: 1
-[BallObject] Frame 13920 Pos: (1.02303e-09, -1.02303e-09, -0.0594463) Vel: 1.15191 OnSurf: 0 Grav: 1
-[BallObject] Frame 13980 Pos: (1.02303e-09, -1.02303e-09, -0.0217486) Vel: 0.781812 OnSurf: 0 Grav: 1
-[BallObject] Frame 14040 Pos: (1.02303e-09, -1.02303e-09, -0.00181606) Vel: 0.460515 OnSurf: 0 Grav: 1
-[BallObject] Frame 14100 Pos: (1.02303e-09, -1.02303e-09, 0.00590466) Vel: 0.24684 OnSurf: 0 Grav: 1
-[BallObject] Frame 14160 Pos: (1.02303e-09, -1.02303e-09, 0.0096004) Vel: 0.0347352 OnSurf: 0 Grav: 1
-[BallObject] Frame 14220 Pos: (1.02303e-09, -1.02303e-09, 0.00673856) Vel: 0.241069 OnSurf: 0 Grav: 1
-[BallObject] Frame 14280 Pos: (1.02303e-09, -1.02303e-09, 0.000666273) Vel: 0.465782 OnSurf: 0 Grav: 1
-[BallObject] Frame 14340 Pos: (1.02303e-09, -1.02303e-09, -0.0191886) Vel: 0.778145 OnSurf: 0 Grav: 1
-[BallObject] Frame 14400 Pos: (1.02303e-09, -1.02303e-09, -0.0365706) Vel: 0.969777 OnSurf: 0 Grav: 1
-[BallObject] Frame 14460 Pos: (1.02303e-09, -1.02303e-09, -0.0837729) Vel: 1.33316 OnSurf: 0 Grav: 1
-[BallObject] Frame 14520 Pos: (1.02303e-09, -1.02303e-09, -0.0498299) Vel: 1.06611 OnSurf: 0 Grav: 1
-[BallObject] Frame 14580 Pos: (1.02303e-09, -1.02303e-09, -0.0225382) Vel: 0.778933 OnSurf: 0 Grav: 1
-[BallObject] Frame 14640 Pos: (1.02303e-09, -1.02303e-09, -0.00803534) Vel: 0.56615 OnSurf: 0 Grav: 1
-[BallObject] Frame 14700 Pos: (1.02303e-09, -1.02303e-09, -0.00421085) Vel: 0.497659 OnSurf: 0 Grav: 1
-[BallObject] Frame 14760 Pos: (1.02303e-09, -1.02303e-09, 0.00703382) Vel: 0.242233 OnSurf: 0 Grav: 1
-[BallObject] Frame 14820 Pos: (1.02303e-09, -1.02303e-09, 0.0110659) Vel: 0.0504934 OnSurf: 0 Grav: 1
-[BallObject] Frame 14880 Pos: (1.02303e-09, -1.02303e-09, 0.0103783) Vel: 0.193503 OnSurf: 0 Grav: 1
-[BallObject] Frame 14940 Pos: (1.02303e-09, -1.02303e-09, 0.003142) Vel: 0.39434 OnSurf: 0 Grav: 1
-[BallObject] Frame 15000 Pos: (1.02303e-09, -1.02303e-09, 0.000566982) Vel: 0.482212 OnSurf: 0 Grav: 1
-[BallObject] Frame 15060 Pos: (1.02303e-09, -1.02303e-09, -0.0126647) Vel: 0.716682 OnSurf: 0 Grav: 1
-[BallObject] Frame 15120 Pos: (1.02303e-09, -1.02303e-09, -0.026311) Vel: 0.862178 OnSurf: 0 Grav: 1
-[BallObject] Frame 15180 Pos: (1.02303e-09, -1.02303e-09, -0.0905795) Vel: 1.38531 OnSurf: 0 Grav: 1
-[BallObject] Frame 15240 Pos: (1.02303e-09, -1.02303e-09, -0.0488597) Vel: 1.04856 OnSurf: 0 Grav: 1
-[BallObject] Frame 15300 Pos: (1.02303e-09, -1.02303e-09, -0.0312546) Vel: 0.877439 OnSurf: 0 Grav: 1
-[BallObject] Frame 15360 Pos: (1.02303e-09, -1.02303e-09, -0.0141739) Vel: 0.67342 OnSurf: 0 Grav: 1
-[BallObject] Frame 15420 Pos: (1.02303e-09, -1.02303e-09, 0.00028688) Vel: 0.439603 OnSurf: 0 Grav: 1
-[BallObject] Frame 15480 Pos: (1.02303e-09, -1.02303e-09, 0.0103534) Vel: 0.0974228 OnSurf: 0 Grav: 1
-[BallObject] Frame 15540 Pos: (1.02303e-09, -1.02303e-09, 0.0106025) Vel: 0.0470616 OnSurf: 0 Grav: 1
-[BallObject] Frame 15600 Pos: (1.02303e-09, -1.02303e-09, 0.00454132) Vel: 0.371407 OnSurf: 0 Grav: 1
-[BallObject] Frame 15660 Pos: (1.02303e-09, -1.02303e-09, -0.00950201) Vel: 0.642299 OnSurf: 0 Grav: 1
-[BallObject] Frame 15720 Pos: (1.02303e-09, -1.02303e-09, -0.0364095) Vel: 0.97679 OnSurf: 0 Grav: 1
-[BallObject] Frame 15780 Pos: (1.02303e-09, -1.02303e-09, -0.0909151) Vel: 1.3885 OnSurf: 0 Grav: 1
-[BallObject] Frame 15840 Pos: (1.02303e-09, -1.02303e-09, -0.0647182) Vel: 1.18505 OnSurf: 0 Grav: 1
-[BallObject] Frame 15900 Pos: (1.02303e-09, -1.02303e-09, -0.0563941) Vel: 1.11264 OnSurf: 0 Grav: 1
-[BallObject] Frame 15960 Pos: (1.02303e-09, -1.02303e-09, -0.035686) Vel: 0.918963 OnSurf: 0 Grav: 1
-[BallObject] Frame 16020 Pos: (1.02303e-09, -1.02303e-09, -0.0169698) Vel: 0.695173 OnSurf: 0 Grav: 1
-[BallObject] Frame 16080 Pos: (1.02303e-09, -1.02303e-09, -0.00290237) Vel: 0.497425 OnSurf: 0 Grav: 1
-[BallObject] Frame 16140 Pos: (1.02303e-09, -1.02303e-09, 0.00742723) Vel: 0.258008 OnSurf: 0 Grav: 1
-[BallObject] Frame 16200 Pos: (1.02303e-09, -1.02303e-09, 0.00872257) Vel: 0.108966 OnSurf: 0 Grav: 1
-[BallObject] Frame 16260 Pos: (1.02303e-09, -1.02303e-09, 0.00897081) Vel: 0.0752482 OnSurf: 0 Grav: 1
-[BallObject] Frame 16320 Pos: (1.02303e-09, -1.02303e-09, 0.00541122) Vel: 0.251029 OnSurf: 0 Grav: 1
-[BallObject] Frame 16380 Pos: (1.02303e-09, -1.02303e-09, -0.00322077) Vel: 0.520047 OnSurf: 0 Grav: 1
-[BallObject] Frame 16440 Pos: (1.02303e-09, -1.02303e-09, -0.00821924) Vel: 0.590759 OnSurf: 0 Grav: 1
-[BallObject] Frame 16500 Pos: (1.02303e-09, -1.02303e-09, -0.0137379) Vel: 0.667954 OnSurf: 0 Grav: 1
-[BallObject] Frame 16560 Pos: (1.02303e-09, -1.02303e-09, -0.0231918) Vel: 0.797307 OnSurf: 0 Grav: 1
-[BallObject] Frame 16620 Pos: (1.02303e-09, -1.02303e-09, -0.0124204) Vel: 0.635191 OnSurf: 0 Grav: 1
-[BallObject] Frame 16680 Pos: (1.02303e-09, -1.02303e-09, -0.0030091) Vel: 0.489122 OnSurf: 0 Grav: 1
-[BallObject] Frame 16740 Pos: (1.02303e-09, -1.02303e-09, -0.018993) Vel: 0.776302 OnSurf: 0 Grav: 1

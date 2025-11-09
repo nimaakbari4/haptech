@@ -29,11 +29,13 @@ private:
     double _gravityScale = 1.0;
     double _radius = 0.05;
     double _bounciness = 0.5;
+    double _mass = 1.0;
     mutable std::mutex _stateMutex;
     
     double getRadius(const std::map<std::string, std::string>& params) const;
     double getBounciness(const std::map<std::string, std::string>& params) const;
     double getGravityScale(const std::map<std::string, std::string>& params) const;
+    double getMass(const std::map<std::string, std::string>& params) const;
 };
 
 #endif // BALL_OBJECT_H
