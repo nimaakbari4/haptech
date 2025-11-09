@@ -36,9 +36,9 @@
   <Objects>
     <!-- Ground platform -->
     <Object id="ground" type="box">
-      <Position x="0.0" y="-0.15" z="-0.1"/>
+      <Position x="0.0" y="-0.15" z="-0.3"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters width="0.1" height="0.3" depth="0.1"/>
+      <Parameters width="1.0" height="1.0" depth="0.1"/>
       <Color r="0.5" g="0.5" b="0.5"/>
     </Object>
     
