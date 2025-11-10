@@ -12,12 +12,12 @@ cGenericObject* BallObject::createObject(const std::map<std::string, std::string
     _radius = getRadius(params);
     _bounciness = getBounciness(params);
     _mass = getMass(params);
+    _gravityScale = getGravityScale(params);
     
     // Create sphere mesh (ball is a bouncy sphere)
     cMesh* ball = new cMesh();
     cCreateSphere(ball, _radius);
-    ball->createAABBCollisionDetector(_radius);
-    ball->setShowCollisionDetector(true);
+    ball->createAABBCollisionDetector(_radius / 4);
     
     // Set color
     ball->m_material->m_ambient.set(r, g, b);
@@ -63,10 +63,11 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
 
     // Handle collisions with other objects
     auto newPos = pos + _velocity * deltaTime;
+    _velocity.add(0, 0, -9.81 * _gravityScale * deltaTime);
     
     // Get world for collision detection
     cWorld* world = SimulationManager::simContext.world;
-    if (world && _velocity.length() > 0.001) {
+    if (world) {
         cCollisionRecorder recorder;
         cCollisionSettings settings;
         settings.m_ignoreShapes = false;
@@ -132,7 +133,9 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
         _velocity *= 0.99;
     }
 
-    object->setLocalPos(newPos);
+    if (cDistance(pos, newPos) < 0.01) {
+        object->setLocalPos(newPos);
+    }
 }
 
 double BallObject::getRadius(const std::map<std::string, std::string>& params) const {

@@ -52,9 +52,21 @@
     
     <!-- Pushable ball with friction -->
     <Object id="pushable_ball" type="ball">
-      <Position x="0.0" y="-0.15" z="0.2"/>
+      <Position x="0.0" y="0.0" z="0.2"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.05" gravity_scale="1.0" mass="100.0"/>
+      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
+      <Color r="0.2" g="0.8" b="1.0"/>
+    </Object>
+    <Object id="pushable_ball_2" type="ball">
+      <Position x="0.0" y="-0.10" z="0.2"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
+      <Color r="0.2" g="0.8" b="1.0"/>
+    </Object>
+    <Object id="pushable_ball_3" type="ball">
+      <Position x="0.0" y="-0.25" z="0.2"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
       <Color r="0.2" g="0.8" b="1.0"/>
     </Object>
   </Objects>
