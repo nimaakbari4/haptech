@@ -30,6 +30,11 @@
     <MouseCursor>true</MouseCursor>
   </Controls>
 
+  <CursorSettings object="spring">
+    <Parameters radius="0.02" height="0.12" stiffness="1000" damping="50" />
+    <Color r="0.8" g="0.8" b="0.0" />
+  </CursorSettings>
+
   <Objects>
     <!-- Regular sphere for comparison - Bright Green (Left) -->
     <Object id="regular_sphere" type="sphere">

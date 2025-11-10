@@ -787,8 +787,12 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
     simContext.hapticsEnabled = false;
     cSleepMs(100);
 
-    // Destroy existing tool if any
-    destroyHapticTool();
+    // Ensure a haptic device is available
+    if (!simContext.hapticDevice) {
+        std::cout << "[CURSOR] No haptic device present; cannot create tool." << std::endl;
+        simContext.hapticsEnabled = true;
+        return false;
+    }
 
     // Build visual mesh via registry if possible
     cGenericObject* visual = nullptr;
@@ -858,6 +862,32 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
         mm->m_material->setWhite();
     }
 
+    // Optional visual color (from params: color_r,color_g,color_b)
+    auto itCr = params.find("color_r");
+    auto itCg = params.find("color_g");
+    auto itCb = params.find("color_b");
+    if (itCr != params.end() && itCg != params.end() && itCb != params.end()) {
+        double rr = atof(itCr->second.c_str());
+        double gg = atof(itCg->second.c_str());
+        double bb = atof(itCb->second.c_str());
+        rr = std::max(0.0, std::min(1.0, rr));
+        gg = std::max(0.0, std::min(1.0, gg));
+        bb = std::max(0.0, std::min(1.0, bb));
+        if (auto mm = dynamic_cast<cMultiMesh*>(visual)) {
+            if (!mm->m_material) {
+                mm->m_material = cMaterial::create();
+            }
+            mm->m_material->setColorf(rr, gg, bb);
+        } else if (auto segs = dynamic_cast<cMultiSegment*>(visual)) {
+            // For segments, set line color and material color
+            segs->setLineColor(cColorf(rr, gg, bb, 1.0));
+            if (!segs->m_material) {
+                segs->m_material = cMaterial::create();
+            }
+            segs->m_material->setColorf(rr, gg, bb);
+        }
+    }
+
     // Apply optional transforms
     auto itScale = params.find("scale");
     if (itScale != params.end()) {
@@ -886,11 +916,17 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
         contactRadius = std::max(1e-4, atof(itContact->second.c_str()));
     }
 
-    // Create mesh-based tool and attach device
-    simContext.tool = new cToolMesh(simContext.world, visual, sampleCount, contactRadius);
-    simContext.world->addChild(simContext.tool);
-    simContext.tool->setHapticDevice(simContext.hapticDevice);
-    simContext.tool->setWorkspaceRadius(1.0);
+    // Prefer updating an existing tool to avoid reopening the device
+    if (auto existingTool = dynamic_cast<cToolMesh*>(simContext.tool)) {
+        existingTool->setVisual(visual, sampleCount, contactRadius);
+    } else {
+        // No existing mesh tool; create one and attach device
+        destroyHapticTool();
+        simContext.tool = new cToolMesh(simContext.world, visual, sampleCount, contactRadius);
+        simContext.world->addChild(simContext.tool);
+        simContext.tool->setHapticDevice(simContext.hapticDevice);
+        simContext.tool->setWorkspaceRadius(1.0);
+    }
 
     // Optional proxy visuals
     auto itShow = params.find("show_contact_points");
@@ -900,8 +936,10 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
         simContext.tool->setShowContactPoints(false, false);
     }
 
-    // Start tool
-    simContext.tool->start();
+    // Start tool only if not already enabled (avoid re-opening device)
+    if (!simContext.tool->getEnabled()) {
+        simContext.tool->start();
+    }
     std::cout << "[CURSOR] Applied cursor visual type: " << visualType
               << ", samples: " << sampleCount
               << ", contact_radius: " << contactRadius << std::endl;

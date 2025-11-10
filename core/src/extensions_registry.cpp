@@ -38,6 +38,24 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<VelocityCondition>(params, success, priority);
     });
     
+    // Aliases for common config names
+    registerTrialCondition("reach_target", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+        // Map 'target_distance' -> 'tolerance' for PositionCondition
+        auto tolIt = params.find("target_distance");
+        if (tolIt != params.end()) {
+            params["tolerance"] = tolIt->second;
+        }
+        return std::make_unique<PositionCondition>(params, success, priority);
+    });
+    registerTrialCondition("time_limit", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+        // Map 'max_time' -> 'duration_seconds' for TimeCondition
+        auto maxIt = params.find("max_time");
+        if (maxIt != params.end()) {
+            params["duration_seconds"] = maxIt->second;
+        }
+        return std::make_unique<TimeCondition>(params, success, priority);
+    });
+    
     // TODO: Researchers can add their own extensions here
     // Example:
     // CustomObjectRegistry::registerType("my_object", []() -> std::unique_ptr<CustomObjectInterface> {

@@ -22,6 +22,11 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
         p2 = cursor_obj.params.add()
         p2.key = "as_cursor"
         p2.value = "1"
+        # Forward color as params if provided
+        if hasattr(cursor_settings, "color") and cursor_settings.color:
+            cr = cursor_obj.params.add(); cr.key = "color_r"; cr.value = str(cursor_settings.color.r)
+            cg = cursor_obj.params.add(); cg.key = "color_g"; cg.value = str(cursor_settings.color.g)
+            cb = cursor_obj.params.add(); cb.key = "color_b"; cb.value = str(cursor_settings.color.b)
         # Forward any additional cursor parameters (e.g., radius, height, stiffness, damping,
         # sample_count, contact_radius, scale, rot_x/rot_y/rot_z)
         if hasattr(cursor_settings, "params") and cursor_settings.params:

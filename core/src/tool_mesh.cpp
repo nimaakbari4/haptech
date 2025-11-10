@@ -138,4 +138,28 @@ void cToolMesh::generateSamplesFromObject(cGenericObject* object, int numRequest
     }
 }
 
+bool cToolMesh::setVisual(cGenericObject* visualObject, int numSamples, double contactRadius)
+{
+    // Remove old sample points
+    for (auto& s : m_samples) {
+        delete s.point;
+    }
+    m_samples.clear();
+    m_hapticPoints.clear();
+
+    // Replace visual
+    // If previous m_image was allocated outside, caller should ensure ownership.
+    m_image = visualObject;
+    if (m_image) {
+        m_image->setLocalPos(0, 0, 0);
+        m_image->setLocalRot(cIdentity3d());
+    }
+
+    // Re-sample
+    generateSamplesFromObject(visualObject, numSamples);
+    setRadius(contactRadius);
+
+    return true;
+}
+
 

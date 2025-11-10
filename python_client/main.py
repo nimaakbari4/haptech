@@ -58,8 +58,8 @@ def main():
 
     try:
         # connect to the server
-        channel = grpc.insecure_channel('localhost:50051')
-        # channel = grpc.insecure_channel('134.114.232.201:50051')
+        # channel = grpc.insecure_channel('localhost:50051')
+        channel = grpc.insecure_channel('134.114.232.201:50051')
         stub = pb2_grpc.FrankaTrialServiceStub(channel)
 
         # call run_trial with those values

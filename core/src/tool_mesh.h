@@ -24,6 +24,9 @@ public:
     // Render haptic points and the visual mesh
     void render(cRenderOptions& a_options) override;
 
+    // Replace the visual and resample without touching device control
+    bool setVisual(cGenericObject* visualObject, int numSamples, double contactRadius);
+
 private:
     struct Sample {
         cVector3d localPos;

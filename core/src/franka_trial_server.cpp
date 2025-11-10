@@ -6,6 +6,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     const TrialRequest* request,
     grpc::ServerWriter<TrialResponseStream>* writer
 ) {
+    try {
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
 
@@ -43,16 +44,12 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // add objects (hard coded for now, load from config info later)
-    // SimulationManager::reset();
-    // Remove all objects in the object map from the world
-    for (auto& pair : SimulationManager::simContext.objectMap) {
-        if (pair.second) {
-            SimulationManager::simContext.world->removeChild(pair.second.get());
-        }
-    }
-    
-    SimulationManager::simContext.objectMap.clear();
+    // Safely pause haptics before scene mutations
+    SimulationManager::simContext.hapticsEnabled = false;
+    cSleepMs(100);
+
+    // Safely remove all existing objects (uses SimulationManager's safe path)
+    SimulationManager::removeAllObjects();
 
     // Change the background color to a light blue
     if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
@@ -111,6 +108,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             return grpc::Status::OK;
         }
     }
+
+    // Resume haptics after scene setup
+    SimulationManager::simContext.hapticsEnabled = true;
 
     // Add trial start conditions
     SimulationManager::trialContext.startConditions.clear();
@@ -339,6 +339,22 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // reset environment
     SimulationManager::reset();
     return grpc::Status::OK;
+    } catch (const std::exception& ex) {
+        TrialResponseStream statusMsg;
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message(std::string("Unhandled server exception in RunTrial: ") + ex.what());
+        // Best-effort write; swallow any errors here
+        (void)writer->Write(statusMsg);
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
+    } catch (...) {
+        TrialResponseStream statusMsg;
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message("Unhandled server exception in RunTrial: unknown");
+        (void)writer->Write(statusMsg);
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
+    }
 }
 
 
