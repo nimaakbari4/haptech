@@ -3,6 +3,7 @@ import util
 import grpc
 import franka_trial_pb2_grpc as pb2_grpc
 import traceback
+import logging
 from parser import xml_parser
 import settings
 import datetime
@@ -10,6 +11,13 @@ import os
 from dataclasses import asdict
 
 def main():
+    # Set up logger
+    logger = logging.getLogger("haptech")
+    logger.setLevel(logging.INFO)
+    if logger.handlers:
+        for h in list(logger.handlers):
+            logger.removeHandler(h)
+
     # Get needed settings
     server_host = settings.get_setting("server_host")
     server_port = settings.get_setting("server_port")
@@ -45,7 +53,6 @@ def main():
             config_file_path = last_configuration_file
 
     settings.change_setting("last_configuration_file", config_file_path)
-
     config = xml_parser(f"{config_path}/{config_file_path}")
 
     if not config.test:
@@ -59,6 +66,15 @@ def main():
                 settings.change_setting("trial_subject", trial_subject)
         
         trial_id = input("Trial ID: ")
+
+        # Setup per-trial logging (console + file)
+        fh = logging.FileHandler(f"{trial_id}.log", mode='w')
+        fmt = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
+        fh.setFormatter(fmt)
+        ch = logging.StreamHandler()
+        ch.setFormatter(fmt)
+        logger.addHandler(fh)
+        logger.addHandler(ch)
     else:
         trial_subject = "TEST"
         trial_id = f"TEST_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -113,7 +129,7 @@ def main():
 
         print("Starting trial...\n")
         util.run_trial(stub, trial_id, output_filestream, config.objects, 
-                       config.start_conditions.conditions, config.end_conditions.conditions, 
+                       config.start_conditions.conditions, config.end_conditions.conditions, config.scene_settings, 
                        metadata)
 
         metadata["ended_at"] = datetime.datetime.now()
@@ -127,9 +143,16 @@ def main():
             print_trial_summary(metadata)
 
         print("Trial complete.")
+        logger.info("Trial '%s' completed successfully", trial_id)
+    except grpc.RpcError as e:
+        code = e.code() if hasattr(e, 'code') else None
+        details = e.details() if hasattr(e, 'details') else str(e)
+        print(f"gRPC error: {code} - {details}")
+        logger.error("gRPC error: code=%s details=%s", code, details)
+        logger.exception("gRPC exception during trial")
     except Exception:
         print("Something went wrong.")
-        traceback.print_exc()
+        logger.exception("Unhandled exception during trial")
     finally:
         if output_filestream:
             output_filestream.close()

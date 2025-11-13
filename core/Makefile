@@ -25,6 +25,7 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(CHAI3D_DIR)/external/libfranka/include \
 	-I$(CHAI3D_DIR)/external/libfranka/common/include \
 	-I$(SRC_DIR) \
+	-I$(SRC_DIR)/proto \
 	-I$(SRC_DIR)/objects \
 	-I$(SRC_DIR)/trial_conditions \
 	-I/usr/include \
@@ -43,7 +44,7 @@ LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
 	-L/usr/lib/x86_64-linux-gnu
 
-	
+
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
 $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
@@ -117,4 +118,4 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(TARGET)
 
 clean:
-	rm -rf $(BIN_DIR)/*.o $(TARGET)
+	rm -rf $(BIN_DIR)

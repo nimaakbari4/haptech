@@ -8,7 +8,7 @@
 #define C_ENABLE_FRANKA_DEVICE_SUPPORT
 
 int main() {
-    SimulationManager::setDebugMode(false);
+    SimulationManager::setDebugMode(true);
     
     // Register all extensions (custom objects, trial conditions, etc.)
     ExtensionsRegistry::registerAllExtensions();

@@ -67,7 +67,7 @@ bool PositionCondition::evaluate() {
 
 std::string PositionCondition::getMessage() {
     // Check if tool is available before accessing it
-    if (!SimulationManager::simContext.tool) {
+    if (SimulationManager::simContext.tool == nullptr) {
         return "PositionCondition: Tool not initialized yet";
     }
     

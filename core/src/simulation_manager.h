@@ -59,6 +59,9 @@ struct SimulationContext {
     // a label to display the current status, i.e. "waiting for trial to begin"
     cLabel* statusText;
 
+    // custom text overlays configured by the client
+    std::vector<cLabel*> customTextOverlays;
+
     // a virtual tool representing the haptic device in the scene
     cGenericTool* tool;
 
@@ -141,6 +144,8 @@ public:
     // SCENE SETTINGS
     static bool reset();
     static bool setBackgroundColor(double r, double g, double b);
+    static bool addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b);
+    static bool clearTextOverlays();
 
     // GENERAL OBJECT FUNCTIONALITY
 
