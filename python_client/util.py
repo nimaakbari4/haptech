@@ -171,7 +171,7 @@ def handle_stream(stream, output_csv_stream, metadata={}):
             handle_data_point(message.dataPoint, output_csv_stream, metadata)
 
 # Handle a TrialStatusUpdate
-def handle_status_update(status):
+def handle_status_update(status, metadata):
     logger = logging.getLogger("haptech")
     status_map = {0: "STARTED", 1: "ERROR", 2: "COMPLETED"}
     name = status_map.get(status.status, str(status.status))
