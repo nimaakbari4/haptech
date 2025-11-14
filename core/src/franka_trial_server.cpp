@@ -44,20 +44,68 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
-    // Safely pause haptics before scene mutations
-    SimulationManager::simContext.hapticsEnabled = false;
-    cSleepMs(100);
+        // Safely pause haptics before scene mutations
+        SimulationManager::simContext.hapticsEnabled = false;
+        cSleepMs(100);
+    
+        // Safely remove all existing objects (uses SimulationManager's safe path)
+        SimulationManager::removeAllObjects();
 
-    // Safely remove all existing objects (uses SimulationManager's safe path)
-    SimulationManager::removeAllObjects();
+    // add objects (hard coded for now, load from config info later)
+    // SimulationManager::reset();
+    // Remove all objects in the object map from the world
+    for (auto& pair : SimulationManager::simContext.objectMap) {
+        if (pair.second) {
+            SimulationManager::simContext.world->removeChild(pair.second.get());
+            SimulationManager::simContext.objectInterfaceMap.erase(pair.first);
+        }
+    }
+    
+    SimulationManager::simContext.objectMap.clear();
 
-    // Change the background color to a light blue
-    if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
+    // Set background color from scene settings
+    if (request->has_scenesettings() && request->scenesettings().has_backgroundcolor()) {
+        const auto& bg_color = request->scenesettings().backgroundcolor();
+        if (!SimulationManager::setBackgroundColor(bg_color.r(), bg_color.g(), bg_color.b())) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Background color set to RGB(" << bg_color.r() << ", " << bg_color.g() << ", " << bg_color.b() << ")" << std::endl;
+    } else {
+        // Default background color if not specified
+        if (!SimulationManager::setBackgroundColor(0.0, 0.0, 0.0)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting default background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Using default background color (black)" << std::endl;
+    }
+
+    // Clear any existing text overlays
+    SimulationManager::clearTextOverlays();
+
+    // Add text overlays from scene settings
+    if (request->has_scenesettings()) {
+        for (const auto& overlay : request->scenesettings().textoverlays()) {
+            double r = overlay.has_color() ? overlay.color().r() : 1.0;
+            double g = overlay.has_color() ? overlay.color().g() : 1.0;
+            double b = overlay.has_color() ? overlay.color().b() : 1.0;
+            double fontSize = overlay.fontsize() > 0 ? overlay.fontsize() : 20.0;
+            
+            if (!SimulationManager::addTextOverlay(overlay.text(), overlay.x(), overlay.y(), fontSize, r, g, b)) {
+                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+                status->set_status(TrialStatus::ERROR);
+                status->set_message("Failed to add text overlay: " + overlay.text());
+                writer->Write(statusMsg);
+                return grpc::Status::OK;
+            }
+        }
+        std::cout << "[INFO] Added " << request->scenesettings().textoverlays_size() << " text overlay(s)" << std::endl;
     }
 
     // Add objects from the request configuration
@@ -276,7 +324,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         // Object states snapshot
         for (const auto& kv : SimulationManager::simContext.objectMap) {
             const std::string& oid = kv.first;
-            const std::unique_ptr<cGenericObject>& objPtr = kv.second;
+            cGenericObject* objPtr = kv.second.get();
             if (!objPtr) continue;
             ObjectState* os = dataPoint->add_objects();
             os->set_id(oid);
@@ -307,7 +355,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         */
 
         if (SimulationManager::simContext.debug) {
-            std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
         }
 
         double dt = clock.getCurrentTimeSeconds();

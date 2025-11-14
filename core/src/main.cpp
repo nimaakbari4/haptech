@@ -9,6 +9,9 @@
 
 int main() {
     SimulationManager::setDebugMode(true);
+    
+    // Register all extensions (custom objects, trial conditions, etc.)
+    ExtensionsRegistry::registerAllExtensions();
 
     // Ensure custom objects and conditions are registered before server handles requests
     ExtensionsRegistry::registerAllExtensions();

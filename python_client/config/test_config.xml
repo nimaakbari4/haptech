@@ -4,9 +4,17 @@
     <Tolerance>0.01</Tolerance>
   </HomePosition>
 
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </StartConditions>
+
   <!-- Trial End Conditions -->
   <EndConditions>
-    <Condition type="time" value="10.0" result="failure" />
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="10.0"/>
+    </Condition>
   </EndConditions>
 
   <!-- HUD Text -->

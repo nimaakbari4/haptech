@@ -15,12 +15,12 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     
     // Create helical spring using cMultiSegment
     cMultiSegment* spring = new cMultiSegment();
-    
-    // Ensure material exists before using it
-    if (!spring->m_material) {
-        spring->m_material = cMaterial::create();
-    }
 
+        // Ensure material exists before using it
+        if (!spring->m_material) {
+            spring->m_material = cMaterial::create();
+        }
+    
     // Connect segments to form a spring
     double h = 0.0;
     double dh = height / 200.0;  // Height increment per segment

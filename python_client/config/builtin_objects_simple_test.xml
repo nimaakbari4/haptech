@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrialConfig>
+  <!-- Simple test for all 4 built-in object types -->
+  
+  <HomePosition>
+    <Position x="0.0" y="0.0" z="0.0"/>
+    <Tolerance>0.02</Tolerance>
+  </HomePosition>
+
+  <StartConditions>
+  </StartConditions>
+
+  <EndConditions>
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="30.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Simple test: Touch the sphere, box, cylinder, ball, and torus!</StartMessage>
+    <SuccessMessage>All objects tested!</SuccessMessage>
+    <FailureMessage>Time's up!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="1.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <!-- Red haptic cursor -->
+    <Object id="cursor" type="sphere">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+      <Parameters radius="0.01"/>
+    </Object>
+
+    <!-- Test sphere -->
+    <Object id="test_sphere" type="sphere">
+      <Position x="0.1" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+      <Parameters radius="0.05"/>
+    </Object>
+
+    <!-- Test box -->
+    <Object id="test_box" type="box">
+      <Position x="0.0" y="0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.0" g="0.0" b="1.0"/>
+      <Parameters width="0.06" height="0.06" depth="0.06"/>
+    </Object>
+
+    <!-- Test cylinder -->
+    <Object id="test_cylinder" type="cylinder">
+      <Position x="-0.1" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="1.0" b="0.0"/>
+      <Parameters radius="0.04" height="0.08"/>
+    </Object>
+
+    <!-- Test ball (bouncy) -->
+    <Object id="test_ball" type="ball">
+      <Position x="0.0" y="-0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="0.0" b="1.0"/>
+      <Parameters radius="0.04" bounciness="0.8"/>
+    </Object>
+
+    <!-- Test torus -->
+    <Object id="test_torus" type="torus">
+      <Position x="-0.1" y="-0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.0" g="1.0" b="1.0"/>
+      <Parameters inner_radius="0.02" outer_radius="0.05" num_sides="16" num_rings="20"/>
+    </Object>
+
+  </Objects>
+</TrialConfig>

@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import sys
 
 @dataclass
@@ -63,6 +63,25 @@ class BackgroundColor:
     r: float
     g: float
     b: float
+    
+    @classmethod
+    def from_rgb_255(cls, r: int, g: int, b: int) -> "BackgroundColor":
+        """Create BackgroundColor from 0-255 RGB values"""
+        return cls(r=r/255.0, g=g/255.0, b=b/255.0)
+    
+    @classmethod
+    def from_rgb_float(cls, r: float, g: float, b: float) -> "BackgroundColor":
+        """Create BackgroundColor from 0.0-1.0 RGB values"""
+        return cls(r=r, g=g, b=b)
+    
+    def to_rgb_255(self) -> Tuple[int, int, int]:
+        """Convert to 0-255 RGB values"""
+        return (int(self.r * 255), int(self.g * 255), int(self.b * 255))
+    
+    def __str__(self) -> str:
+        """String representation showing both 0-1 and 0-255 values"""
+        r255, g255, b255 = self.to_rgb_255()
+        return f"RGB({self.r:.2f}, {self.g:.2f}, {self.b:.2f}) = RGB({r255}, {g255}, {b255})"
 
 @dataclass
 class Camera:
@@ -71,19 +90,22 @@ class Camera:
     up: Position
 
 @dataclass
+class TextOverlay:
+    text: str
+    x: float
+    y: float
+    font_size: float = 20.0
+    color: Optional[BackgroundColor] = None
+
+@dataclass
 class SceneSettings:
     background_color: BackgroundColor
     camera: Camera
-
-@dataclass
-class CursorSettings:
-    object_type: str
-    color: Color
-    params: List[ObjectParameter] = None
-
+    text_overlays: List[TextOverlay] = None
+    
     def __post_init__(self):
-        if self.params is None:
-            self.params = []
+        if self.text_overlays is None:
+            self.text_overlays = []
 
 @dataclass
 class ObjectConfig:
@@ -134,13 +156,19 @@ class TrialConfig:
     home: Optional[HomePosition] = None
     cursor_settings: Optional[CursorSettings] = None
     data_collection: Optional[DataCollectionConfig] = None
-
+    test: Optional[bool] = False
 
 def xml_parser(xml_path: str) -> TrialConfig:
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
-    # StartConditions
+    #Test mode
+    test_mode = root.find("Test")
+    test = False
+    if test_mode is not None and test_mode.text is not None:
+        test = test_mode.text.lower() == "true"
+
+    #StartConditions
     start_conds = []
     start_conditions_elem = root.find("StartConditions")
     if start_conditions_elem is not None:
@@ -202,48 +230,58 @@ def xml_parser(xml_path: str) -> TrialConfig:
     # SceneSettings
     ss = root.find("SceneSettings")
     bg = ss.find("BackgroundColor")
-    background_color = BackgroundColor(
-        r=float(bg.get("r")),
-        g=float(bg.get("g")),
-        b=float(bg.get("b"))
-    )
+    
+    # Parse RGB values - support both 0-1 and 0-255 ranges
+    r_val = float(bg.get("r", "0.0"))
+    g_val = float(bg.get("g", "0.0"))
+    b_val = float(bg.get("b", "0.0"))
+    
+    # Check if values are in 0-255 range (common for users)
+    if r_val > 1.0 or g_val > 1.0 or b_val > 1.0:
+        # Convert from 0-255 to 0-1 range
+        background_color = BackgroundColor.from_rgb_255(int(r_val), int(g_val), int(b_val))
+        print(f"[INFO] Converted RGB values from 0-255 range: {background_color}")
+    else:
+        # Use as 0-1 range
+        background_color = BackgroundColor.from_rgb_float(r_val, g_val, b_val)
+        print(f"[INFO] Using RGB values in 0-1 range: {background_color}")
     cam = ss.find("Camera")
     camera = Camera(
         position = Position.from_elem(cam.find("Position")),
         look_at = Position.from_elem(cam.find("LookAt")),
         up = Position.from_elem(cam.find("Up"))
     )
+    
+    # Parse text overlays
+    text_overlays = []
+    for overlay_elem in ss.findall("TextOverlay"):
+        text = overlay_elem.findtext("Text", "")
+        x = float(overlay_elem.findtext("X", "0"))
+        y = float(overlay_elem.findtext("Y", "0"))
+        font_size = float(overlay_elem.findtext("FontSize", "20"))
+        
+        # Parse color if present
+        color_elem = overlay_elem.find("Color")
+        overlay_color = None
+        if color_elem is not None:
+            r = float(color_elem.get("r", "1.0"))
+            g = float(color_elem.get("g", "1.0"))
+            b = float(color_elem.get("b", "1.0"))
+            overlay_color = BackgroundColor.from_rgb_float(r, g, b)
+        
+        text_overlays.append(TextOverlay(
+            text=text,
+            x=x,
+            y=y,
+            font_size=font_size,
+            color=overlay_color
+        ))
+    
     scene_settings = SceneSettings(
         background_color=background_color,
-        camera=camera
+        camera=camera,
+        text_overlays=text_overlays
     )
-
-    # CursorSettings (optional)
-    cursor_settings = None
-    cursor_elem = root.find("CursorSettings")
-    if cursor_elem is not None:
-        object_type = cursor_elem.get("object", "sphere")  # default to sphere
-        color_elem = cursor_elem.find("Color")
-        if color_elem is not None:
-            color = Color(
-                r=float(color_elem.get("r", 1.0)),
-                g=float(color_elem.get("g", 0.0)),
-                b=float(color_elem.get("b", 0.0))
-            )
-        else:
-            color = Color(r=1.0, g=0.0, b=0.0)  # default red
-        # Parse optional Parameters for the cursor
-        cursor_params: List[ObjectParameter] = []
-        params_elem = cursor_elem.find("Parameters")
-        if params_elem is not None:
-            for key, value in params_elem.attrib.items():
-                cursor_params.append(ObjectParameter(key=key, value=value))
-
-        cursor_settings = CursorSettings(
-            object_type=object_type,
-            color=color,
-            params=cursor_params
-        )
 
     # Objects
     objs = []
@@ -316,9 +354,8 @@ def xml_parser(xml_path: str) -> TrialConfig:
         hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
-        home           = home,
-        cursor_settings = cursor_settings,
-        data_collection = data_collection
+        data_collection = data_collection,
+        test           = test
     )
 
 

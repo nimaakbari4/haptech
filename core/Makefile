@@ -8,15 +8,12 @@ FRANKA_BUILD_DIR = $(CHAI3D_BUILD_DIR)/external/libfranka/src
 SRC_DIR = src
 BIN_DIR = bin
 HDR_DIR = $(SRC_DIR)
-# Protobuf
-PROTO_DIR = ../proto
-PROTO_FILE = $(PROTO_DIR)/franka_trial.proto
-SOURCES = $(wildcard $(SRC_DIR)/*.cpp) \
-	$(wildcard $(SRC_DIR)/objects/*.cpp) \
-	$(wildcard $(SRC_DIR)/trial_conditions/*.cpp)
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
 PROTO_SRCS = $(SRC_DIR)/franka_trial.pb.cc $(SRC_DIR)/franka_trial.grpc.pb.cc
 PROTO_OBJS = $(BIN_DIR)/franka_trial.pb.o $(BIN_DIR)/franka_trial.grpc.pb.o
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%.o, $(SOURCES)) $(PROTO_OBJS)
+# Create object file names by replacing src/ with bin/ and .cpp with .o
+MAIN_OBJS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BIN_DIR)/%.o)
+OBJECTS = $(MAIN_OBJS) $(PROTO_OBJS)
 TARGET = $(BIN_DIR)/core
 
 CXX = g++
@@ -28,6 +25,9 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(CHAI3D_DIR)/external/libfranka/include \
 	-I$(CHAI3D_DIR)/external/libfranka/common/include \
 	-I$(SRC_DIR) \
+	-I$(SRC_DIR)/proto \
+	-I$(SRC_DIR)/objects \
+	-I$(SRC_DIR)/trial_conditions \
 	-I/usr/include \
 	-I/usr/local/include \
 	-I/usr/include/eigen3 \
@@ -44,7 +44,7 @@ LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
 	-L/usr/lib/x86_64-linux-gnu
 
-	
+
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
 $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
@@ -97,6 +97,15 @@ $(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BIN_DIR)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Compile source files from subdirectories
+$(BIN_DIR)/objects/%.o: $(SRC_DIR)/objects/%.cpp | $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)/objects
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BIN_DIR)/trial_conditions/%.o: $(SRC_DIR)/trial_conditions/%.cpp | $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)/trial_conditions
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 # Compile protobuf/gRPC generated files
 $(BIN_DIR)/franka_trial.pb.o: $(SRC_DIR)/franka_trial.pb.cc $(SRC_DIR)/franka_trial.pb.h | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -106,6 +115,8 @@ $(BIN_DIR)/franka_trial.grpc.pb.o: $(SRC_DIR)/franka_trial.grpc.pb.cc $(SRC_DIR)
 
 $(BIN_DIR):
 	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(BIN_DIR)/objects
+	@mkdir -p $(BIN_DIR)/trial_conditions
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(TARGET)
@@ -121,4 +132,4 @@ proto_clean:
 	       $(SRC_DIR)/franka_trial.grpc.pb.cc $(SRC_DIR)/franka_trial.grpc.pb.h
 
 clean:
-	rm -rf $(BIN_DIR)/*.o $(TARGET)
+	rm -rf $(BIN_DIR)

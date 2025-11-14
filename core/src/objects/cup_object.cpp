@@ -39,6 +39,11 @@ cGenericObject* CupObject::createObject(const std::map<std::string, std::string>
     return cup;
 }
 
+void CupObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // TODO: Implement cup physics (e.g., liquid sloshing simulation, rigid body dynamics)
+    // This is a stub implementation - no physics applied yet
+}
+
 double CupObject::getInnerRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("inner_radius");
     return (it != params.end()) ? std::stod(it->second) : 0.05; // Default inner radius
