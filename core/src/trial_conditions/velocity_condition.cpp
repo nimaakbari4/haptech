@@ -21,6 +21,12 @@ VelocityCondition::VelocityCondition(std::map<std::string, std::string>& params,
 }
 
 bool VelocityCondition::evaluate() {
+    // Check if tool is available before accessing it
+    if (!SimulationManager::simContext.tool) {
+        std::cerr << "[VelocityCondition] Tool not initialized yet, cannot evaluate velocity condition" << std::endl;
+        return false;
+    }
+    
     // Get current device position and time
     cVector3d currentPos = SimulationManager::simContext.tool->getDeviceGlobalPos();
     double currentTime = SimulationManager::trialContext.time;
@@ -54,6 +60,11 @@ bool VelocityCondition::evaluate() {
 }
 
 std::string VelocityCondition::getMessage() {
+    // Check if tool is available before accessing it
+    if (!SimulationManager::simContext.tool) {
+        return "VelocityCondition: Tool not initialized yet";
+    }
+    
     cVector3d currentPos = SimulationManager::simContext.tool->getDeviceGlobalPos();
     double currentTime = SimulationManager::trialContext.time;
     

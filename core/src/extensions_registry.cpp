@@ -20,8 +20,37 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<CupObject>();
     });
     
-    // Register trial conditions
+    // Register built-in objects as custom objects
+    registerCustomObject("sphere", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<SphereObject>();
+    });
     
+    registerCustomObject("box", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<BoxObject>();
+    });
+    
+    registerCustomObject("cylinder", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<CylinderObject>();
+    });
+    
+    registerCustomObject("ball", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<BallObject>();
+    });
+    
+    registerCustomObject("torus", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<TorusObject>();
+    });
+    
+    registerCustomObject("ellipsoid", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<EllipsoidObject>();
+    });
+    
+    registerCustomObject("line", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<LineObject>();
+    });
+    
+    // Register trial end conditions
+    std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;
     registerTrialCondition("time", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         return std::make_unique<TimeCondition>(params, success, priority);
     });

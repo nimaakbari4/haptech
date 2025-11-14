@@ -6,6 +6,7 @@
 
 #include "chai3d.h"
 #include "trial_conditions/trial_condition.h"
+#include "objects/custom_object_interface.h"
 #include <GLFW/glfw3.h>
 #include <mutex>
 #include <unordered_map>
@@ -40,6 +41,9 @@ struct SimulationContext {
     // map object ID's to pointers to the actual objects
     std::unordered_map<std::string, std::unique_ptr<cGenericObject>> objectMap;
 
+    // also map object ID's to pointers to custom object interface
+    std::unordered_map<std::string, std::unique_ptr<CustomObjectInterface>> objectInterfaceMap;
+
     // a light source to illuminate the objects in the world
     cDirectionalLight *light;
 
@@ -63,6 +67,9 @@ struct SimulationContext {
 
     // Set of object IDs pending deletion (processed by graphics thread)
     std::set<std::string> pendingDelete;
+
+    // Mutex to protect shared object maps from race conditions between threads
+    std::mutex objectMapMutex;
 
     // flag to indicate if the haptic simulation currently running
     bool simulationRunning = true;

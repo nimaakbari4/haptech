@@ -5,7 +5,8 @@ import franka_trial_pb2 as pb2
 import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
-def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, objects=None, start_conditions=None, end_conditions=None, scene_settings=None):
+def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, 
+              objects=None, start_conditions=None, end_conditions=None, scene_settings=None, metadata={}):
     request = pb2.TrialRequest(trial_id=trial_id)
     
     # Add objects to the request if provided
@@ -57,7 +58,7 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
             if condition.name == "time":
                 try:
                     duration = float(next((p.value for p in condition.parameters if p.key in ("duration", "duration_seconds")), "nan"))
-                    if duration <= 0:
+                    if duration < 0:
                         raise ValueError
                 except Exception:
                     raise ValueError("Start condition 'time' requires positive duration")
@@ -80,7 +81,7 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
             if condition.name == "time":
                 try:
                     duration = float(next((p.value for p in condition.parameters if p.key in ("duration", "duration_seconds")), "nan"))
-                    if duration <= 0:
+                    if duration < 0:
                         raise ValueError
                 except Exception:
                     raise ValueError("End condition 'time' requires positive duration")
@@ -151,7 +152,7 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
     
     try:
         response_stream = stub.RunTrial(request)
-        handle_stream(response_stream, output_csv_stream)
+        handle_stream(response_stream, output_csv_stream, metadata)
     except grpc.RpcError as e:
         logger = logging.getLogger("haptech")
         code = e.code() if hasattr(e, 'code') else None
@@ -162,26 +163,33 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
         raise
 
 # Process messages coming from the stream
-def handle_stream(stream, output_csv_stream):
+def handle_stream(stream, output_csv_stream, metadata={}):
     for message in stream:
         if message.HasField("statusUpdate"):
-            handle_status_update(message.statusUpdate)
+            handle_status_update(message.statusUpdate, metadata)
         elif message.HasField("dataPoint"):
-            handle_data_point(message.dataPoint, output_csv_stream)
+            handle_data_point(message.dataPoint, output_csv_stream, metadata)
 
 # Handle a TrialStatusUpdate
-def handle_status_update(status):
+def handle_status_update(status, metadata):
     logger = logging.getLogger("haptech")
     status_map = {0: "STARTED", 1: "ERROR", 2: "COMPLETED"}
     name = status_map.get(status.status, str(status.status))
-    print(f"Status Update: {status.message} (Status: {name})")
+
     if name == "ERROR":
         logger.error("Server Error: %s", status.message)
     else:
         logger.info("Status: %s - %s", name, status.message)
 
+    if not "status_updates" in metadata:
+        metadata["status_updates"] = []
+
+    metadata["status_updates"].append({"message": status.message, "status": status.status})
+
+    print(f"Status Update: {status.message} (Status: {name})")
+
 # Handle a TrialDataPoint
-def handle_data_point(data, output_csv_stream):
+def handle_data_point(data, output_csv_stream, metadata):
     timestamp = data.timestamp
     device_pos = data.devicePosition
     proxy_pos = data.proxyPosition
@@ -196,30 +204,33 @@ def handle_data_point(data, output_csv_stream):
     force_str = f"[{force.x:.4f}, {force.y:.4f}, {force.z:.4f}]"
 
     # display data point
-    # print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
+    print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
 
     # log to CSV file
-    writer = csv.writer(output_csv_stream)
-    row = [
-        timestamp,
-        device_pos.x, device_pos.y, device_pos.z,
-        proxy_pos.x, proxy_pos.y, proxy_pos.z,
-        force.x, force.y, force.z,
-    ]
+    if output_csv_stream:
+        writer = csv.writer(output_csv_stream)
+        row = [
+            timestamp,
+            device_pos.x, device_pos.y, device_pos.z,
+            proxy_pos.x, proxy_pos.y, proxy_pos.z,
+            force.x, force.y, force.z,
+        ]
 
-    if device_vel:
-        row += [device_vel.x, device_vel.y, device_vel.z]
-    else:
-        row += ["", "", ""]
+        if device_vel:
+            row += [device_vel.x, device_vel.y, device_vel.z]
+        else:
+            row += ["", "", ""]
 
-    if device_ang_vel:
-        row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
-    else:
-        row += ["", "", ""]
+        if device_ang_vel:
+            row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
+        else:
+            row += ["", "", ""]
 
-    if device_quat:
-        row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
-    else:
-        row += ["", "", "", ""]
+        if device_quat:
+            row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
+        else:
+            row += ["", "", "", ""]
 
-    writer.writerow(row)
+        writer.writerow(row)
+
+    metadata["trial_duration"] = data.timestamp

@@ -49,6 +49,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     for (auto& pair : SimulationManager::simContext.objectMap) {
         if (pair.second) {
             SimulationManager::simContext.world->removeChild(pair.second.get());
+            SimulationManager::simContext.objectInterfaceMap.erase(pair.first);
         }
     }
     
@@ -291,7 +292,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         // Object states snapshot
         for (const auto& kv : SimulationManager::simContext.objectMap) {
             const std::string& oid = kv.first;
-            const std::unique_ptr<cGenericObject>& objPtr = kv.second;
+            cGenericObject* objPtr = kv.second.get();
             if (!objPtr) continue;
             ObjectState* os = dataPoint->add_objects();
             os->set_id(oid);

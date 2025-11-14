@@ -8,6 +8,13 @@
 #include "objects/custom_object_interface.h"
 #include "objects/spring_object.h"
 #include "objects/cup_object.h"
+#include "objects/sphere_object.h"
+#include "objects/box_object.h"
+#include "objects/cylinder_object.h"
+#include "objects/ball_object.h"
+#include "objects/torus_object.h"
+#include "objects/ellipsoid_object.h"
+#include "objects/line_object.h"
 
 /**
  * Registry for extensions including custom objects and trial conditions

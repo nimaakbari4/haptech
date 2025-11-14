@@ -1,0 +1,69 @@
+<TrialConfig>
+  <HomePosition>
+    <Position x="0.0" y="0.0" z="0.0"/>
+    <Tolerance>0.01</Tolerance>
+  </HomePosition>
+
+  <EndConditions>
+    <Condition type="time" value="30.0" result="failure"/>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Try the new custom objects!</StartMessage>
+    <SuccessMessage>Great job!</SuccessMessage>
+    <FailureMessage>Time's up. Try again!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <!-- Custom Ball with bounciness -->
+    <Object id="bouncy_ball" type="ball">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size radius="0.05"/>
+      <Parameters>
+        <Parameter name="bounciness" value="0.8"/>
+      </Parameters>
+      <Color r="1.0" g="0.0" b="0.0"/>
+    </Object>
+
+    <!-- Custom Cup -->
+    <Object id="target_cup" type="cup">
+      <Position x="0.2" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size outer_radius="0.08" height="0.12"/>
+      <Color r="0.8" g="0.6" b="0.4"/>
+    </Object>
+
+    <!-- Custom Spring -->
+    <Object id="spring_obstacle" type="spring">
+      <Position x="0.1" y="0.1" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size radius="0.02" height="0.1"/>
+      <Parameters>
+        <Parameter name="stiffness" value="2000.0"/>
+      </Parameters>
+      <Color r="0.0" g="1.0" b="1.0"/>
+    </Object>
+
+    <!-- Regular sphere for comparison -->
+    <Object id="regular_sphere" type="sphere">
+      <Position x="0.0" y="0.3" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Size radius="0.03"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>

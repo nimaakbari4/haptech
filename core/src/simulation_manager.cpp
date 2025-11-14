@@ -291,10 +291,15 @@ bool SimulationManager::reset() {
     setBackgroundColor(0.0, 0.0, 0.0);
     clearTextOverlays();
     removeAllObjects();
-    trialContext.startConditions.clear();
-    trialContext.endConditions.clear();
-    trialContext.startConditionMet = nullptr;
-    trialContext.endConditionMet = nullptr;
+    
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        // Clear all containers
+        trialContext.startConditions.clear();
+        trialContext.endConditions.clear();
+        trialContext.startConditionMet = nullptr;
+        trialContext.endConditionMet = nullptr;
+    }
     
     // ensure device sees zero force while haptics are disabled
     if (simContext.hapticDevice) {
@@ -416,7 +421,10 @@ bool SimulationManager::addObject(std::string id, cGenericObject* obj,
     material->setStiffness(maxStiffness);
 
     // Add the object to the map using unique_ptr
-    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        simContext.objectMap[id] = std::unique_ptr<cGenericObject>(obj);
+    }
     std::cout << "[DEBUG] Added object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
 
     return true;
@@ -431,16 +439,19 @@ bool SimulationManager::removeObject(std::string id) {
     bool success;
 
 	// Defer deletion: mark for removal and let graphics thread remove safely
-	auto it = simContext.objectMap.find(id);
-	if (it != simContext.objectMap.end() && it->second) {
-		cGenericObject* obj = it->second.get();
-		std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
-		obj->setLocalPos(10000, 10000, 10000);
-		success = true;
-	} else {
-		std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
-		success = false;
-	}
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        auto it = simContext.objectMap.find(id);
+        if (it != simContext.objectMap.end() && it->second) {
+            cGenericObject* obj = it->second.get();
+            std::cout << "[DEBUG] Setting object " << id << " to position (10000, 10000, 10000)." << std::endl;
+            obj->setLocalPos(10000, 10000, 10000);
+            success = true;
+        } else {
+            std::cout << "[ERROR] Object with ID " << id << " not found." << std::endl;
+            success = false;
+        }
+    }
 
     return success;
 }
@@ -451,8 +462,14 @@ bool SimulationManager::removeAllObjects() {
         return false;
     }
 
-    for (const auto& pair : simContext.objectMap) {
-        removeObject(pair.first);
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        for (const auto& pair : simContext.objectMap) {
+            // Note: We need to call removeObject without the lock, so we'll just move objects far away
+            if (pair.second) {
+                pair.second->setLocalPos(10000, 10000, 10000);
+            }
+        }
     }
 
     // All objects are now removed and deleted by unique_ptr
@@ -478,9 +495,9 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
         return false;
     }
 
-    // First, try to create using custom object system
+    // Try to create using custom object system (now includes built-in types)
     if (CustomObjectRegistry::isTypeRegistered(type)) {
-        std::cout << "[DEBUG] Creating custom object: " << type << std::endl;
+        std::cout << "[DEBUG] Creating object using custom object system: " << type << std::endl;
         
         auto customObj = CustomObjectRegistry::createObject(type);
         if (customObj) {
@@ -497,102 +514,36 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
 
                 // Add to world and object map
                 simContext.world->addChild(chaiObj);
-                simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                
+                // Get workspace scale
+                double workspaceScaleFactor = simContext.tool->getWorkspaceScaleFactor();
+                cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
+                double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
+
+                // Preserve existing material or create new one
+                cMaterialPtr material = chaiObj->m_material;
+                if (!material) {
+                    material = cMaterial::create();
+                    chaiObj->setMaterial(material);
+                }
+                material->setStiffness(maxStiffness);
+                
+                {
+                    std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+                    simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
+                    simContext.objectInterfaceMap[id] = std::move(customObj);
+                }
                 std::cout << "[DEBUG] Added custom object with ID " << id << " at position (" << px << ", " << py << ", " << pz << ") with rotation (" << rx << ", " << ry << ", " << rz << ")." << std::endl;
                 return true;
             }
         }
-        std::cout << "[ERROR] Failed to create custom object: " << type << std::endl;
+        std::cout << "[ERROR] Failed to create object: " << type << std::endl;
         return false;
     }
 
-    // Fall back to built-in object types
-    std::unique_ptr<cMesh> mesh = std::make_unique<cMesh>();
-    
-    if (type == "sphere") {
-        auto radiusIt = params.find("radius");
-        if (radiusIt == params.end()) {
-            std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        cCreateSphere(mesh.get(), radius);
-        mesh->createAABBCollisionDetector(radius);
-    }
-    else if (type == "box") {
-        auto widthIt = params.find("width");
-        auto heightIt = params.find("height");
-        auto depthIt = params.find("depth");
-        
-        if (widthIt == params.end() || heightIt == params.end() || depthIt == params.end()) {
-            std::cout << "[ERROR] Box requires 'width', 'height', and 'depth' parameters." << std::endl;
-            return false;
-        }
-        double width = std::stod(widthIt->second);
-        double height = std::stod(heightIt->second);
-        double depth = std::stod(depthIt->second);
-        cCreateBox(mesh.get(), width, height, depth);
-        double maxDim = std::max({width, height, depth});
-        mesh->createAABBCollisionDetector(maxDim);
-    }
-    else if (type == "cylinder") {
-        auto radiusIt = params.find("radius");
-        auto heightIt = params.find("height");
-
-        if (radiusIt == params.end() || heightIt == params.end()) {
-            std::cout << "[ERROR] Cylinder requires 'radius' and 'height' parameters." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        double height = std::stod(heightIt->second);
-        cCreateCylinder(mesh.get(), radius, height);
-        double maxDim = std::max(radius, height);
-        mesh->createAABBCollisionDetector(maxDim);
-    }
-    else if (type == "ball") {
-        // Custom ball object with bounciness
-        auto radiusIt = params.find("radius");
-        if (radiusIt == params.end()) {
-            std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
-            return false;
-        }
-        double radius = std::stod(radiusIt->second);
-        cCreateSphere(mesh.get(), radius);
-        mesh->createAABBCollisionDetector(radius);
-        
-        // Set bounciness if provided
-        auto bouncinessIt = params.find("bounciness");
-        if (bouncinessIt != params.end()) {
-            double bounciness = std::stod(bouncinessIt->second);
-            mesh->m_material->setDamping(50.0 * (1.0 - bounciness)); // Less damping = more bouncy
-        }
-    }
-    else {
-        std::cout << "[ERROR] Unknown object type: " << type << std::endl;
-        return false;
-    }
-
-    // Set color - ensure material exists first
-    if (!mesh->m_material) {
-        mesh->m_material = cMaterial::create();
-    }
-    
-    // Clamp color values to [0,1] range for CHAI3D
-    double red = std::max(0.0, std::min(1.0, r));
-    double green = std::max(0.0, std::min(1.0, g));
-    double blue = std::max(0.0, std::min(1.0, b));
-    
-    // Set material color properties
-    mesh->m_material->setColorf(red, green, blue);
-    mesh->m_material->m_specular.set(0.3, 0.3, 0.3);
-    mesh->m_material->setShininess(100);
-    
-    std::cout << "[DEBUG] Set color: r=" << red << ", g=" << green << ", b=" << blue << std::endl;
-
-    std::cout << "[DEBUG] About to call addObject for: " << id << std::endl;
-    bool result = addObject(id, mesh.release(), px, py, pz, rx, ry, rz);
-    std::cout << "[DEBUG] addObject result: " << (result ? "SUCCESS" : "FAILED") << std::endl;
-    return result;
+    // If we get here, the object type is not registered
+    std::cout << "[ERROR] Unknown object type: " << type << std::endl;
+    return false;
 }
 
 // PRIVATE CALLBACKS //
@@ -723,10 +674,22 @@ void SimulationManager::updateGraphics(void) {
 void SimulationManager::updateHaptics(void) {
     simContext.simulationRunning = true;
     simContext.simulationFinished = false;
+    cPrecisionClock clock;
+    double deltaTime;
+    clock.start();
 
     std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
 
     while (simContext.simulationRunning) {
+        // update delta time
+        clock.stop();
+
+        deltaTime = clock.getCurrentTimeSeconds();
+
+        clock.reset();
+        clock.start();
+
+        // HAPTICS
         if (!simContext.hapticsEnabled) {
             // wait until haptics is enabled
             cSleepMs(100);
@@ -747,6 +710,26 @@ void SimulationManager::updateHaptics(void) {
 
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
+
+        // PHYSICS
+        // Update physics for all objects that have custom interfaces
+        if (trialContext.trialRunning) {
+            std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+            for (const auto& objPair : simContext.objectMap) {
+                const std::string& objId = objPair.first;
+                cGenericObject* chaiObj = objPair.second.get();
+                
+                // Look for corresponding custom object interface
+                auto interfaceIt = simContext.objectInterfaceMap.find(objId);
+                if (interfaceIt != simContext.objectInterfaceMap.end()) {
+                    CustomObjectInterface* customInterface = interfaceIt->second.get();
+                    if (customInterface && chaiObj) {
+                        // Call physics update with deltaTime
+                        customInterface->updatePhysics(chaiObj, deltaTime);
+                    }
+                }
+            }
+        }
 
         cSleepMs(1000 / HAPTICS_LOOP_FREQUENCY);
     }
@@ -867,6 +850,8 @@ void SimulationManager::createHapticTool() {
 
     // connect the haptic device to the virtual tool
     simContext.tool->setHapticDevice(simContext.hapticDevice);
+
+    simContext.tool->enableDynamicObjects(true);
 
     // map the physical workspace of the haptic device to a larger virtual workspace.
     simContext.tool->setWorkspaceRadius(1.0);
