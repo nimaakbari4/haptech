@@ -123,9 +123,21 @@ def run_trial(config_file_path, trial_subject, trial_id):
         print(f"gRPC error: {code} - {details}")
         logger.error("gRPC error: code=%s details=%s", code, details)
         logger.exception("gRPC exception during trial")
+
+        if prompt_retry():
+            run_trial(config_file_path, trial_subject, trial_id)
+        else:
+            print("Trial failed. Exiting.")
+            return
     except Exception:
         print("Something went wrong.")
         logger.exception("Unhandled exception during trial")
+
+        if prompt_retry():
+            run_trial(config_file_path, trial_subject, trial_id)
+        else:
+            print("Trial failed. Exiting.")
+            return
     finally:
         if output_filestream:
             output_filestream.close()
@@ -166,3 +178,12 @@ def print_trial_summary(metadata, csv_file_path=None, metadata_file_path=None):
         print(f"│ {label:<{max_label_width}} │ {value:<{max_value_width}} │")
 
     print("=" * total_table_width + "\n")
+
+def prompt_retry():
+    retry = input("Something went wrong. Try again? (y/n): ")
+
+    if len(retry) > 0 and retry.lower()[0] == "y":
+        input("Restart the server, then press Enter to continue: ")
+        return True
+
+    return False
