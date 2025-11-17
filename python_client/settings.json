@@ -4,5 +4,5 @@
     "server_host": "localhost",
     "server_port": 50051,
     "trial_subject": "demo",
-    "last_configuration_file": "trial_example.xml"
+    "last_configuration_file": "cursor_test.xml"
 }

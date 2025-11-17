@@ -954,8 +954,9 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
     }
 
     // Prefer updating an existing tool to avoid reopening the device
-    if (auto existingTool = dynamic_cast<cToolMesh*>(simContext.tool)) {
-        existingTool->setVisual(visual, sampleCount, contactRadius);
+    cToolMesh* toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool);
+    if (toolMeshPtr) {
+        toolMeshPtr->setVisual(visual, sampleCount, contactRadius);
     } else {
         // No existing mesh tool; create one and attach device
         destroyHapticTool();
@@ -963,6 +964,17 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
         simContext.world->addChild(simContext.tool);
         simContext.tool->setHapticDevice(simContext.hapticDevice);
         simContext.tool->setWorkspaceRadius(1.0);
+        toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool);
+    }
+
+    // Optional gravity-driven cursor physics
+    if (toolMeshPtr) {
+        double gs = 0.0;
+        auto itGS = params.find("gravity_scale");
+        if (itGS != params.end()) {
+            gs = atof(itGS->second.c_str());
+        }
+        toolMeshPtr->setGravityPhysics(gs);
     }
 
     // Optional proxy visuals
