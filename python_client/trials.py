@@ -128,7 +128,6 @@ def run_trial(config_file_path, trial_subject, trial_id):
             run_trial(config_file_path, trial_subject, trial_id)
         else:
             print("Trial failed. Exiting.")
-            return
     except Exception:
         print("Something went wrong.")
         logger.exception("Unhandled exception during trial")
@@ -137,7 +136,6 @@ def run_trial(config_file_path, trial_subject, trial_id):
             run_trial(config_file_path, trial_subject, trial_id)
         else:
             print("Trial failed. Exiting.")
-            return
     finally:
         if output_filestream:
             output_filestream.close()
