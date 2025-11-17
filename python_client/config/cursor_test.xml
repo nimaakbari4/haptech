@@ -7,7 +7,7 @@
 
   <EndConditions>
     <Condition name="time" success="true" priority="1">
-      <Parameters duration_seconds="60.0"/>
+      <Parameters duration_seconds="120.0"/>
     </Condition>
   </EndConditions>
 
@@ -22,7 +22,7 @@
     <Camera>
       <Position x="1.0" y="1.0" z="2.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
-      <Up x="0.0" y="1.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
   </SceneSettings>
 
@@ -31,8 +31,14 @@
   </Controls>
 
   <CursorSettings object="spring">
-    <Parameters radius="0.02" height="0.12" stiffness="1000" damping="50" gravity_scale="0.5"/>
-    <Color r="0.8" g="0.8" b="0.0" />
+    <Parameters
+        tether_enabled="true"
+        tether_mass="0.05"
+        tether_stiffness="60.0"
+        tether_damping="3.0"
+        tether_gravity_scale="1.0"
+        tether_max_force="25.0"/>
+    <Color r="0.8" g="0.8" b="0.0"/>
   </CursorSettings>
 
   <Objects>
@@ -42,15 +48,7 @@
       <Orientation x="0" y="0" z="0"/>
       <Color r="1.0" g="0.0" b="0.0"/>
       <Parameters radius="0.06"/>
-    </Object>
-
-    <!-- Researcher's Helical Spring Object - Bright Yellow (Right) -->
-    <Object id="spring1" type="spring">
-      <Position x="0.0" y="0.5" z="0.0"/>
-      <Orientation x="20" y="30" z="10"/>
-      <Color r="1.0" g="1.0" b="0.0"/>
-      <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
-    </Object>
+    </Object>   
 
     <Object id="goal" type="box">
       <Position x="0.0" y="0.2" z="0.0"/>

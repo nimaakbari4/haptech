@@ -967,14 +967,83 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
         toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool);
     }
 
-    // Optional gravity-driven cursor physics
+    // Optional gravity behavior
     if (toolMeshPtr) {
-        double gs = 0.0;
-        auto itGS = params.find("gravity_scale");
-        if (itGS != params.end()) {
-            gs = atof(itGS->second.c_str());
+        // Check for tether mode (hybrid: mass attached by spring-damper)
+        bool tetherEnabled = false;
+        auto itTether = params.find("tether_enabled");
+        if (itTether != params.end()) {
+            std::string tetherStr = itTether->second;
+            std::transform(tetherStr.begin(), tetherStr.end(), tetherStr.begin(), ::tolower);
+            tetherEnabled = (tetherStr == "true" || tetherStr == "1");
         }
-        toolMeshPtr->setGravityPhysics(gs);
+        
+        if (tetherEnabled) {
+            // Parse tether parameters with defaults
+            double mass = 0.05;
+            auto itMass = params.find("tether_mass");
+            if (itMass != params.end()) {
+                double v = atof(itMass->second.c_str());
+                if (v > 0.0) mass = v;
+            }
+            
+            double stiffness = 50.0;
+            auto itStiff = params.find("tether_stiffness");
+            if (itStiff != params.end()) {
+                double v = atof(itStiff->second.c_str());
+                if (v > 0.0) stiffness = v;
+            }
+            
+            double damping = 2.0;
+            auto itDamp = params.find("tether_damping");
+            if (itDamp != params.end()) {
+                double v = atof(itDamp->second.c_str());
+                if (v >= 0.0) damping = v;
+            }
+            
+            double gravityScale = 1.0;
+            auto itGScale = params.find("tether_gravity_scale");
+            if (itGScale != params.end()) {
+                double v = atof(itGScale->second.c_str());
+                if (v >= 0.0) gravityScale = v;
+            }
+            
+            double maxForce = 30.0;
+            auto itMaxF = params.find("tether_max_force");
+            if (itMaxF != params.end()) {
+                double v = atof(itMaxF->second.c_str());
+                if (v > 0.0) maxForce = v;
+            }
+            
+            // Configure tether
+            toolMeshPtr->setTetherParams(mass, stiffness, damping, gravityScale, maxForce);
+            toolMeshPtr->setTetherEnabled(true);
+            
+            // Disable other gravity modes to avoid conflicts
+            toolMeshPtr->setGravityPhysics(0.0);
+            toolMeshPtr->setGravityForceScale(0.0);
+            
+            std::cout << "[CURSOR] Tether enabled: mass=" << mass << "kg, k=" << stiffness 
+                      << "N/m, c=" << damping << "N·s/m, g_scale=" << gravityScale 
+                      << ", max_force=" << maxForce << "N" << std::endl;
+        } else {
+            // No tether: use force-mode gravity if specified
+            double gfs = 0.0;
+            auto itGFS = params.find("gravity_force_scale");
+            if (itGFS != params.end()) {
+                gfs = atof(itGFS->second.c_str());
+            } else {
+                // Backward compatibility: map gravity_scale to force mode
+                auto itGS = params.find("gravity_scale");
+                if (itGS != params.end()) {
+                    gfs = atof(itGS->second.c_str());
+                }
+            }
+            toolMeshPtr->setGravityForceScale(gfs);
+            // Ensure pose is device-driven (disable physics mode) for coupling
+            toolMeshPtr->setGravityPhysics(0.0);
+            toolMeshPtr->setTetherEnabled(false);
+        }
     }
 
     // Optional proxy visuals
