@@ -89,10 +89,9 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
 }
 
 void SpringObject::updatePhysics(cGenericObject* object, double deltaTime) {
-    // For this example, no dynamic behavior is applied per tick.
-    // A researcher could add oscillatory motion or damping updates here.
     (void)object;
     (void)deltaTime;
+    // Placeholder: no dynamic physics for spring implemented yet.
 }
 
 double SpringObject::getStiffness(const std::map<std::string, std::string>& params) const {

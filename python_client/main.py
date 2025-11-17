@@ -135,9 +135,9 @@ def main():
             config.objects,
             config.start_conditions.conditions,
             config.end_conditions.conditions,
-            config.scene_settings,
-            metadata,
-            config.cursor_settings,
+            scene_settings=config.scene_settings,
+            metadata=metadata,
+            cursor_settings=config.cursor_settings,
         )
 
         metadata["ended_at"] = datetime.datetime.now()

@@ -34,13 +34,59 @@ cToolMesh::~cToolMesh()
     m_samples.clear();
 }
 
+void cToolMesh::setGravityPhysics(double gravityScale)
+{
+    m_gravityScale = gravityScale;
+    m_physicsEnabled = (gravityScale > 0.0);
+    if (m_physicsEnabled) {
+        // Initialize physics pose from current device pose
+        m_physicsPos = m_deviceGlobalPos;
+        m_velocity.set(0, 0, 0);
+        m_physicsClock.reset();
+        m_physicsClock.start();
+    }
+}
+
 void cToolMesh::updateToolImagePosition()
 {
-    // Position and orient visuals at device pose
+    // Position and orient visuals at device/physics pose
     if (m_image) {
-        m_image->setLocalPos(m_deviceGlobalPos);
+        cVector3d posePos = m_physicsEnabled ? m_physicsPos : m_deviceGlobalPos;
+        m_image->setLocalPos(posePos);
         m_image->setLocalRot(m_deviceGlobalRot);
     }
+}
+
+void cToolMesh::updateFromDevice()
+{
+    if (!m_physicsEnabled) {
+        // Default behavior
+        cGenericTool::updateFromDevice();
+        return;
+    }
+
+    // Integrate simple gravity for the tool pose
+    m_physicsClock.stop();
+    double dt = m_physicsClock.getCurrentTimeSeconds();
+    if (dt < 0.0) dt = 0.0;
+    m_physicsClock.reset();
+    m_physicsClock.start();
+
+    if (dt > 0.0) {
+        // Gravity along -Z
+        m_velocity.add(0.0, 0.0, -9.81 * m_gravityScale * dt);
+        m_physicsPos.add(m_velocity * dt);
+    }
+
+    // Do not call base update that overwrites pose from device; however,
+    // still update internal device state to compute forces relative to current pose.
+    // The force computation uses m_deviceGlobalPos; we overwrite it with physics pose.
+    m_deviceGlobalPos = m_physicsPos;
+    // Keep orientation from actual device for simplicity
+    // m_deviceGlobalRot is updated by device callbacks elsewhere; leave as-is.
+
+    // Update visual image to match physics/device pose
+    updateToolImagePosition();
 }
 
 void cToolMesh::computeInteractionForces()

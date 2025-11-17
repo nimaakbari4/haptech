@@ -1,28 +1,20 @@
-
 <TrialConfig>
-  <Test>true</Test>
-  
-  <CursorSettings object="ball">
-    <Parameters radius="0.02" height="0.12" stiffness="1000" damping="50" />
-    <Color r="0.8" g="0.8" b="0.0" />
-  </CursorSettings>
-
   <StartConditions>
     <Condition name="time" success="true" priority="1">
-      <Parameters duration_seconds="0.0"/>
+      <Parameters duration_seconds="5.0"/>
     </Condition>
   </StartConditions>
 
   <EndConditions>
-    <Condition name="position" success="true" priority="1">
-      <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="60.0"/>
     </Condition>
   </EndConditions>
 
   <HUDText>
-    <StartMessage>Push the ball to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
-    <SuccessMessage>Great! You moved the ball to the target!</SuccessMessage>
-    <FailureMessage>You didn't move the ball to the target position.</FailureMessage>
+    <StartMessage>Test the researcher's custom objects!</StartMessage>
+    <SuccessMessage>Great job!</SuccessMessage>
+    <FailureMessage>Time's up. Try again!</FailureMessage>
   </HUDText>
 
   <SceneSettings>
@@ -38,41 +30,33 @@
     <MouseCursor>true</MouseCursor>
   </Controls>
 
+  <CursorSettings object="spring">
+    <Parameters radius="0.02" height="0.12" stiffness="1000" damping="50" gravity_scale="0.5"/>
+    <Color r="0.8" g="0.8" b="0.0" />
+  </CursorSettings>
+
   <Objects>
-    <!-- Ground platform -->
-    <Object id="ground" type="box">
-      <Position x="0.0" y="-0.15" z="-0.3"/>
+    <!-- Regular sphere for comparison - Bright Green (Left) -->
+    <Object id="regular_sphere" type="sphere">
+      <Position x="0.0" y="-0.5" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters width="1.0" height="1.0" depth="0.1"/>
-      <Color r="0.5" g="0.5" b="0.5"/>
-    </Object>
-    
-    <!-- Target box -->
-    <Object id="target" type="box">
-      <Position x="0.0" y="0.5" z="0.0"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Parameters width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
+      <Parameters radius="0.06"/>
     </Object>
-    
-    <!-- Pushable ball with friction -->
-    <Object id="pushable_ball" type="ball">
-      <Position x="0.0" y="0.0" z="0.2"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
-      <Color r="0.2" g="0.8" b="1.0"/>
+
+    <!-- Researcher's Helical Spring Object - Bright Yellow (Right) -->
+    <Object id="spring1" type="spring">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation x="20" y="30" z="10"/>
+      <Color r="1.0" g="1.0" b="0.0"/>
+      <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
     </Object>
-    <Object id="pushable_ball_2" type="ball">
-      <Position x="0.0" y="-0.10" z="0.2"/>
+
+    <Object id="goal" type="box">
+      <Position x="0.0" y="0.2" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
-      <Color r="0.2" g="0.8" b="1.0"/>
-    </Object>
-    <Object id="pushable_ball_3" type="ball">
-      <Position x="0.0" y="-0.25" z="0.2"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.04" gravity_scale="1.0" mass="100.0" bounciness="1.0"/>
-      <Color r="0.2" g="0.8" b="1.0"/>
+      <Parameters width="0.02" height="0.02" depth="0.02"/>
+      <Color r="0.0" g="1.0" b="0.0"/>
     </Object>
   </Objects>
 </TrialConfig>

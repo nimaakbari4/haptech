@@ -90,6 +90,16 @@ class Camera:
     up: Position
 
 @dataclass
+class CursorSettings:
+    object_type: str
+    color: Color
+    params: List[ObjectParameter] = None
+
+    def __post_init__(self):
+        if self.params is None:
+            self.params = []
+
+@dataclass
 class TextOverlay:
     text: str
     x: float
@@ -236,6 +246,33 @@ def xml_parser(xml_path: str) -> TrialConfig:
         success_message = hud.findtext("SuccessMessage"),
         failure_message = hud.findtext("FailureMessage")
     )
+
+    # CursorSettings (optional)
+    cursor_settings = None
+    cursor_elem = root.find("CursorSettings")
+    if cursor_elem is not None:
+        object_type = cursor_elem.get("object", "sphere")
+        color_elem = cursor_elem.find("Color")
+        if color_elem is not None:
+            cursor_color = Color(
+                r=float(color_elem.get("r", 1.0)),
+                g=float(color_elem.get("g", 0.0)),
+                b=float(color_elem.get("b", 0.0)),
+            )
+        else:
+            cursor_color = Color(r=1.0, g=0.0, b=0.0)
+
+        cursor_params: List[ObjectParameter] = []
+        params_elem = cursor_elem.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                cursor_params.append(ObjectParameter(key=key, value=value))
+
+        cursor_settings = CursorSettings(
+            object_type=object_type,
+            color=cursor_color,
+            params=cursor_params,
+        )
 
     # SceneSettings
     ss = root.find("SceneSettings")
@@ -400,6 +437,7 @@ def xml_parser(xml_path: str) -> TrialConfig:
         hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
+        home           = home,
         cursor_settings = cursor_settings,
         data_collection = data_collection,
         test           = test
