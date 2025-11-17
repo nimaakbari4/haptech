@@ -1,4 +1,5 @@
 #include "tool_mesh.h"
+#include "simulation_manager.h"
 
 using namespace chai3d;
 
@@ -114,13 +115,29 @@ void cToolMesh::updateFromDevice()
         }
         
         if (dt > 1e-6 && m_tetherMassKg > 0.0) {
-            // Device position (attachment point)
-            cVector3d devicePos = m_deviceGlobalPos;
-            cVector3d deviceVel = m_deviceGlobalLinVel;
+            // Resolve anchor position: either a named scene object or the device itself.
+            cVector3d anchorPos = m_deviceGlobalPos;
+            cVector3d anchorVel = m_deviceGlobalLinVel;
+
+            if (!m_tetherAnchorId.empty()) {
+                // Lazy resolve anchor object pointer
+                if (!m_tetherAnchorObj) {
+                    std::lock_guard<std::mutex> lock(SimulationManager::simContext.objectMapMutex);
+                    auto it = SimulationManager::simContext.objectMap.find(m_tetherAnchorId);
+                    if (it != SimulationManager::simContext.objectMap.end()) {
+                        m_tetherAnchorObj = it->second.get();
+                    }
+                }
+                if (m_tetherAnchorObj) {
+                    anchorPos = m_tetherAnchorObj->getGlobalPos();
+                    // Anchor velocity is unknown; treat as static for now.
+                    anchorVel.set(0.0, 0.0, 0.0);
+                }
+            }
             
-            // Spring-damper force on the mass: F = k*(x_device - x_mass) + c*(v_device - v_mass)
-            cVector3d displacement = devicePos - m_tetherPos;
-            cVector3d velocityDiff = deviceVel - m_tetherVel;
+            // Spring-damper force on the mass: F = k*(x_anchor - x_mass) + c*(v_anchor - v_mass)
+            cVector3d displacement = anchorPos - m_tetherPos;
+            cVector3d velocityDiff = anchorVel - m_tetherVel;
             cVector3d springForce = m_tetherStiffness * displacement;
             cVector3d dampingForce = m_tetherDamping * velocityDiff;
             
@@ -152,7 +169,7 @@ void cToolMesh::updateFromDevice()
             static int debugFrame = 0;
             if (debugFrame < 10) {
                 std::cout << "[TETHER] Frame " << debugFrame << " dt=" << dt 
-                          << " device=(" << devicePos.x() << "," << devicePos.y() << "," << devicePos.z() << ")"
+                          << " anchor=(" << anchorPos.x() << "," << anchorPos.y() << "," << anchorPos.z() << ")"
                           << " tether=(" << m_tetherPos.x() << "," << m_tetherPos.y() << "," << m_tetherPos.z() << ")"
                           << " gravity=" << gravityForce.z() << " spring=" << springForce.length() << std::endl;
                 debugFrame++;
@@ -212,6 +229,12 @@ void cToolMesh::setTetherParams(double mass, double stiffness, double damping, d
     m_tetherDamping = (damping >= 0.0 ? damping : 2.0);
     m_tetherGravityScale = (gravityScale >= 0.0 ? gravityScale : 1.0);
     m_tetherMaxForce = (maxForce > 0.0 ? maxForce : 30.0);
+}
+
+void cToolMesh::setTetherAnchorId(const std::string& anchorId)
+{
+    m_tetherAnchorId = anchorId;
+    m_tetherAnchorObj = nullptr; // will be resolved lazily in updateFromDevice()
 }
 
 void cToolMesh::computeInteractionForces()

@@ -3,6 +3,7 @@
 #define TOOL_MESH_H
 
 #include "chai3d.h"
+#include <string>
 
 using namespace chai3d;
 
@@ -48,6 +49,10 @@ public:
     // gravityScale: multiplier for gravity (unitless, 1.0 = 9.81 m/s²)
     // maxForce: maximum force clamp (N) for safety
     void setTetherParams(double mass, double stiffness, double damping, double gravityScale, double maxForce);
+    
+    // Attach tether mass to a named scene object (anchor) instead of directly to the device.
+    // The anchor affects the mass dynamics; the device still feels the reaction force from the mass.
+    void setTetherAnchorId(const std::string& anchorId);
 
 private:
     struct Sample {
@@ -83,6 +88,11 @@ private:
     bool m_tetherInitialized = false;      // Track if tether has been initialized with valid device pos
     cVector3d m_toolGlobalPos{0.0, 0.0, 0.0};  // Cached tool global position for coordinate conversion
     cMatrix3d m_toolGlobalRot{cIdentity3d()};  // Cached tool global rotation for coordinate conversion
+
+    // Optional anchor object the tethered mass is attached to.
+    // If empty or unresolved, the tether falls back to using the device position as anchor.
+    std::string m_tetherAnchorId;
+    cGenericObject* m_tetherAnchorObj = nullptr;
 };
 
 #endif // TOOL_MESH_H

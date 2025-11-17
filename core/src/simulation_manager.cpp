@@ -1015,8 +1015,18 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
                 if (v > 0.0) maxForce = v;
             }
             
+            // Optional anchor object id for the tether
+            std::string anchorId;
+            auto itAnchor = params.find("tether_anchor_id");
+            if (itAnchor != params.end()) {
+                anchorId = itAnchor->second;
+            }
+            
             // Configure tether
             toolMeshPtr->setTetherParams(mass, stiffness, damping, gravityScale, maxForce);
+            if (!anchorId.empty()) {
+                toolMeshPtr->setTetherAnchorId(anchorId);
+            }
             toolMeshPtr->setTetherEnabled(true);
             
             // Disable other gravity modes to avoid conflicts
