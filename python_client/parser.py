@@ -108,6 +108,16 @@ class SceneSettings:
             self.text_overlays = []
 
 @dataclass
+class CursorSettings:
+    object_type: str
+    color: Optional[BackgroundColor] = None
+    params: List[ObjectParameter] = None
+    
+    def __post_init__(self):
+        if self.params is None:
+            self.params = []
+
+@dataclass
 class ObjectConfig:
     id: str
     type: str
@@ -269,19 +279,55 @@ def xml_parser(xml_path: str) -> TrialConfig:
             b = float(color_elem.get("b", "1.0"))
             overlay_color = BackgroundColor.from_rgb_float(r, g, b)
         
-        text_overlays.append(TextOverlay(
-            text=text,
-            x=x,
-            y=y,
-            font_size=font_size,
-            color=overlay_color
-        ))
+        text_overlays.append(TextOverlay(text=text, x=x, y=y, font_size=font_size, color=overlay_color))
     
     scene_settings = SceneSettings(
         background_color=background_color,
         camera=camera,
         text_overlays=text_overlays
     )
+
+    # CursorSettings (optional) - support both flat and nested formats
+    cursor_settings = None
+    cursor_elem = root.find("CursorSettings")
+    if cursor_elem is not None:
+        # Format A: <CursorSettings object="spring">...</CursorSettings>
+        object_type = cursor_elem.get("object")
+        color = None
+        params_list: List[ObjectParameter] = []
+        # Format B: <CursorSettings><Object type="spring">...</Object></CursorSettings>
+        if object_type is None:
+            obj_child = cursor_elem.find("Object")
+            if obj_child is not None:
+                object_type = obj_child.get("type", "sphere")
+                # Pull params and color from inside Object
+                params_elem = obj_child.find("Parameters")
+                if params_elem is not None:
+                    for key, value in params_elem.attrib.items():
+                        params_list.append(ObjectParameter(key=key, value=value))
+                color_elem = obj_child.find("Color")
+                if color_elem is not None:
+                    color = BackgroundColor.from_rgb_float(
+                        float(color_elem.get("r", "1.0")),
+                        float(color_elem.get("g", "1.0")),
+                        float(color_elem.get("b", "1.0")),
+                    )
+            else:
+                object_type = "sphere"
+        else:
+            # Flat format: read Parameters/Color directly under CursorSettings
+            params_elem = cursor_elem.find("Parameters")
+            if params_elem is not None:
+                for key, value in params_elem.attrib.items():
+                    params_list.append(ObjectParameter(key=key, value=value))
+            color_elem = cursor_elem.find("Color")
+            if color_elem is not None:
+                color = BackgroundColor.from_rgb_float(
+                    float(color_elem.get("r", "1.0")),
+                    float(color_elem.get("g", "1.0")),
+                    float(color_elem.get("b", "1.0")),
+                )
+        cursor_settings = CursorSettings(object_type=object_type, color=color, params=params_list)
 
     # Objects
     objs = []
@@ -354,6 +400,7 @@ def xml_parser(xml_path: str) -> TrialConfig:
         hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
+        cursor_settings = cursor_settings,
         data_collection = data_collection,
         test           = test
     )

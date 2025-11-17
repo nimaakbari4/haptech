@@ -4,6 +4,8 @@ CHAI3D_DIR = external/chai3d-Franka-integration
 CHAI3D_BUILD_DIR = $(CHAI3D_DIR)/build
 GLFW_BUILD_DIR = $(CHAI3D_BUILD_DIR)/extras/GLFW
 FRANKA_BUILD_DIR = $(CHAI3D_BUILD_DIR)/external/libfranka/src
+PROTO_DIR = ../proto
+PROTO_FILE = $(PROTO_DIR)/franka_trial.proto
 
 SRC_DIR = src
 BIN_DIR = bin

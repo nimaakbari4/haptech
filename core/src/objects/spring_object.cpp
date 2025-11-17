@@ -88,6 +88,13 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     return spring;
 }
 
+void SpringObject::updatePhysics(cGenericObject* object, double deltaTime) {
+    // For this example, no dynamic behavior is applied per tick.
+    // A researcher could add oscillatory motion or damping updates here.
+    (void)object;
+    (void)deltaTime;
+}
+
 double SpringObject::getStiffness(const std::map<std::string, std::string>& params) const {
     auto it = params.find("stiffness");
     return (it != params.end()) ? std::stod(it->second) : 1000.0; // Default stiffness
@@ -106,4 +113,8 @@ double SpringObject::getRadius(const std::map<std::string, std::string>& params)
 double SpringObject::getHeight(const std::map<std::string, std::string>& params) const {
     auto it = params.find("height");
     return (it != params.end()) ? std::stod(it->second) : 0.1; // Default height
+}
+
+void updatePhysics(cGenericObject* object, double deltaTime) {
+    
 }
