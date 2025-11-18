@@ -30,15 +30,15 @@
     <MouseCursor>true</MouseCursor>
   </Controls>
 
-  <CursorSettings object="spring">
+  <CursorSettings object="sphere">
     <Parameters
-        radius="0.02" height="0.12" stiffness="1000" damping="50"
+        radius="0.01"
         tether_enabled="true"
-        tether_mass="0.4"          
-        tether_stiffness="10.0"    
-        tether_damping="15.0"      
-        tether_gravity_scale="0.3" 
-        tether_max_force="5.0"
+        tether_mass="0.1"
+        tether_stiffness="15.0"
+        tether_damping="3.0"
+        tether_gravity_scale="0.0"
+        tether_max_force="8.0"
         tether_anchor_id="regular_sphere" />
     <Color r="0.8" g="0.8" b="0.0"/>
   </CursorSettings>
