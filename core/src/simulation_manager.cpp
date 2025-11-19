@@ -327,6 +327,41 @@ bool SimulationManager::setBackgroundColor(double r, double g, double b) {
     return true;
 }
 
+bool SimulationManager::setCamera(double px, double py, double pz,
+                                  double lx, double ly, double lz,
+                                  double ux, double uy, double uz) {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    if (!simContext.camera) {
+        std::cout << "[ERROR] Camera has not been initialized." << std::endl;
+        return false;
+    }
+
+    cVector3d position(px, py, pz);
+    cVector3d lookAt(lx, ly, lz);
+    cVector3d up(ux, uy, uz);
+
+    if (up.lengthsq() < 1e-12) {
+        std::cout << "[WARN] Camera up vector too small; defaulting to (0, 0, 1)." << std::endl;
+        up.set(0.0, 0.0, 1.0);
+    }
+
+    simContext.camera->set(position, lookAt, up);
+
+    if (simContext.light) {
+        cVector3d dir = lookAt - position;
+        if (dir.lengthsq() > 1e-12) {
+            dir.normalize();
+            simContext.light->setDir(-dir.x(), -dir.y(), -dir.z());
+        }
+    }
+
+    return true;
+}
+
 bool SimulationManager::addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b) {
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
@@ -827,23 +862,24 @@ void SimulationManager::createHapticTool() {
     // create a tool (mesh-based cursor) and insert into the world
     
 
-    auto teapotMulti = new cMultiMesh();
-    {
-        cMesh* sub = teapotMulti->newMesh();
-        cCreateTeaPot(sub, 0.5, 10, cVector3d(0,0,0), cMatrix3d(0, 0, 0, C_EULER_ORDER_XYZ), cColorf(1, 0,0));
-        teapotMulti->m_material->setWhite();
-    }
-
     auto boxMulti = new cMultiMesh();
     {
         cMesh* sub = boxMulti->newMesh();
-        cCreateBox(sub, 0.02, 0.02, 0.02);
-        boxMulti->m_material->setWhite();
+        const double paddleWidth = 0.03;
+        const double paddleHeight = 0.18;
+        const double paddleDepth = 0.04;
+        cCreateBox(sub, paddleWidth, paddleHeight, paddleDepth);
+        const double paddleR = 0.15;
+        const double paddleG = 0.65;
+        const double paddleB = 1.0;
+        boxMulti->m_material->m_diffuse.set(paddleR, paddleG, paddleB);
+        boxMulti->m_material->m_ambient.set(paddleR, paddleG, paddleB);
+        boxMulti->m_material->m_specular.set(paddleR, paddleG, paddleB);
     }
 
     // Instantiate cToolMesh with sampling and contact radius
     const int sampleCount = 24;
-    const double contactRadius = 0.01;
+    const double contactRadius = 0.02;
     simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
 
     simContext.world->addChild(simContext.tool);

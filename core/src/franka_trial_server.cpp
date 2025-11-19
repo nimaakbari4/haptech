@@ -79,6 +79,34 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         std::cout << "[INFO] Using default background color (black)" << std::endl;
     }
 
+    // Configure camera from scene settings
+    if (request->has_scenesettings() && request->scenesettings().has_camera()) {
+        const auto& cam = request->scenesettings().camera();
+
+        double px = cam.has_position() ? cam.position().x() : 1.0;
+        double py = cam.has_position() ? cam.position().y() : 0.0;
+        double pz = cam.has_position() ? cam.position().z() : 0.0;
+
+        double lx = cam.has_lookat() ? cam.lookat().x() : 0.0;
+        double ly = cam.has_lookat() ? cam.lookat().y() : 0.0;
+        double lz = cam.has_lookat() ? cam.lookat().z() : 0.0;
+
+        double ux = cam.has_up() ? cam.up().x() : 0.0;
+        double uy = cam.has_up() ? cam.up().y() : 0.0;
+        double uz = cam.has_up() ? cam.up().z() : 1.0;
+
+        if (!SimulationManager::setCamera(px, py, pz, lx, ly, lz, ux, uy, uz)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Failed to apply camera settings.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+
+        std::cout << "[INFO] Camera set to position (" << px << ", " << py << ", " << pz
+                  << ") looking at (" << lx << ", " << ly << ", " << lz << ")" << std::endl;
+    }
+
     // Clear any existing text overlays
     SimulationManager::clearTextOverlays();
 

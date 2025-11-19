@@ -48,6 +48,14 @@ void ExtensionsRegistry::registerAllExtensions() {
     registerCustomObject("line", []() -> std::unique_ptr<CustomObjectInterface> {
         return std::make_unique<LineObject>();
     });
+
+    registerCustomObject("pong_ball", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<PongBallObject>();
+    });
+
+    registerCustomObject("pong_paddle", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<PongPaddleObject>();
+    });
     
     // Register trial end conditions
     std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;

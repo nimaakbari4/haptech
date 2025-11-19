@@ -1,4 +1,5 @@
 #include "tool_mesh.h"
+#include "pong_game_state.h"
 
 using namespace chai3d;
 
@@ -37,7 +38,22 @@ cToolMesh::~cToolMesh()
 void cToolMesh::updateToolImagePosition()
 {
     // Position and orient visuals at device pose
-    if (m_image) {
+    if (!m_image) {
+        return;
+    }
+
+    bool syncedToPaddle = false;
+    {
+        auto& state = GetPongGameState();
+        std::lock_guard<std::mutex> lock(state.mutex);
+        if (state.playerPaddle.node) {
+            m_image->setLocalPos(state.playerPaddle.node->getLocalPos());
+            m_image->setLocalRot(state.playerPaddle.node->getLocalRot());
+            syncedToPaddle = true;
+        }
+    }
+
+    if (!syncedToPaddle) {
         m_image->setLocalPos(m_deviceGlobalPos);
         m_image->setLocalRot(m_deviceGlobalRot);
     }
