@@ -74,22 +74,17 @@ private:
     // Force-mode gravity (adds to device force; does not affect pose)
     double m_gravityForceScale = 0.0;
     
-    // Tethered mass physics (hybrid mode)
+    // Tethered force (force-only spring to an anchor or device)
     bool m_tetherEnabled = false;
-    double m_tetherMassKg = 0.05;          // Default 50g
-    double m_tetherStiffness = 50.0;        // Default 50 N/m
-    double m_tetherDamping = 2.0;           // Default 2 N·s/m
-    double m_tetherGravityScale = 1.0;      // Default 1.0 (9.81 m/s²)
+    double m_tetherMassKg = 0.05;          // Kept for API compatibility (not integrated as state)
+    double m_tetherStiffness = 50.0;       // Spring constant (N/m)
+    double m_tetherDamping = 2.0;          // Damping coefficient (N·s/m)
+    double m_tetherGravityScale = 1.0;     // Unused in force-only tether (kept for compatibility)
     double m_tetherMaxForce = 30.0;         // Default 30 N safety clamp
-    cVector3d m_tetherPos{0.0, 0.0, 0.0};  // Position of tethered mass (world coordinates)
-    cVector3d m_tetherVel{0.0, 0.0, 0.0};  // Velocity of tethered mass
-    cVector3d m_tetherEnvForce{0.0, 0.0, 0.0}; // Net environment force applied at tethered mass
-    cPrecisionClock m_tetherClock;         // Clock for integration
-    bool m_tetherInitialized = false;      // Track if tether has been initialized with valid device pos
     cVector3d m_toolGlobalPos{0.0, 0.0, 0.0};  // Cached tool global position for coordinate conversion
     cMatrix3d m_toolGlobalRot{cIdentity3d()};  // Cached tool global rotation for coordinate conversion
 
-    // Optional anchor object the tethered mass is attached to.
+    // Optional anchor object the tether is attached to.
     // If empty or unresolved, the tether falls back to using the device position as anchor.
     std::string m_tetherAnchorId;
     cGenericObject* m_tetherAnchorObj = nullptr;
