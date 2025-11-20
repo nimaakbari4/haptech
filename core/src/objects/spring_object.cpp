@@ -113,3 +113,7 @@ double SpringObject::getHeight(const std::map<std::string, std::string>& params)
     auto it = params.find("height");
     return (it != params.end()) ? std::stod(it->second) : 0.1; // Default height
 }
+
+void updatePhysics(cGenericObject* object, double deltaTime) {
+    
+}
