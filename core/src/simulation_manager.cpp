@@ -293,6 +293,11 @@ bool SimulationManager::reset() {
     clearTextOverlays();
     removeAllObjects();
     ResetPongGameState();
+
+    // reset camera to default position
+    simContext.camera->set( cVector3d (1.0, 0.0, 0.0),
+                            cVector3d (0.0, 0.0, 0.0),
+                            cVector3d (0.0, 0.0, 1.0));
     
     {
         std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
@@ -556,6 +561,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                 double workspaceScaleFactor = simContext.tool->getWorkspaceScaleFactor();
                 cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
                 double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
+                double maxDamping = hapticDeviceInfo.m_maxLinearDamping / workspaceScaleFactor;
 
                 // Preserve existing material or create new one
                 cMaterialPtr material = chaiObj->m_material;
@@ -563,8 +569,10 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                     material = cMaterial::create();
                     chaiObj->setMaterial(material);
                 }
-                material->setStiffness(maxStiffness);
                 
+                material->setStiffness(maxStiffness);
+                material->setDamping(maxDamping);
+
                 {
                     std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
                     simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);

@@ -123,7 +123,7 @@ void PongPaddleObject::updatePlayerControlled(PongGameState& state, double delta
     }
 
     auto devicePos = SimulationManager::simContext.tool->getDeviceGlobalPos();
-    double targetY = devicePos.y() * playerScaleY_ + playerOffsetY_;
+    double targetY = -devicePos.y() * playerScaleY_ + playerOffsetY_;
     targetY = clampValue(targetY, clampMinY_, clampMaxY_);
 
     auto currentPos = paddleNode_->getLocalPos();
@@ -145,17 +145,10 @@ void PongPaddleObject::updateAIControlled(PongGameState& state, double deltaTime
         return;
     }
 
-    double targetY = state.ballPosition.y();
-    targetY = clampValue(targetY, clampMinY_, clampMaxY_);
-
-    auto currentPos = paddleNode_->getLocalPos();
-    double maxStep = aiSpeed_ * deltaTime;
-    double diff = targetY - currentPos.y();
-    diff = clampValue(diff, -maxStep, maxStep);
-    double newY = currentPos.y() + diff;
-    newY = clampValue(newY, clampMinY_, clampMaxY_);
-
-    paddleNode_->setLocalPos(baseX_, newY, baseZ_);
+    // Snap AI paddle directly to the ball's Y position (clamped).
+    // This guarantees visible tracking; we can reintroduce smoothing later if desired.
+    double targetY = clampValue(state.ballPosition.y(), clampMinY_, clampMaxY_);
+    paddleNode_->setLocalPos(baseX_, targetY, baseZ_);
 
     state.aiPaddle.node = paddleNode_;
     state.aiPaddle.halfHeight = halfHeight_;

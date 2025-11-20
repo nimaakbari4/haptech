@@ -3,6 +3,6 @@
     "results_path": "results",
     "server_host": "localhost",
     "server_port": 50051,
-    "trial_subject": "demo",
-    "last_configuration_file": "trial_example.xml"
+    "trial_subject": "1",
+    "last_configuration_file": "pong_demo.xml"
 }

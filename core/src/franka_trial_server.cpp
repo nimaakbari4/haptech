@@ -14,7 +14,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // ensure simulation is running (allow brief startup lag)
     if (!SimulationManager::simContext.simulationRunning) {
-        const double timeoutSec = 2.0;
+        const double timeoutSec = 5.0;
         cPrecisionClock waitClock; waitClock.start();
         while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
             cSleepMs(10);
