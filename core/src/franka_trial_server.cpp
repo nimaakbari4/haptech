@@ -9,6 +9,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     try {
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
+    bool clientCancelled = false;
 
     std::cout << "[SERVER] simContext address: " << &SimulationManager::simContext << std::endl;
 
@@ -223,7 +224,12 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
     status->set_status(TrialStatus::STARTED);
     status->set_message("The trial has been created. Waiting for trial start.");
-    writer->Write(statusMsg);
+    if (!writer->Write(statusMsg)) {
+        std::cout << "[WARN] Client disconnected before trial could start." << std::endl;
+        SimulationManager::trialContext.trialRunning = false;
+        SimulationManager::reset();
+        return grpc::Status(grpc::StatusCode::CANCELLED, "Client disconnected");
+    }
 
     SimulationManager::trialContext.trialRunning = true;
 
@@ -265,13 +271,18 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::STARTED);
             status->set_message("Trial started after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.startConditionMet->getMessage());
-            writer->Write(statusMsg);
+            if (!writer->Write(statusMsg)) {
+                std::cout << "[WARN] Client disconnected while waiting for trial start." << std::endl;
+                clientCancelled = true;
+                break;
+            }
             updatedTrialStart = true;
             SimulationManager::trialContext.startTime = SimulationManager::trialContext.time;
         }
 
-        if (SimulationManager::trialContext.startConditionMet != nullptr &&
-            SimulationManager::trialContext.endConditionMet != nullptr) {
+        if (clientCancelled ||
+            (SimulationManager::trialContext.startConditionMet != nullptr &&
+             SimulationManager::trialContext.endConditionMet != nullptr)) {
             break;
         }
         
@@ -337,7 +348,17 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
         }
 
-        writer->Write(dataPointMsg);
+        if (context->IsCancelled()) {
+            std::cout << "[WARN] Client cancelled trial stream." << std::endl;
+            clientCancelled = true;
+            break;
+        }
+
+        if (!writer->Write(dataPointMsg)) {
+            std::cout << "[WARN] Failed to write to client stream (likely disconnected)." << std::endl;
+            clientCancelled = true;
+            break;
+        }
 
         /*
         // Check if cursor reached goal (look for goal object at x=0.5)
@@ -375,12 +396,21 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     std::cout << "[TRIAL] Trial results: " << SimulationManager::trialContext.trialId << std::endl;
     std::cout << "[TRIAL] Duration: " << SimulationManager::trialContext.time << " seconds" << std::endl;
 
+    if (clientCancelled) {
+        std::cout << "[TRIAL] Trial aborted: " << SimulationManager::trialContext.trialId
+                  << ", lasted " << SimulationManager::trialContext.time << "s (client disconnected)" << std::endl;
+        SimulationManager::reset();
+        return grpc::Status(grpc::StatusCode::CANCELLED, "Client disconnected");
+    }
+
     if (SimulationManager::trialContext.endConditionMet != nullptr) {
         std::cout << "[TRIAL] End condition met: " << SimulationManager::trialContext.endConditionMet->getMessage() << std::endl;
 
         status->set_status(TrialStatus::COMPLETED);
         status->set_message("Trial completed after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.endConditionMet->getMessage());
-        writer->Write(statusMsg);
+        if (!writer->Write(statusMsg)) {
+            std::cout << "[WARN] Unable to send completion status to client (disconnected)." << std::endl;
+        }
     }
 
     // reset environment
