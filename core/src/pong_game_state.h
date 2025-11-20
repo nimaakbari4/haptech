@@ -40,6 +40,8 @@ struct PongGameState {
     double serveTimer = 0.0;
     int playerScore = 0;
     int aiScore = 0;
+    int scoreLimit = 0;
+    bool useScoreLimit = false;
 
     chai3d::cVector3d ballVelocity = chai3d::cVector3d(0, 0, 0);
     chai3d::cVector3d ballPosition = chai3d::cVector3d(0, 0, 0);

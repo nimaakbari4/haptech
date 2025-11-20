@@ -48,6 +48,9 @@ private:
                               bool isPlayer,
                               PongGameState& state,
                               chai3d::cVector3d& pos);
+    bool checkScoreLimit(PongGameState& state, bool playerScored);
+
+    int scoreLimit_ = 0;
 };
 
 #endif // PONG_BALL_OBJECT_H

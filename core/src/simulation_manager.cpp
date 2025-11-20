@@ -2,6 +2,7 @@
 #include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
 #include "extensions_registry.h"
+#include "pong_game_state.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -291,6 +292,7 @@ bool SimulationManager::reset() {
     setBackgroundColor(0.0, 0.0, 0.0);
     clearTextOverlays();
     removeAllObjects();
+    ResetPongGameState();
     
     {
         std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
@@ -862,24 +864,23 @@ void SimulationManager::createHapticTool() {
     // create a tool (mesh-based cursor) and insert into the world
     
 
+    auto teapotMulti = new cMultiMesh();
+    {
+        cMesh* sub = teapotMulti->newMesh();
+        cCreateTeaPot(sub, 0.5, 10, cVector3d(0,0,0), cMatrix3d(0, 0, 0, C_EULER_ORDER_XYZ), cColorf(1, 0,0));
+        teapotMulti->m_material->setWhite();
+    }
+
     auto boxMulti = new cMultiMesh();
     {
         cMesh* sub = boxMulti->newMesh();
-        const double paddleWidth = 0.03;
-        const double paddleHeight = 0.18;
-        const double paddleDepth = 0.04;
-        cCreateBox(sub, paddleWidth, paddleHeight, paddleDepth);
-        const double paddleR = 0.15;
-        const double paddleG = 0.65;
-        const double paddleB = 1.0;
-        boxMulti->m_material->m_diffuse.set(paddleR, paddleG, paddleB);
-        boxMulti->m_material->m_ambient.set(paddleR, paddleG, paddleB);
-        boxMulti->m_material->m_specular.set(paddleR, paddleG, paddleB);
+        cCreateBox(sub, 0.02, 0.02, 0.02);
+        boxMulti->m_material->setWhite();
     }
 
     // Instantiate cToolMesh with sampling and contact radius
     const int sampleCount = 24;
-    const double contactRadius = 0.02;
+    const double contactRadius = 0.01;
     simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
 
     simContext.world->addChild(simContext.tool);

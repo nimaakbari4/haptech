@@ -144,11 +144,11 @@ public:
     // SCENE SETTINGS
     static bool reset();
     static bool setBackgroundColor(double r, double g, double b);
-    static bool addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b);
-    static bool clearTextOverlays();
     static bool setCamera(double px, double py, double pz,
                           double lx, double ly, double lz,
                           double ux, double uy, double uz);
+    static bool addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b);
+    static bool clearTextOverlays();
 
     // GENERAL OBJECT FUNCTIONALITY
 

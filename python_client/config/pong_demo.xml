@@ -81,7 +81,7 @@
         depth="0.04"
         clamp_min_y="-0.22"
         clamp_max_y="0.22"
-        ai_speed="0.55"/>
+        ai_speed="0.85"/>
     </Object>
 
     <!-- Pong ball -->
@@ -91,15 +91,16 @@
       <Color r="1.0" g="1.0" b="1.0"/>
       <Parameters
         radius="0.025"
-        speed="0.75"
+        speed="0.25"
         speed_increment="0.05"
         max_speed="1.4"
         field_half_width="0.36"
         field_half_height="0.24"
-        reset_delay="1.2"
+        reset_delay="0.0"
         max_bounce_angle_deg="55"
         serve_angle_deg="18"
         initial_direction="1"
+        score_limit="7"
         scoreboard_x="30"
         scoreboard_y="20"
         scoreboard_font_size="36"

@@ -61,6 +61,25 @@ namespace {
             return fallback;
         }
     }
+
+    class PongScoreLimitCondition final : public TrialConditionInterface {
+    public:
+        PongScoreLimitCondition(bool success, const std::string& message)
+            : TrialConditionInterface(dummyParams(), success, 100),
+              message_(message) {}
+
+        bool evaluate() override { return true; }
+        std::string getMessage() override { return message_; }
+        std::string getName() override { return "pong_score_limit"; }
+
+    private:
+        std::string message_;
+
+        static std::map<std::string, std::string>& dummyParams() {
+            static std::map<std::string, std::string> params;
+            return params;
+        }
+    };
 }
 
 chai3d::cGenericObject* PongBallObject::createObject(const std::map<std::string, std::string>& params,
@@ -79,6 +98,7 @@ chai3d::cGenericObject* PongBallObject::createObject(const std::map<std::string,
         maxBounceAngleRad_ = chai3d::cDegToRad(parseDouble(params, "max_bounce_angle_deg", chai3d::cRadToDeg(maxBounceAngleRad_)));
         serveAngleOffsetDeg_ = parseDouble(params, "serve_angle_deg", serveAngleOffsetDeg_);
         nextServeDirection_ = parseInt(params, "initial_direction", 1);
+        scoreLimit_ = parseInt(params, "score_limit", scoreLimit_);
 
         scoreboardX_ = parseInt(params, "scoreboard_x", scoreboardX_);
         scoreboardY_ = parseInt(params, "scoreboard_y", scoreboardY_);
@@ -132,6 +152,8 @@ void PongBallObject::initializeState(PongGameState& state) {
     state.ballPosition = chai3d::cVector3d(0, 0, 0);
     state.playerScore = 0;
     state.aiScore = 0;
+    state.scoreLimit = scoreLimit_;
+    state.useScoreLimit = scoreLimit_ > 0;
 }
 
 void PongBallObject::prepareScoreboard(PongGameState& state) {
@@ -271,6 +293,32 @@ void PongBallObject::handlePaddleCollisions(PongGameState& state, chai3d::cVecto
     }
 }
 
+bool PongBallObject::checkScoreLimit(PongGameState& state, bool playerScored) {
+    if (!state.useScoreLimit) {
+        return false;
+    }
+
+    int currentScore = playerScored ? state.playerScore : state.aiScore;
+    if (currentScore < state.scoreLimit) {
+        return false;
+    }
+
+    bool success = playerScored;
+    std::ostringstream oss;
+    oss << (playerScored ? "Player" : "CPU")
+        << " reached score " << currentScore
+        << " (limit " << state.scoreLimit << ")";
+
+    if (!SimulationManager::trialContext.endConditionMet) {
+        SimulationManager::trialContext.endConditionMet =
+            std::make_unique<PongScoreLimitCondition>(success, oss.str());
+    }
+
+    state.ballVelocity = chai3d::cVector3d(0, 0, 0);
+    state.waitingForServe = false;
+    return true;
+}
+
 void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaTime) {
     if (!stateInitialized_ || !object) {
         return;
@@ -300,15 +348,35 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
     if (pos.x() > goalLimit) {
         state.playerScore += 1;
         updateScoreboardText(state);
-        scheduleServe(state, -1);
         state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        if (checkScoreLimit(state, true)) {
+            object->setLocalPos(state.ballPosition);
+            return;
+        }
+        {
+            std::uniform_real_distribution<double> offsetDist(-state.fieldHalfHeight * 0.8, state.fieldHalfHeight * 0.8);
+            double targetY = offsetDist(RandomEngine());
+            double dirX = state.baseBallSpeed;
+            double dirY = (targetY - state.ballPosition.y()) * (state.baseBallSpeed / std::max(0.001, state.fieldHalfWidth));
+            state.ballVelocity = chai3d::cVector3d(dirX, dirY, 0.0);
+        }
         object->setLocalPos(state.ballPosition);
         return;
     } else if (pos.x() < -goalLimit) {
         state.aiScore += 1;
         updateScoreboardText(state);
-        scheduleServe(state, 1);
         state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        if (checkScoreLimit(state, false)) {
+            object->setLocalPos(state.ballPosition);
+            return;
+        }
+        {
+            std::uniform_real_distribution<double> offsetDist(-state.fieldHalfHeight * 0.8, state.fieldHalfHeight * 0.8);
+            double targetY = offsetDist(RandomEngine());
+            double dirX = -state.baseBallSpeed;
+            double dirY = (targetY - state.ballPosition.y()) * (state.baseBallSpeed / std::max(0.001, state.fieldHalfWidth));
+            state.ballVelocity = chai3d::cVector3d(dirX, dirY, 0.0);
+        }
         object->setLocalPos(state.ballPosition);
         return;
     }

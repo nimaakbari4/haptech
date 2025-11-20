@@ -29,6 +29,8 @@ void ResetPongGameState() {
     g_state.serveTimer = 0.0;
     g_state.playerScore = 0;
     g_state.aiScore = 0;
+    g_state.scoreLimit = 0;
+    g_state.useScoreLimit = false;
     g_state.ballVelocity = chai3d::cVector3d(0, 0, 0);
     g_state.ballPosition = chai3d::cVector3d(0, 0, 0);
 }

@@ -14,6 +14,7 @@ cToolMesh::cToolMesh(cWorld* world, cMultiMesh* visualMesh,
         // Ensure image is not nullptr and belongs to our scene graph
         m_image->setLocalPos(0, 0, 0);
         m_image->setLocalRot(cIdentity3d());
+        m_image->m_material->setWhite();
     }
 
     generateSamplesFromMesh(visualMesh, numSamples);
