@@ -47,12 +47,6 @@ class EndConditions:
     conditions: List[Condition]
 
 @dataclass
-class HUDText:
-    start_message: str
-    success_message: str
-    failure_message: str
-
-@dataclass
 class Color:
     r: float
     g: float
@@ -170,7 +164,6 @@ class DataCollectionConfig:
 class TrialConfig:
     start_conditions: StartConditions
     end_conditions: EndConditions
-    hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
     home: Optional[HomePosition] = None
@@ -239,13 +232,6 @@ def xml_parser(xml_path: str) -> TrialConfig:
         end_conds.append(cond)
     end_conditions = EndConditions(conditions=end_conds)
 
-    # HUDText
-    hud = root.find("HUDText")
-    hud_text = HUDText(
-        start_message   = hud.findtext("StartMessage"),
-        success_message = hud.findtext("SuccessMessage"),
-        failure_message = hud.findtext("FailureMessage")
-    )
 
     # CursorSettings (optional)
     cursor_settings = None
@@ -434,7 +420,6 @@ def xml_parser(xml_path: str) -> TrialConfig:
     return TrialConfig(
         start_conditions = start_conditions,
         end_conditions = end_conditions,
-        hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
         home           = home,
@@ -461,11 +446,6 @@ if __name__ == "__main__":
         print(f" - {c.name} (success={c.success}, priority={c.priority})")
         for param in c.parameters:
             print(f"   {param.key}: {param.value}")
-
-    print("\nHUD Messages:")
-    print(" Start:",   cfg.hud_text.start_message)
-    print(" Success:", cfg.hud_text.success_message)
-    print(" Failure:", cfg.hud_text.failure_message)
 
     print("\nScene Settings:")
     print(" Background color:", cfg.scene_settings.background_color)
