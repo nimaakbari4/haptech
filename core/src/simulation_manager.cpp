@@ -895,7 +895,7 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
     if (!visual) {
         cMultiMesh* mm = new cMultiMesh(); visual = mm;
         cMesh* sub = mm->newMesh();
-        cCreateBox(sub, 0.02, 0.02, 0.02);
+        cCreateSphere(sub, 0.02);
         mm->m_material->setWhite();
     }
 
@@ -1083,27 +1083,14 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    // create a tool (mesh-based cursor) and insert into the world
-    
-
-    auto teapotMulti = new cMultiMesh();
+    auto sphereMulti = new cMultiMesh();
     {
-        cMesh* sub = teapotMulti->newMesh();
-        cCreateTeaPot(sub, 0.5, 10, cVector3d(0,0,0), cMatrix3d(0, 0, 0, C_EULER_ORDER_XYZ), cColorf(1, 0,0));
-        teapotMulti->m_material->setWhite();
+        cMesh* sub = sphereMulti->newMesh();
+        cCreateSphere(sub, 0.02);
+        sphereMulti->m_material->setWhite();
     }
 
-    auto boxMulti = new cMultiMesh();
-    {
-        cMesh* sub = boxMulti->newMesh();
-        cCreateBox(sub, 0.02, 0.02, 0.02);
-        boxMulti->m_material->setWhite();
-    }
-
-    // Instantiate cToolMesh with sampling and contact radius
-    const int sampleCount = 24;
-    const double contactRadius = 0.01;
-    simContext.tool = new cToolMesh(simContext.world, static_cast<cGenericObject*>(boxMulti), sampleCount, contactRadius);
+    simContext.tool = new cToolMesh(simContext.world, sphereMulti, 24, 0.01);
 
     simContext.world->addChild(simContext.tool);
 
