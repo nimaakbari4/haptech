@@ -40,23 +40,15 @@
         tether_gravity_scale="0.0"
         tether_max_force="5.0"
         tether_anchor_id="regular_sphere" />
-    <Color r="0.8" g="0.8" b="0.0"/>
+    <Color r="0.0" g="0.1" b="0.0"/>
   </CursorSettings>
 
   <Objects>
-    <!-- Regular sphere for comparison - Bright Green (Left) -->
     <Object id="regular_sphere" type="sphere">
       <Position x="0.5" y="0.0" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
       <Color r="0.0" g="0.0" b="1.0"/>
       <Parameters radius="0.06"/>
     </Object>   
-
-    <Object id="goal" type="box">
-      <Position x="0.0" y="0.2" z="0.0"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Parameters width="0.02" height="0.02" depth="0.02"/>
-      <Color r="0.0" g="1.0" b="0.0"/>
-    </Object>
   </Objects>
 </TrialConfig>

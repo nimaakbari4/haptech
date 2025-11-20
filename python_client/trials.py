@@ -101,9 +101,17 @@ def run_trial(config_file_path, trial_subject, trial_id):
         }
 
         print("Starting trial...\n")
-        util.run_trial(stub, trial_id, output_filestream, config.objects, 
-                       config.start_conditions.conditions, config.end_conditions.conditions, config.scene_settings, 
-                       metadata)
+        util.run_trial(
+            stub,
+            trial_id,
+            output_filestream,
+            config.objects,
+            config.start_conditions.conditions,
+            config.end_conditions.conditions,
+            config.scene_settings,
+            metadata,
+            config.cursor_settings,
+        )
 
         metadata["ended_at"] = datetime.datetime.now()
         metadata["configuration"] = asdict(config)
