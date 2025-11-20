@@ -81,7 +81,7 @@
         depth="0.04"
         clamp_min_y="-0.22"
         clamp_max_y="0.22"
-        ai_speed="0.85"/>
+        ai_speed="0.45"/>
     </Object>
 
     <!-- Pong ball -->

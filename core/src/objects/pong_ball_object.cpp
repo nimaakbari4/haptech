@@ -270,8 +270,8 @@ bool PongBallObject::checkPaddleCollision(const PaddleInfo& paddleInfo,
     offset = std::clamp(offset, -1.0, 1.0);
     double bounceAngle = offset * state.maxBounceAngleRad;
 
-    double speed = std::min(state.ballSpeed + state.speedIncrement, state.maxBallSpeed);
-    state.ballSpeed = speed;
+    // Use current speed for this bounce
+    double speed = state.ballSpeed;
 
     double dirX = std::cos(bounceAngle);
     double dirY = std::sin(bounceAngle);
@@ -279,6 +279,28 @@ bool PongBallObject::checkPaddleCollision(const PaddleInfo& paddleInfo,
     state.ballVelocity.x((isPlayer ? 1.0 : -1.0) * std::abs(dirX) * speed);
     state.ballVelocity.y(dirY * speed);
     state.ballVelocity.z(0.0);
+
+    // Increment speed for next bounce (capped at max)
+    state.ballSpeed = std::min(state.ballSpeed + state.speedIncrement, state.maxBallSpeed);
+
+    // Apply haptic impulse for player paddle contact
+    if (isPlayer) {
+        // Calculate force direction based on bounce angle and ball speed
+        // Force pushes outward from the paddle (negative X for player paddle)
+        double forceMagnitude = speed * 15.0;  // Scale factor to convert speed to force (N)
+        double fx = -forceMagnitude * std::abs(dirX);  // Outward push (negative X)
+        double fy = forceMagnitude * dirY;             // Y component based on angle
+        double fz = 0.0;
+        
+        int impulseDuration = 50;  // milliseconds
+        
+        std::cout << "[PongBall] Player paddle contact at Y offset: " << offset 
+                  << " | Bounce angle: " << chai3d::cRadToDeg(bounceAngle) << " deg"
+                  << " | Speed: " << speed
+                  << " | Applying impulse: (" << fx << ", " << fy << ", " << fz << ") N for " << impulseDuration << "ms" << std::endl;
+        
+        SimulationManager::applyConstantImpulse(fx, fy, fz, impulseDuration);
+    }
 
     return true;
 }
@@ -349,6 +371,7 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
         state.playerScore += 1;
         updateScoreboardText(state);
         state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        state.ballSpeed = state.baseBallSpeed;  // Reset speed on goal
         if (checkScoreLimit(state, true)) {
             object->setLocalPos(state.ballPosition);
             return;
@@ -366,6 +389,7 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
         state.aiScore += 1;
         updateScoreboardText(state);
         state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        state.ballSpeed = state.baseBallSpeed;  // Reset speed on goal
         if (checkScoreLimit(state, false)) {
             object->setLocalPos(state.ballPosition);
             return;

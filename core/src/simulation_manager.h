@@ -174,6 +174,9 @@ public:
     
     // ramp device force to zero over given milliseconds (exposed for server teardown)
     static void rampDeviceForceToZero(int durationMs);
+    
+    // apply a constant impulse force to simulate ball impact
+    static void applyConstantImpulse(double fx, double fy, double fz, int durationMs);
 
 private:
     // haptic tool management
