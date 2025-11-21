@@ -63,6 +63,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
     
     SimulationManager::simContext.objectMap.clear();
+    
+    // Clear tool state NOW after all old objects are removed, BEFORE new objects load
+    std::cout << "[SETUP] Clearing tool state after removing old objects..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        SimulationManager::simContext.tool->initialize();
+    }
+    cSleepMs(50); // Let tool state fully clear
 
     // Set background color from scene settings
     if (request->has_scenesettings() && request->scenesettings().has_backgroundcolor()) {
@@ -118,25 +125,25 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         }
         
         // Handle cursor configuration objects specially
-        bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
-        if (isCursor) {
-            // Determine visual type from params (visual_type or type key)
-            std::string visualType;
-            auto itVT = params.find("visual_type");
-            if (itVT != params.end()) visualType = itVT->second; else {
-                auto itType = params.find("type");
-                if (itType != params.end()) visualType = itType->second; else visualType = "";
-            }
-            if (!SimulationManager::applyCursorConfig(visualType, params)) {
-                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-                status->set_status(TrialStatus::ERROR);
-                status->set_message("Failed to apply cursor configuration");
-                writer->Write(statusMsg);
-                return grpc::Status::OK;
-            }
-            // Do not add this as a world object
-            continue;
-        }
+        // bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
+        // if (isCursor) {
+        //     // Determine visual type from params (visual_type or type key)
+        //     std::string visualType;
+        //     auto itVT = params.find("visual_type");
+        //     if (itVT != params.end()) visualType = itVT->second; else {
+        //         auto itType = params.find("type");
+        //         if (itType != params.end()) visualType = itType->second; else visualType = "";
+        //     }
+        //     if (!SimulationManager::applyCursorConfig(visualType, params)) {
+        //         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        //         status->set_status(TrialStatus::ERROR);
+        //         status->set_message("Failed to apply cursor configuration");
+        //         writer->Write(statusMsg);
+        //         return grpc::Status::OK;
+        //     }
+        //     // Do not add this as a world object
+        //     continue;
+        // }
         
         // Get color values
         double r = obj.has_color() ? obj.color().r() : 1.0;
@@ -158,8 +165,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         }
     }
 
-    // Resume haptics after scene setup
-    SimulationManager::simContext.hapticsEnabled = true;
+    // DO NOT enable haptics here - objects might be at device position
+    // Haptics will be enabled later after proper initialization
 
     // Add trial start conditions
     SimulationManager::trialContext.startConditions.clear();
@@ -220,6 +227,42 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // start trial
     std::cout << "[TRIAL] Trial created: " << request->trial_id() << " (start conditions: " << request->startconditions_size() << " condition(s), end conditions: " << request->endconditions_size() << " condition(s))" << std::endl;
+
+    // Update world transforms to ensure all NEW objects are in their final positions
+    std::cout << "[TRIAL] Updating world transforms for new objects..." << std::endl;
+    SimulationManager::simContext.world->computeGlobalPositions(true);
+    
+    // Clear tool state AGAIN after new objects are positioned to ensure clean start
+    std::cout << "[TRIAL] Final tool contact state clear before enabling haptics..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        // Initialize clears all haptic points and contact states
+        SimulationManager::simContext.tool->initialize();
+        std::cout << "[TRIAL] Tool contact state cleared" << std::endl;
+        
+        // Enable force rise to prevent sudden force spikes on first contact
+        SimulationManager::simContext.tool->setUseForceRise(true);
+        SimulationManager::simContext.tool->setRiseTime(0.3); // 300ms gradual ramp
+        std::cout << "[TRIAL] Enabled force rise with 300ms ramp time" << std::endl;
+    }
+    
+    // Set force to zero before enabling
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+        cVector3d currentForce;
+        SimulationManager::simContext.hapticDevice->getForce(currentForce);
+        std::cout << "[TRIAL] Force before enabling: " << currentForce.str(3) << " (mag: " << currentForce.length() << "N)" << std::endl;
+    }
+    
+    // DON'T call updateFromDevice here - it would trigger collision detection
+    // The haptics loop will call it on the first cycle after enabling
+    
+    // Enable haptics for this trial AFTER all objects are positioned and tool is cleared
+    std::cout << "[TRIAL] All objects positioned and tool cleared - enabling haptics" << std::endl;
+    SimulationManager::simContext.hapticsEnabled = true;
+    
+    // Give haptics loop a few cycles to initialize properly with zero forces
+    std::cout << "[TRIAL] Waiting for haptics to stabilize..." << std::endl;
+    cSleepMs(100); // ~100 cycles at 1kHz
 
     TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
     status->set_status(TrialStatus::STARTED);
@@ -388,9 +431,50 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
-    // ensure haptics is disabled and ramp forces to zero during teardown
+    std::cout << "[TEARDOWN] Trial stopping, beginning force teardown sequence" << std::endl;
+    
+    // Read current force before any teardown
+    cVector3d forceBeforeTeardown(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceBeforeTeardown);
+        std::cout << "[TEARDOWN] Current force: " << forceBeforeTeardown.str(3) 
+                  << " (mag: " << forceBeforeTeardown.length() << "N)" << std::endl;
+    }
+    
+    // Graceful force teardown to prevent controller_torque_discontinuity
+    // Clear tool's internal contact state so it stops computing forces
+    std::cout << "[TEARDOWN] Clearing tool contacts..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        SimulationManager::simContext.tool->initialize();
+    }
+    
+    // Let haptics loop continue running for several cycles with cleared contacts
+    // This allows forces to naturally decay to zero through smoothing and force rise
+    std::cout << "[TEARDOWN] Waiting 150ms for forces to decay naturally..." << std::endl;
+    cSleepMs(150); // ~150 haptic cycles at 1kHz
+    
+    cVector3d forceAfterDecay(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceAfterDecay);
+        std::cout << "[TEARDOWN] Force after decay: " << forceAfterDecay.str(3) 
+                  << " (mag: " << forceAfterDecay.length() << "N)" << std::endl;
+    }
+    
+    // Now safe to disable haptics - forces should already be near zero
+    std::cout << "[TEARDOWN] Disabling haptics..." << std::endl;
     SimulationManager::simContext.hapticsEnabled = false;
-    SimulationManager::rampDeviceForceToZero(150);
+    
+    // Final safety: manually ramp any remaining forces
+    std::cout << "[TEARDOWN] Ramping remaining forces to zero..." << std::endl;
+    SimulationManager::rampDeviceForceToZero(100);
+    
+    cVector3d forceFinal(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceFinal);
+        std::cout << "[TEARDOWN] Final force: " << forceFinal.str(3) 
+                  << " (mag: " << forceFinal.length() << "N)" << std::endl;
+    }
+    std::cout << "[TEARDOWN] Force teardown complete" << std::endl;
 
     // output results
     std::cout << "[TRIAL] Trial results: " << SimulationManager::trialContext.trialId << std::endl;
@@ -415,6 +499,15 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // reset environment
     SimulationManager::reset();
+    SimulationManager::simContext.hapticsEnabled = false;
+    SimulationManager::simContext.tool->initialize();
+    SimulationManager::simContext.world->computeGlobalPositions(true);
+    SimulationManager::simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    cVector3d currentForce;
+    SimulationManager::simContext.hapticDevice->getForce(currentForce);
+    std::cout << "[TRIAL] Force after reset: " << currentForce.str(3) 
+              << " (mag: " << currentForce.length() << "N)" << std::endl;
+    SimulationManager::simContext.hapticsEnabled = true;
     return grpc::Status::OK;
     } catch (const std::exception& ex) {
         TrialResponseStream statusMsg;

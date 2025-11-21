@@ -278,16 +278,29 @@ bool SimulationManager::reset() {
         return false;
     }
 
+    std::cout << "[RESET] Starting environment reset..." << std::endl;
+    
+    // Check force before disabling haptics
+    cVector3d forceBeforeReset(0, 0, 0);
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->getForce(forceBeforeReset);
+        std::cout << "[RESET] Force before reset: " << forceBeforeReset.str(3) 
+                  << " (mag: " << forceBeforeReset.length() << "N)" << std::endl;
+    }
+
     // disable haptic calculations
+    std::cout << "[RESET] Disabling haptics..." << std::endl;
     simContext.hapticsEnabled = false;
 
     // Clear tool state to drop any contacts before removing objects
+    std::cout << "[RESET] Clearing tool state..." << std::endl;
     if (simContext.tool) {
         simContext.tool->initialize();
     }
 
     cSleepMs(100);
 
+    std::cout << "[RESET] Removing objects and clearing scene..." << std::endl;
     setBackgroundColor(0.0, 0.0, 0.0);
     clearTextOverlays();
     removeAllObjects();
@@ -301,17 +314,24 @@ bool SimulationManager::reset() {
         trialContext.endConditionMet = nullptr;
     }
     
-    // ensure device sees zero force while haptics are disabled
+    // Ramp force down gradually instead of abrupt zero
+    std::cout << "[RESET] Ramping force to zero gradually..." << std::endl;
+    rampDeviceForceToZero(150); // 150ms ramp down
+    
+    cVector3d forceAfterRamp(0, 0, 0);
     if (simContext.hapticDevice) {
-        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+        simContext.hapticDevice->getForce(forceAfterRamp);
+        std::cout << "[RESET] Force after ramp: " << forceAfterRamp.str(3) 
+                  << " (mag: " << forceAfterRamp.length() << "N)" << std::endl;
     }
 
     // allow one or two frames for deferred deletion to flush
     cSleepMs(100);
 
-    // re-enable haptics for next trial
-    simContext.hapticsEnabled = true;
-
+    // DO NOT re-enable haptics - leave disabled until next trial explicitly enables it
+    // This prevents force spikes when reset completes
+    std::cout << "[RESET] Haptics remains disabled - will be enabled by next trial" << std::endl;
+    std::cout << "[RESET] Reset complete" << std::endl;
     return true;
 }
 
@@ -519,6 +539,7 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                 double workspaceScaleFactor = simContext.tool->getWorkspaceScaleFactor();
                 cHapticDeviceInfo hapticDeviceInfo = simContext.hapticDevice->getSpecifications();
                 double maxStiffness = hapticDeviceInfo.m_maxLinearStiffness / workspaceScaleFactor;
+                double maxDamping = hapticDeviceInfo.m_maxLinearDamping / workspaceScaleFactor;
 
                 // Preserve existing material or create new one
                 cMaterialPtr material = chaiObj->m_material;
@@ -526,8 +547,12 @@ bool SimulationManager::addObjectFromConfig(const std::string& id, const std::st
                     material = cMaterial::create();
                     chaiObj->setMaterial(material);
                 }
-                material->setStiffness(maxStiffness);
-                
+
+                // Use conservative stiffness/damping to avoid safety threshold triggers
+                // Start with 10-20% of max stiffness for safer interaction
+                material->setStiffness(1.0 * maxStiffness);
+                material->setDamping(0.3 * maxDamping);
+
                 {
                     std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
                     simContext.objectMap[id] = std::unique_ptr<cGenericObject>(chaiObj);
@@ -679,6 +704,9 @@ void SimulationManager::updateHaptics(void) {
     clock.start();
 
     std::cout << "Haptics thread started, simRunning = " << simContext.simulationRunning << std::endl;
+    
+    bool justEnabledHaptics = false;
+    int cyclesSinceEnabled = 0;
 
     while (simContext.simulationRunning) {
         // update delta time
@@ -692,8 +720,19 @@ void SimulationManager::updateHaptics(void) {
         // HAPTICS
         if (!simContext.hapticsEnabled) {
             // wait until haptics is enabled
+            justEnabledHaptics = true;
+            cyclesSinceEnabled = 0;
             cSleepMs(100);
             continue;
+        }
+
+        // Log the first few cycles after haptics is enabled
+        if (justEnabledHaptics && cyclesSinceEnabled < 3) {
+            std::cout << "[HAPTICS] Cycle " << cyclesSinceEnabled << " after enabling" << std::endl;
+            cyclesSinceEnabled++;
+            if (cyclesSinceEnabled >= 3) {
+                justEnabledHaptics = false;
+            }
         }
 
         // update world transforms
@@ -702,8 +741,44 @@ void SimulationManager::updateHaptics(void) {
         // update tool from device only (mouse controls removed)
         simContext.tool->updateFromDevice();
 
+        // Log contacts BEFORE computing forces
+        if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {
+            int numPoints = simContext.tool->getNumHapticPoints();
+            std::cout << "[HAPTICS] Cycle " << (cyclesSinceEnabled-1) << " - checking " << numPoints << " haptic points:" << std::endl;
+            for (int i = 0; i < numPoints; i++) {
+                auto hp = simContext.tool->getHapticPoint(i);
+                if (hp) {
+                    int numContacts = hp->getNumCollisionEvents();
+                    cVector3d proxyPos = hp->getGlobalPosProxy();
+                    cVector3d devicePos = hp->getGlobalPosGoal();
+                    double separation = cDistance(proxyPos, devicePos);
+                    std::cout << "  Point " << i << ": " << numContacts << " contacts, separation=" 
+                              << separation << "m, proxy=" << proxyPos.str(3) 
+                              << ", device=" << devicePos.str(3) << std::endl;
+                    
+                    for (int c = 0; c < numContacts; c++) {
+                        auto collision = hp->getCollisionEvent(c);
+                        if (collision && collision->m_object) {
+                            std::cout << "    Contact " << c << " with object at " 
+                                      << collision->m_object->getGlobalPos().str(3) << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+        
         // compute interaction forces
         simContext.tool->computeInteractionForces();
+
+        // Log force after first few computations
+        if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {
+            cVector3d computedForce;
+            if (simContext.hapticDevice) {
+                simContext.hapticDevice->getForce(computedForce);
+                std::cout << "[HAPTICS] Cycle " << (cyclesSinceEnabled-1) << " computed force: " 
+                          << computedForce.str(3) << " (mag: " << computedForce.length() << "N)" << std::endl;
+            }
+        }
 
         // apply computed forces
         simContext.tool->applyToDevice();
@@ -807,15 +882,25 @@ void SimulationManager::rampDeviceForceToZero(int durationMs) {
 
     cVector3d currentForce;
     simContext.hapticDevice->getForce(currentForce);
+    
+    std::cout << "[RAMP] Starting force ramp from " << currentForce.str(3) 
+              << " (mag: " << currentForce.length() << "N) over " << durationMs << "ms" << std::endl;
 
     const int steps = std::max(1, durationMs / 5);
     for (int i = 0; i < steps; ++i) {
         double alpha = 1.0 - static_cast<double>(i + 1) / steps;
         cVector3d f = alpha * currentForce;
         simContext.hapticDevice->setForce(f);
+        
+        // Log every 5th step to avoid spam
+        if (i % 5 == 0 || i == steps - 1) {
+            std::cout << "[RAMP] Step " << (i+1) << "/" << steps << ": force = " 
+                      << f.str(3) << " (mag: " << f.length() << "N)" << std::endl;
+        }
         cSleepMs(5);
     }
     simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    std::cout << "[RAMP] Force ramping complete, final force set to zero" << std::endl;
 }
 
 bool SimulationManager::applyCursorConfig(const std::string& visualType,
@@ -1090,7 +1175,9 @@ void SimulationManager::createHapticTool() {
         sphereMulti->m_material->setWhite();
     }
 
-    simContext.tool = new cToolMesh(simContext.world, sphereMulti, 24, 0.01);
+    //simContext.tool = new cToolMesh(simContext.world, sphereMulti, 24, 0.01);
+    simContext.tool = new cToolCursor(simContext.world);
+    simContext.tool->setRadius(0.03);
 
     simContext.world->addChild(simContext.tool);
 
@@ -1098,6 +1185,10 @@ void SimulationManager::createHapticTool() {
     simContext.tool->setHapticDevice(simContext.hapticDevice);
 
     simContext.tool->enableDynamicObjects(true);
+
+    // Enable force rise to prevent violent bounces/impacts
+    // simContext.tool->setUseForceRise(true);
+    // simContext.tool->setRiseTime(0.05); // 50ms ramp time for smooth force onset
 
     // map the physical workspace of the haptic device to a larger virtual workspace.
     simContext.tool->setWorkspaceRadius(1.0);

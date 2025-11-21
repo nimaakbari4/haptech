@@ -6,7 +6,7 @@
 cGenericObject* BallObject::createObject(const std::map<std::string, std::string>& params,
                                          double x, double y, double z,
                                          double r, double g, double b) {
-    std::cout << "[BallObject] Creating ball object with bounciness!" << std::endl;
+    //std::cout << "[BallObject] Creating ball object with bounciness!" << std::endl;
     
     // Get parameters
     _radius = getRadius(params);
@@ -17,7 +17,7 @@ cGenericObject* BallObject::createObject(const std::map<std::string, std::string
     // Create sphere mesh (ball is a bouncy sphere)
     cMesh* ball = new cMesh();
     cCreateSphere(ball, _radius);
-    ball->createAABBCollisionDetector(_radius / 4);
+    ball->createAABBCollisionDetector(_radius);
     
     // Set color
     ball->m_material->m_ambient.set(r, g, b);
@@ -30,7 +30,7 @@ cGenericObject* BallObject::createObject(const std::map<std::string, std::string
     // Position the ball
     ball->setLocalPos(x, y, z);
     
-    std::cout << "[BallObject] Ball created with radius=" << _radius << ", bounciness=" << _bounciness << std::endl;
+    // std::cout << "[BallObject] Ball created with radius=" << _radius << ", bounciness=" << _bounciness << std::endl;
     
     return ball;
 }
@@ -82,9 +82,9 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
         debugCounter++;
         
         if (debugCounter % 60 == 0) {
-            std::cout << "[BallObject] Checking collision from (" << pos.x() << ", " << pos.y() << ", " << pos.z() 
-                      << ") to (" << newPos.x() << ", " << newPos.y() << ", " << newPos.z() << ")" 
-                      << " Found: " << collision << " Count: " << recorder.m_collisions.size() << std::endl;
+            // std::cout << "[BallObject] Checking collision from (" << pos.x() << ", " << pos.y() << ", " << pos.z() 
+            //           << ") to (" << newPos.x() << ", " << newPos.y() << ", " << newPos.z() << ")" 
+            //           << " Found: " << collision << " Count: " << recorder.m_collisions.size() << std::endl;
         }
         
         if (collision && !recorder.m_collisions.empty()) {
@@ -122,7 +122,7 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
                             newPos = pos + normal * penetrationDepth;
                         }
                         
-                        std::cout << "[BallObject] COLLISION! Bouncing with bounciness=" << _bounciness << std::endl;
+                        //std::cout << "[BallObject] COLLISION! Bouncing with bounciness=" << _bounciness << std::endl;
                     }
                 }
             }
@@ -141,7 +141,7 @@ void BallObject::updatePhysics(cGenericObject* object, double deltaTime) {
 double BallObject::getRadius(const std::map<std::string, std::string>& params) const {
     auto it = params.find("radius");
     if (it == params.end()) {
-        std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
+        //std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
         return 0.05; // Default radius
     }
     return std::stod(it->second);

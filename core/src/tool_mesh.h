@@ -88,6 +88,11 @@ private:
     // If empty or unresolved, the tether falls back to using the device position as anchor.
     std::string m_tetherAnchorId;
     cGenericObject* m_tetherAnchorObj = nullptr;
+    
+    // Force smoothing to reduce sudden spikes
+    cVector3d m_prevForce{0.0, 0.0, 0.0};
+    bool m_hasPrevForce = false;
+    double m_forceSmoothingAlpha = 0.3; // 0.0 = full smoothing, 1.0 = no smoothing
 };
 
 #endif // TOOL_MESH_H

@@ -47,17 +47,32 @@ void cToolMesh::setGravityPhysics(double gravityScale)
 
 void cToolMesh::updateToolImagePosition()
 {
-    // Position and orient visuals at device/physics pose (tether does not affect visuals)
-    if (m_image) {
-        if (m_physicsEnabled) {
-            // Free-fall physics mode has been disabled; fall back to device pose.
-            m_image->setLocalPos(m_deviceLocalPos);
-            m_image->setLocalRot(m_deviceGlobalRot);
-        } else {
-            // Device position is already computed relative to tool's global transform
-            m_image->setLocalPos(m_deviceLocalPos);
-            m_image->setLocalRot(m_deviceGlobalRot);
+    // Position visuals at the proxy (goal) position for realistic collision rendering
+    if (m_image && !m_samples.empty()) {
+        // Average all proxy positions to get the visual center
+        cVector3d avgProxyPos(0, 0, 0);
+        int validProxies = 0;
+        
+        for (auto& s : m_samples) {
+            if (s.point) {
+                cVector3d proxyGlobal = s.point->getGlobalPosProxy();
+                avgProxyPos.add(proxyGlobal);
+                validProxies++;
+            }
         }
+        
+        if (validProxies > 0) {
+            avgProxyPos.div(validProxies);
+            // Convert global proxy position to local coordinates relative to tool
+            cVector3d localProxyPos = avgProxyPos - getGlobalPos();
+            m_image->setLocalPos(localProxyPos);
+        } else {
+            // Fallback: use device position if no valid proxies
+            m_image->setLocalPos(m_deviceLocalPos);
+        }
+        
+        // Keep device rotation
+        m_image->setLocalRot(m_deviceGlobalRot);
     }
 }
 
@@ -71,13 +86,8 @@ void cToolMesh::updateFromDevice()
     m_toolGlobalPos = getGlobalPos();
     m_toolGlobalRot = getGlobalRot();
     
-    // Handle old pose-physics mode (decoupled visual)
-    if (m_physicsEnabled) {
-        // Free-fall physics mode disabled; no integration performed.
-    }
-    
-    // Default: visual follows device
-    updateToolImagePosition();
+    // Don't update visual position here - it will be updated in render()
+    // after computeInteractionForces() has updated all proxy positions
 }
 
 void cToolMesh::setGravityForceScale(double scale)
@@ -129,10 +139,40 @@ void cToolMesh::computeInteractionForces()
         accumulatedTorque.add(cCross(sampleWorldPos - toolPos, f));
     }
     
+    // Scale force by number of samples to prevent force multiplication
+    // Multiple contact points should distribute, not amplify force
+    int numSamples = (int)m_samples.size();
+    if (numSamples > 1) {
+        accumulatedForce.mul(1.0 / numSamples);
+        accumulatedTorque.mul(1.0 / numSamples);
+    }
+    
     double factor = m_workspaceScaleFactor;
     if (factor > 0.0) {
         accumulatedTorque.mul(1.0 / factor);
     }
+
+    // Clamp force magnitude to safe limits
+    double forceMag = accumulatedForce.length();
+    double maxSafeForce = 20.0; // Conservative 20N limit for robot safety
+    if (m_hapticDevice) {
+        cHapticDeviceInfo info = m_hapticDevice->getSpecifications();
+        double deviceMax = info.m_maxLinearForce;
+        if (deviceMax > 0.0) {
+            maxSafeForce = std::min(maxSafeForce, 0.7 * deviceMax); // 70% of device max
+        }
+    }
+    if (forceMag > maxSafeForce && forceMag > C_SMALL) {
+        accumulatedForce.mul(maxSafeForce / forceMag);
+    }
+
+    // Apply force smoothing to reduce sudden spikes
+    if (m_hasPrevForce) {
+        const double alpha = std::max(0.0, std::min(1.0, m_forceSmoothingAlpha));
+        accumulatedForce = (alpha * accumulatedForce) + ((1.0 - alpha) * m_prevForce);
+    }
+    m_prevForce = accumulatedForce;
+    m_hasPrevForce = true;
 
     // Send environment force directly to the device (CHAI3D default behavior)
     setDeviceGlobalForce(accumulatedForce);
@@ -182,6 +222,9 @@ void cToolMesh::computeInteractionForces()
 
 void cToolMesh::render(cRenderOptions& a_options)
 {
+    // Update visual position to follow proxy (after computeInteractionForces has run)
+    updateToolImagePosition();
+    
     // Render haptic points (proxy/goal) if enabled
     int numContactPoint = (int)(m_hapticPoints.size());
     for (int i = 0; i < numContactPoint; i++)
