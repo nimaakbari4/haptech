@@ -4,5 +4,5 @@
     "server_host": "localhost",
     "server_port": 50051,
     "trial_subject": "1",
-    "last_configuration_file": "sandbox.xml"
+    "last_configuration_file": "pong_demo.xml"
 }

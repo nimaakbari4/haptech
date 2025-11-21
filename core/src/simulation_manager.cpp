@@ -312,6 +312,15 @@ bool SimulationManager::reset() {
               0.0, 0.0, 0.0,  // lookAt
               0.0, 0.0, 1.0); // up
     
+    // Re-enable cursor tool visual (in case it was hidden for pong game)
+    if (simContext.tool) {
+        // Re-enable the tool's image if it exists
+        if (simContext.tool->m_image) {
+            simContext.tool->m_image->setEnabled(true);
+        }
+        simContext.tool->setEnabled(true);
+    }
+    
     {
         std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
         // Clear all containers

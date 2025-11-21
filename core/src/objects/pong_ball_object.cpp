@@ -105,6 +105,16 @@ chai3d::cGenericObject* PongBallObject::createObject(const std::map<std::string,
         scoreboardFontSize_ = parseDouble(params, "scoreboard_font_size", scoreboardFontSize_);
         scoreboardColor_ = parseColor(params, "scoreboard_color", scoreboardColor_);
 
+        // Hide cursor tool visual for pong game
+        if (SimulationManager::simContext.tool) {
+            // Hide the tool's image if it exists
+            if (SimulationManager::simContext.tool->m_image) {
+                SimulationManager::simContext.tool->m_image->setEnabled(false);
+            }
+
+            SimulationManager::simContext.tool->setEnabled(false);
+        }
+        
         chai3d::cMesh* ball = new chai3d::cMesh();
         chai3d::cCreateSphere(ball, radius_);
         ball->createAABBCollisionDetector(radius_ / 4.0);
