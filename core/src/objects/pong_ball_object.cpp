@@ -105,16 +105,6 @@ chai3d::cGenericObject* PongBallObject::createObject(const std::map<std::string,
         scoreboardFontSize_ = parseDouble(params, "scoreboard_font_size", scoreboardFontSize_);
         scoreboardColor_ = parseColor(params, "scoreboard_color", scoreboardColor_);
 
-        // Hide cursor tool visual for pong game
-        if (SimulationManager::simContext.tool) {
-            // Hide the tool's image if it exists
-            if (SimulationManager::simContext.tool->m_image) {
-                SimulationManager::simContext.tool->m_image->setEnabled(false);
-            }
-
-            SimulationManager::simContext.tool->setEnabled(false);
-        }
-        
         chai3d::cMesh* ball = new chai3d::cMesh();
         chai3d::cCreateSphere(ball, radius_);
         ball->createAABBCollisionDetector(radius_ / 4.0);
@@ -159,7 +149,7 @@ void PongBallObject::initializeState(PongGameState& state) {
     state.waitingForServe = true;
     state.serveTimer = resetDelay_;
     state.ballVelocity = chai3d::cVector3d(0, 0, 0);
-    state.ballPosition = chai3d::cVector3d(0, 0, 0);
+    state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
     state.playerScore = 0;
     state.aiScore = 0;
     state.scoreLimit = scoreLimit_;
@@ -189,7 +179,7 @@ void PongBallObject::scheduleServe(PongGameState& state, int direction) {
     state.waitingForServe = true;
     state.serveTimer = resetDelay_;
     state.ballVelocity = chai3d::cVector3d(0, 0, 0);
-    state.ballPosition = chai3d::cVector3d(0, 0, 0);
+    state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
     state.ballSpeed = state.baseBallSpeed;
     if (ballNode_) {
         ballNode_->setLocalPos(state.ballPosition);
@@ -212,7 +202,7 @@ void PongBallObject::launchBall(PongGameState& state) {
 
     state.ballVelocity = velocity;
     state.waitingForServe = false;
-    state.ballPosition = chai3d::cVector3d(0, 0, 0);
+    state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
     state.ballSpeed = speed;
 }
 
@@ -251,6 +241,12 @@ bool PongBallObject::checkPaddleCollision(const PaddleInfo& paddleInfo,
 
     double paddlePlaneX = paddlePos.x();
     double paddleHalfWidth = paddleInfo.halfWidth + state.ballRadius;
+    
+    // Check Z coordinate - ball and paddle must be at same Z level (within tolerance)
+    double zTolerance = 0.1; // Allow 10cm tolerance in Z
+    if (std::abs(pos.z() - paddlePos.z()) > zTolerance) {
+        return false;
+    }
 
     if (pos.y() < paddleMinY || pos.y() > paddleMaxY) {
         return false;
@@ -368,7 +364,7 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
         if (state.serveTimer <= 0.0) {
             launchBall(state);
         } else {
-            state.ballPosition = chai3d::cVector3d(0, 0, 0);
+            state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
             object->setLocalPos(state.ballPosition);
             return;
         }
@@ -379,12 +375,15 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
 
     handleWallBounce(state, pos);
     handlePaddleCollisions(state, pos);
+    
+    // Ensure ball stays at z=10 (2D pong game)
+    pos.z(10.0);
 
     double goalLimit = state.fieldHalfWidth + radius_;
     if (pos.x() > goalLimit) {
         state.playerScore += 1;
         updateScoreboardText(state);
-        state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
         state.ballSpeed = state.baseBallSpeed;  // Reset speed on goal
         if (checkScoreLimit(state, true)) {
             object->setLocalPos(state.ballPosition);
@@ -404,7 +403,7 @@ void PongBallObject::updatePhysics(chai3d::cGenericObject* object, double deltaT
     } else if (pos.x() < -goalLimit) {
         state.aiScore += 1;
         updateScoreboardText(state);
-        state.ballPosition = chai3d::cVector3d(0, 0, 0);
+        state.ballPosition = chai3d::cVector3d(0, 0, 10.0);
         state.ballSpeed = state.baseBallSpeed;  // Reset speed on goal
         if (checkScoreLimit(state, false)) {
             object->setLocalPos(state.ballPosition);

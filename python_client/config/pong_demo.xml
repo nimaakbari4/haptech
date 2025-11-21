@@ -24,8 +24,8 @@
   <SceneSettings>
     <BackgroundColor r="0.05" g="0.05" b="0.08"/>
     <Camera>
-      <Position x="-0.8" y="0.0" z="0.25"/>
-      <LookAt x="0.0" y="0.0" z="0.05"/>
+      <Position x="-0.8" y="0.0" z="10.25"/>
+      <LookAt x="0.0" y="0.0" z="10.05"/>
       <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
     <TextOverlay>
@@ -40,14 +40,14 @@
   <Objects>
     <!-- Arena walls -->
     <Object id="upper_wall" type="box">
-      <Position x="0.0" y="0.28" z="0.0"/>
+      <Position x="0.0" y="0.28" z="10.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="0.2" g="0.2" b="0.4"/>
       <Parameters width="0.8" height="0.04" depth="0.02" stiffness="1200" damping="30"/>
     </Object>
 
     <Object id="lower_wall" type="box">
-      <Position x="0.0" y="-0.28" z="0.0"/>
+      <Position x="0.0" y="-0.28" z="10.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="0.2" g="0.2" b="0.4"/>
       <Parameters width="0.8" height="0.04" depth="0.02" stiffness="1200" damping="30"/>
@@ -55,7 +55,7 @@
 
     <!-- Player paddle (left) -->
     <Object id="player_paddle" type="pong_paddle">
-      <Position x="-0.34" y="0.0" z="0.0"/>
+      <Position x="-0.34" y="0.0" z="10.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="0.15" g="0.65" b="1.0"/>
       <Parameters
@@ -72,7 +72,7 @@
 
     <!-- CPU paddle (right) -->
     <Object id="cpu_paddle" type="pong_paddle">
-      <Position x="0.34" y="0.0" z="0.0"/>
+      <Position x="0.34" y="0.0" z="10.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="1.0" g="0.35" b="0.35"/>
       <Parameters
@@ -87,7 +87,7 @@
 
     <!-- Pong ball -->
     <Object id="pong_ball" type="pong_ball">
-      <Position x="0.0" y="0.0" z="0.0"/>
+      <Position x="0.0" y="0.0" z="10.0"/>
       <Orientation roll="0" pitch="0" yaw="0"/>
       <Color r="1.0" g="1.0" b="1.0"/>
       <Parameters
