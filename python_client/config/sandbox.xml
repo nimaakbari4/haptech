@@ -31,11 +31,11 @@
   </HUDText>
 
   <SceneSettings>
-    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <BackgroundColor r="0.8" g="0.8" b="1.0"/>
     <Camera>
-      <Position x="1.0" y="1.0" z="2.0"/>
+      <Position x="1.0" y="0.0" z="0.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
-      <Up x="0.0" y="1.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
     <TextOverlay>
       <Text>Explore the sandbox for up to 2 minutes, or move the ball to the red box when done.</Text>
@@ -69,7 +69,7 @@
 
     <Object id="ring_obstacle" type="torus">
       <Position x="0.0" y="0.25" z="0.0"/>
-      <Orientation x="90" y="0" z="0"/>
+      <Orientation x="90" y="45" z="20"/>
       <Parameters inner_radius="0.03" outer_radius="0.1" num_sides="16" num_rings="20"/>
       <Color r="0.0" g="0.0" b="1.0"/>
     </Object>
@@ -83,22 +83,22 @@
     
     <!-- Pushable ball with friction -->
     <Object id="pushable_ball" type="ball">
-      <Position x="0.0" y="0.0" z="0.2"/>
+      <Position x="0.0" y="-0.4" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
       <Parameters radius="0.04" gravity_scale="0.0" mass="100.0" bounciness="1.0"/>
       <Color r="0.2" g="0.8" b="1.0"/>
     </Object>
     <Object id="pushable_ball_2" type="ball">
-      <Position x="0.0" y="-0.10" z="0.2"/>
+      <Position x="0.0" y="-0.10" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.04" gravity_scale="0.0" mass="100.0" bounciness="1.0"/>
-      <Color r="0.2" g="0.8" b="1.0"/>
+      <Parameters radius="0.02" gravity_scale="0.0" mass="10.0" bounciness="1.0"/>
+      <Color r="1.0" g="1.0" b="1.0"/>
     </Object>
     <Object id="pushable_ball_3" type="ball">
-      <Position x="0.0" y="-0.25" z="0.2"/>
+      <Position x="0.0" y="-0.25" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.04" gravity_scale="0.0" mass="100.0" bounciness="1.0"/>
-      <Color r="0.2" g="0.8" b="1.0"/>
+      <Parameters radius="0.1" gravity_scale="0.0" mass="500.0" bounciness="1.0"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
   </Objects>
 </TrialConfig>

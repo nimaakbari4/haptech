@@ -157,13 +157,6 @@ void PongPaddleObject::updateAIControlled(PongGameState& state, double deltaTime
     targetY = paddlePos.y() + (ballPos.y() - paddlePos.y()) * deltaTime * speed;
     targetY = clampValue(targetY, clampMinY_, clampMaxY_);
     paddleNode_->setLocalPos(baseX_, targetY, baseZ_);
-    
-    // Update state with current AI paddle info for collision detection
-    state.aiPaddle.node = paddleNode_;
-    state.aiPaddle.halfHeight = halfHeight_;
-    state.aiPaddle.halfWidth = halfWidth_;
-    state.aiPaddle.clampMinY = clampMinY_;
-    state.aiPaddle.clampMaxY = clampMaxY_;
 }
 
 void PongPaddleObject::updatePhysics(chai3d::cGenericObject* object, double deltaTime) {
