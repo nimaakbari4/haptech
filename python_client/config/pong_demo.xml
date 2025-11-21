@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrialConfig>
+  <Test>true</Test>
+  <StartConditions>
+    <!-- Immediate start -->
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="0.0"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <!-- Run for three minutes or until manually stopped -->
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="180.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Welcome to Haptech Pong! Use the stylus to move the left paddle.</StartMessage>
+    <SuccessMessage>Great rally!</SuccessMessage>
+    <FailureMessage>Session complete.</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.05" g="0.05" b="0.08"/>
+    <Camera>
+      <Position x="-0.8" y="0.0" z="0.25"/>
+      <LookAt x="0.0" y="0.0" z="0.05"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
+    </Camera>
+    <TextOverlay>
+      <Text>Hit the ball past the CPU paddle to score!</Text>
+      <X>30</X>
+      <Y>70</Y>
+      <FontSize>24</FontSize>
+      <Color r="0.85" g="0.85" b="0.9"/>
+    </TextOverlay>
+  </SceneSettings>
+
+  <Objects>
+    <!-- Arena walls -->
+    <Object id="upper_wall" type="box">
+      <Position x="0.0" y="0.28" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.2" g="0.2" b="0.4"/>
+      <Parameters width="0.8" height="0.04" depth="0.02" stiffness="1200" damping="30"/>
+    </Object>
+
+    <Object id="lower_wall" type="box">
+      <Position x="0.0" y="-0.28" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.2" g="0.2" b="0.4"/>
+      <Parameters width="0.8" height="0.04" depth="0.02" stiffness="1200" damping="30"/>
+    </Object>
+
+    <!-- Player paddle (left) -->
+    <Object id="player_paddle" type="pong_paddle">
+      <Position x="-0.34" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="0.15" g="0.65" b="1.0"/>
+      <Parameters
+        role="player"
+        width="0.03"
+        height="0.18"
+        depth="0.04"
+        clamp_min_y="-0.22"
+        clamp_max_y="0.22"
+        player_axis_scale="1.4"
+        player_axis_offset="0.0"
+        smoothing="16.0"/>
+    </Object>
+
+    <!-- CPU paddle (right) -->
+    <Object id="cpu_paddle" type="pong_paddle">
+      <Position x="0.34" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="0.35" b="0.35"/>
+      <Parameters
+        role="ai"
+        width="0.03"
+        height="0.18"
+        depth="0.04"
+        clamp_min_y="-0.22"
+        clamp_max_y="0.22"
+        ai_speed="0.4"/>
+    </Object>
+
+    <!-- Pong ball -->
+    <Object id="pong_ball" type="pong_ball">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="0" pitch="0" yaw="0"/>
+      <Color r="1.0" g="1.0" b="1.0"/>
+      <Parameters
+        radius="0.025"
+        speed="0.7"
+        speed_increment="0.05"
+        max_speed="1.4"
+        field_half_width="0.36"
+        field_half_height="0.24"
+        reset_delay="2.0"
+        max_bounce_angle_deg="55"
+        serve_angle_deg="18"
+        initial_direction="1"
+        score_limit="7"
+        scoreboard_x="30"
+        scoreboard_y="20"
+        scoreboard_font_size="36"
+        scoreboard_color_r="0.95"
+        scoreboard_color_g="0.95"
+        scoreboard_color_b="1.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>
+

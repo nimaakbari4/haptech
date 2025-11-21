@@ -1,4 +1,5 @@
 #include "tool_mesh.h"
+#include "pong_game_state.h"
 #include "simulation_manager.h"
 
 using namespace chai3d;
@@ -14,8 +15,7 @@ cToolMesh::cToolMesh(cWorld* world, cGenericObject* visualObject,
         // Ensure image is not nullptr and belongs to our scene graph
         m_image->setLocalPos(0, 0, 0);
         m_image->setLocalRot(cIdentity3d());
-        // Add image as a child of the tool so its global position updates correctly
-        addChild(m_image);
+        m_image->m_material->setWhite();
     }
 
     generateSamplesFromObject(visualObject, numSamples);
@@ -47,31 +47,24 @@ void cToolMesh::setGravityPhysics(double gravityScale)
 
 void cToolMesh::updateToolImagePosition()
 {
-    // Position visuals at the proxy (goal) position for realistic collision rendering
-    if (m_image && !m_samples.empty()) {
-        // Average all proxy positions to get the visual center
-        cVector3d avgProxyPos(0, 0, 0);
-        int validProxies = 0;
-        
-        for (auto& s : m_samples) {
-            if (s.point) {
-                cVector3d proxyGlobal = s.point->getGlobalPosProxy();
-                avgProxyPos.add(proxyGlobal);
-                validProxies++;
-            }
+    // Position and orient visuals at device pose
+    if (!m_image) {
+        return;
+    }
+
+    bool syncedToPaddle = false;
+    {
+        auto& state = GetPongGameState();
+        std::lock_guard<std::mutex> lock(state.mutex);
+        if (state.playerPaddle.node) {
+            m_image->setLocalPos(state.playerPaddle.node->getLocalPos());
+            m_image->setLocalRot(state.playerPaddle.node->getLocalRot());
+            syncedToPaddle = true;
         }
-        
-        if (validProxies > 0) {
-            avgProxyPos.div(validProxies);
-            // Convert global proxy position to local coordinates relative to tool
-            cVector3d localProxyPos = avgProxyPos - getGlobalPos();
-            m_image->setLocalPos(localProxyPos);
-        } else {
-            // Fallback: use device position if no valid proxies
-            m_image->setLocalPos(m_deviceLocalPos);
-        }
-        
-        // Keep device rotation
+    }
+
+    if (!syncedToPaddle) {
+        m_image->setLocalPos(m_deviceGlobalPos);
         m_image->setLocalRot(m_deviceGlobalRot);
     }
 }

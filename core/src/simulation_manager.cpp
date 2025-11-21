@@ -2,6 +2,7 @@
 #include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
 #include "extensions_registry.h"
+#include "pong_game_state.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
@@ -304,6 +305,12 @@ bool SimulationManager::reset() {
     setBackgroundColor(0.0, 0.0, 0.0);
     clearTextOverlays();
     removeAllObjects();
+    ResetPongGameState();
+
+    // reset camera to default position
+    simContext.camera->set( cVector3d (1.0, 0.0, 0.0),
+                            cVector3d (0.0, 0.0, 0.0),
+                            cVector3d (0.0, 0.0, 1.0));
     
     {
         std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
@@ -344,6 +351,41 @@ bool SimulationManager::setBackgroundColor(double r, double g, double b) {
     simContext.world->m_backgroundColor.setR(r);
     simContext.world->m_backgroundColor.setG(g);
     simContext.world->m_backgroundColor.setB(b);
+    return true;
+}
+
+bool SimulationManager::setCamera(double px, double py, double pz,
+                                  double lx, double ly, double lz,
+                                  double ux, double uy, double uz) {
+    if (!simContext.simulationRunning) {
+        std::cout << "[ERROR] Simulation is not running." << std::endl;
+        return false;
+    }
+
+    if (!simContext.camera) {
+        std::cout << "[ERROR] Camera has not been initialized." << std::endl;
+        return false;
+    }
+
+    cVector3d position(px, py, pz);
+    cVector3d lookAt(lx, ly, lz);
+    cVector3d up(ux, uy, uz);
+
+    if (up.lengthsq() < 1e-12) {
+        std::cout << "[WARN] Camera up vector too small; defaulting to (0, 0, 1)." << std::endl;
+        up.set(0.0, 0.0, 1.0);
+    }
+
+    simContext.camera->set(position, lookAt, up);
+
+    if (simContext.light) {
+        cVector3d dir = lookAt - position;
+        if (dir.lengthsq() > 1e-12) {
+            dir.normalize();
+            simContext.light->setDir(-dir.x(), -dir.y(), -dir.z());
+        }
+    }
+
     return true;
 }
 
@@ -900,266 +942,29 @@ void SimulationManager::rampDeviceForceToZero(int durationMs) {
         cSleepMs(5);
     }
     simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
-    std::cout << "[RAMP] Force ramping complete, final force set to zero" << std::endl;
 }
 
-bool SimulationManager::applyCursorConfig(const std::string& visualType,
-                                  const std::map<std::string, std::string>& params) {
-    // Pause haptics loop to avoid races with the haptics thread while swapping tools
-    simContext.hapticsEnabled = false;
-    cSleepMs(100);
-
-    // Ensure a haptic device is available
+void SimulationManager::applyConstantImpulse(double fx, double fy, double fz, int durationMs) {
     if (!simContext.hapticDevice) {
-        std::cout << "[CURSOR] No haptic device present; cannot create tool." << std::endl;
-        simContext.hapticsEnabled = true;
-        return false;
+        std::cout << "[WARN] Cannot apply impulse: haptic device is null." << std::endl;
+        return;
     }
 
-    // Build visual mesh via registry if possible
-    cGenericObject* visual = nullptr;
+    cVector3d impulseForce(fx, fy, fz);
+    cVector3d originalForce;
+    simContext.hapticDevice->getForce(originalForce);
 
-    // Try registry
-    if (!visualType.empty() && CustomObjectRegistry::isTypeRegistered(visualType)) {
-        auto customObj = CustomObjectRegistry::createObject(visualType);
-        if (customObj) {
-            // Create object at origin, white color (visual only)
-            cGenericObject* obj = customObj->createObject(params, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-            // Accept any scene-graph object as the visual (mesh or segments)
-            if (auto mm = dynamic_cast<cMultiMesh*>(obj)) {
-                visual = mm;
-            } else if (auto m = dynamic_cast<cMesh*>(obj)) {
-                cMultiMesh* wrap = new cMultiMesh();
-                wrap->addMesh(m);
-                visual = wrap;
-            } else if (auto segs = dynamic_cast<cMultiSegment*>(obj)) {
-                visual = segs;
-            } else {
-                visual = obj; // fallback generic
-            }
-        }
+    // Apply the impulse force for the specified duration
+    const int stepMs = 1;  // 1kHz update to match haptics loop
+    const int steps = std::max(1, durationMs / stepMs);
+    
+    for (int i = 0; i < steps; ++i) {
+        simContext.hapticDevice->setForce(impulseForce);
+        cSleepMs(stepMs);
     }
 
-    // Built-in primitive support when not using the registry
-    if (!visual && !visualType.empty()) {
-        std::string vt = visualType;
-        std::transform(vt.begin(), vt.end(), vt.begin(), ::tolower);
-
-        if (vt == "sphere") {
-            double radius = 0.01; // default ~2cm diameter to match prior cube
-            auto itR = params.find("radius");
-            if (itR != params.end()) {
-                double rParsed = atof(itR->second.c_str());
-                if (rParsed > 0.0) radius = rParsed;
-            }
-            cMultiMesh* mm = new cMultiMesh(); visual = mm;
-            cMesh* sub = mm->newMesh();
-            cCreateSphere(sub, radius);
-            mm->m_material->setWhite();
-        } else if (vt == "box") {
-            double w = 0.02, h = 0.02, d = 0.02; // defaults
-            auto itW = params.find("width"); if (itW != params.end()) { double v = atof(itW->second.c_str()); if (v > 0.0) w = v; }
-            auto itH = params.find("height"); if (itH != params.end()) { double v = atof(itH->second.c_str()); if (v > 0.0) h = v; }
-            auto itD = params.find("depth"); if (itD != params.end()) { double v = atof(itD->second.c_str()); if (v > 0.0) d = v; }
-            cMultiMesh* mm = new cMultiMesh(); visual = mm;
-            cMesh* sub = mm->newMesh();
-            cCreateBox(sub, w, h, d);
-            mm->m_material->setWhite();
-        } else if (vt == "cylinder") {
-            double radius = 0.01, height = 0.02; // defaults
-            auto itR = params.find("radius"); if (itR != params.end()) { double v = atof(itR->second.c_str()); if (v > 0.0) radius = v; }
-            auto itH = params.find("height"); if (itH != params.end()) { double v = atof(itH->second.c_str()); if (v > 0.0) height = v; }
-            cMultiMesh* mm = new cMultiMesh(); visual = mm;
-            cMesh* sub = mm->newMesh();
-            cCreateCylinder(sub, radius, height);
-            mm->m_material->setWhite();
-        }
-    }
-
-    // Fallback: simple box
-    if (!visual) {
-        cMultiMesh* mm = new cMultiMesh(); visual = mm;
-        cMesh* sub = mm->newMesh();
-        cCreateSphere(sub, 0.02);
-        mm->m_material->setWhite();
-    }
-
-    // Optional visual color (from params: color_r,color_g,color_b)
-    auto itCr = params.find("color_r");
-    auto itCg = params.find("color_g");
-    auto itCb = params.find("color_b");
-    if (itCr != params.end() && itCg != params.end() && itCb != params.end()) {
-        double rr = atof(itCr->second.c_str());
-        double gg = atof(itCg->second.c_str());
-        double bb = atof(itCb->second.c_str());
-        rr = std::max(0.0, std::min(1.0, rr));
-        gg = std::max(0.0, std::min(1.0, gg));
-        bb = std::max(0.0, std::min(1.0, bb));
-        if (auto mm = dynamic_cast<cMultiMesh*>(visual)) {
-            if (!mm->m_material) {
-                mm->m_material = cMaterial::create();
-            }
-            mm->m_material->setColorf(rr, gg, bb);
-        } else if (auto segs = dynamic_cast<cMultiSegment*>(visual)) {
-            // For segments, set line color and material color
-            segs->setLineColor(cColorf(rr, gg, bb, 1.0));
-            if (!segs->m_material) {
-                segs->m_material = cMaterial::create();
-            }
-            segs->m_material->setColorf(rr, gg, bb);
-        }
-    }
-
-    // Apply optional transforms
-    auto itScale = params.find("scale");
-    if (itScale != params.end()) {
-        double s = atof(itScale->second.c_str());
-        if (s > 0.0) visual->scale(s);
-    }
-    auto itRx = params.find("rot_x");
-    auto itRy = params.find("rot_y");
-    auto itRz = params.find("rot_z");
-    double rx = itRx != params.end() ? atof(itRx->second.c_str()) : 0.0;
-    double ry = itRy != params.end() ? atof(itRy->second.c_str()) : 0.0;
-    double rz = itRz != params.end() ? atof(itRz->second.c_str()) : 0.0;
-    if (rx != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(1,0,0), rx);
-    if (ry != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(0,1,0), ry);
-    if (rz != 0.0) visual->rotateAboutLocalAxisDeg(cVector3d(0,0,1), rz);
-
-    // Sampling/contact parameters
-    int sampleCount = 24;
-    auto itSamples = params.find("sample_count");
-    if (itSamples != params.end()) {
-        sampleCount = std::max(1, atoi(itSamples->second.c_str()));
-    }
-    double contactRadius = 0.005;
-    auto itContact = params.find("contact_radius");
-    if (itContact != params.end()) {
-        contactRadius = std::max(1e-4, atof(itContact->second.c_str()));
-    }
-
-    // Prefer updating an existing tool to avoid reopening the device
-    cToolMesh* toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool);
-    if (toolMeshPtr) {
-        toolMeshPtr->setVisual(visual, sampleCount, contactRadius);
-    } else {
-        // No existing mesh tool; create one and attach device
-        destroyHapticTool();
-        simContext.tool = new cToolMesh(simContext.world, visual, sampleCount, contactRadius);
-        simContext.world->addChild(simContext.tool);
-        simContext.tool->setHapticDevice(simContext.hapticDevice);
-        simContext.tool->setWorkspaceRadius(1.0);
-        toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool);
-    }
-
-    // Optional gravity behavior
-    if (toolMeshPtr) {
-        // Check for tether mode (hybrid: mass attached by spring-damper)
-        bool tetherEnabled = false;
-        auto itTether = params.find("tether_enabled");
-        if (itTether != params.end()) {
-            std::string tetherStr = itTether->second;
-            std::transform(tetherStr.begin(), tetherStr.end(), tetherStr.begin(), ::tolower);
-            tetherEnabled = (tetherStr == "true" || tetherStr == "1");
-        }
-        
-        if (tetherEnabled) {
-            // Parse tether parameters with defaults
-            double mass = 0.05;
-            auto itMass = params.find("tether_mass");
-            if (itMass != params.end()) {
-                double v = atof(itMass->second.c_str());
-                if (v > 0.0) mass = v;
-            }
-            
-            double stiffness = 50.0;
-            auto itStiff = params.find("tether_stiffness");
-            if (itStiff != params.end()) {
-                double v = atof(itStiff->second.c_str());
-                if (v > 0.0) stiffness = v;
-            }
-            
-            double damping = 2.0;
-            auto itDamp = params.find("tether_damping");
-            if (itDamp != params.end()) {
-                double v = atof(itDamp->second.c_str());
-                if (v >= 0.0) damping = v;
-            }
-            
-            double gravityScale = 1.0;
-            auto itGScale = params.find("tether_gravity_scale");
-            if (itGScale != params.end()) {
-                double v = atof(itGScale->second.c_str());
-                if (v >= 0.0) gravityScale = v;
-            }
-            
-            double maxForce = 30.0;
-            auto itMaxF = params.find("tether_max_force");
-            if (itMaxF != params.end()) {
-                double v = atof(itMaxF->second.c_str());
-                if (v > 0.0) maxForce = v;
-            }
-            
-            // Optional anchor object id for the tether
-            std::string anchorId;
-            auto itAnchor = params.find("tether_anchor_id");
-            if (itAnchor != params.end()) {
-                anchorId = itAnchor->second;
-            }
-            
-            // Configure tether
-            toolMeshPtr->setTetherParams(mass, stiffness, damping, gravityScale, maxForce);
-            if (!anchorId.empty()) {
-                toolMeshPtr->setTetherAnchorId(anchorId);
-            }
-            toolMeshPtr->setTetherEnabled(true);
-            
-            // Disable other gravity modes to avoid conflicts
-            toolMeshPtr->setGravityPhysics(0.0);
-            toolMeshPtr->setGravityForceScale(0.0);
-            
-            std::cout << "[CURSOR] Tether enabled: mass=" << mass << "kg, k=" << stiffness 
-                      << "N/m, c=" << damping << "N·s/m, g_scale=" << gravityScale 
-                      << ", max_force=" << maxForce << "N" << std::endl;
-        } else {
-            // No tether: use force-mode gravity if specified
-            double gfs = 0.0;
-            auto itGFS = params.find("gravity_force_scale");
-            if (itGFS != params.end()) {
-                gfs = atof(itGFS->second.c_str());
-            } else {
-                // Backward compatibility: map gravity_scale to force mode
-                auto itGS = params.find("gravity_scale");
-                if (itGS != params.end()) {
-                    gfs = atof(itGS->second.c_str());
-                }
-            }
-            toolMeshPtr->setGravityForceScale(gfs);
-            // Ensure pose is device-driven (disable physics mode) for coupling
-            toolMeshPtr->setGravityPhysics(0.0);
-            toolMeshPtr->setTetherEnabled(false);
-        }
-    }
-
-    // Optional proxy visuals
-    auto itShow = params.find("show_contact_points");
-    if (itShow != params.end() && (itShow->second == "true" || itShow->second == "1")) {
-        simContext.tool->setShowContactPoints(true, true);
-    } else {
-        simContext.tool->setShowContactPoints(false, false);
-    }
-
-    // Start tool only if not already enabled (avoid re-opening device)
-    if (!simContext.tool->getEnabled()) {
-        simContext.tool->start();
-    }
-    std::cout << "[CURSOR] Applied cursor visual type: " << visualType
-              << ", samples: " << sampleCount
-              << ", contact_radius: " << contactRadius << std::endl;
-
-    // Resume haptics loop
-    simContext.hapticsEnabled = true;
-    return true;
+    // Return to original force (or let haptics loop take over)
+    simContext.hapticDevice->setForce(originalForce);
 }
 
 void SimulationManager::createHapticTool() {
@@ -1168,16 +973,27 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    auto sphereMulti = new cMultiMesh();
+    // create a tool (mesh-based cursor) and insert into the world
+    
+
+    auto teapotMulti = new cMultiMesh();
     {
         cMesh* sub = sphereMulti->newMesh();
         cCreateSphere(sub, 0.02);
         sphereMulti->m_material->setWhite();
     }
 
-    //simContext.tool = new cToolMesh(simContext.world, sphereMulti, 24, 0.01);
-    simContext.tool = new cToolCursor(simContext.world);
-    simContext.tool->setRadius(0.03);
+    auto boxMulti = new cMultiMesh();
+    {
+        cMesh* sub = boxMulti->newMesh();
+        cCreateBox(sub, 0.02, 0.02, 0.02);
+        boxMulti->m_material->setWhite();
+    }
+
+    // Instantiate cToolMesh with sampling and contact radius
+    const int sampleCount = 24;
+    const double contactRadius = 0.01;
+    simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
 
     simContext.world->addChild(simContext.tool);
 
