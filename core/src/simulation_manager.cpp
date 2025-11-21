@@ -863,6 +863,29 @@ void SimulationManager::rampDeviceForceToZero(int durationMs) {
     simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
 }
 
+void SimulationManager::applyConstantImpulse(double fx, double fy, double fz, int durationMs) {
+    if (!simContext.hapticDevice) {
+        std::cout << "[WARN] Cannot apply impulse: haptic device is null." << std::endl;
+        return;
+    }
+
+    cVector3d impulseForce(fx, fy, fz);
+    cVector3d originalForce;
+    simContext.hapticDevice->getForce(originalForce);
+
+    // Apply the impulse force for the specified duration
+    const int stepMs = 1;  // 1kHz update to match haptics loop
+    const int steps = std::max(1, durationMs / stepMs);
+    
+    for (int i = 0; i < steps; ++i) {
+        simContext.hapticDevice->setForce(impulseForce);
+        cSleepMs(stepMs);
+    }
+
+    // Return to original force (or let haptics loop take over)
+    simContext.hapticDevice->setForce(originalForce);
+}
+
 void SimulationManager::createHapticTool() {
     if (!simContext.handler || !simContext.world) {
         std::cout << "[ERROR] Cannot create haptic tool: handler or world is null." << std::endl;
