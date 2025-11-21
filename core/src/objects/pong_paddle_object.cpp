@@ -145,17 +145,25 @@ void PongPaddleObject::updateAIControlled(PongGameState& state, double deltaTime
         return;
     }
 
-    // Snap AI paddle directly to the ball's Y position (clamped).
-    // This guarantees visible tracking; we can reintroduce smoothing later if desired.
-    double targetY = clampValue(state.ballPosition.y(), clampMinY_, clampMaxY_);
-    paddleNode_->setLocalPos(baseX_, targetY, baseZ_);
+    cVector3d ballPos = state.ballPosition;
+    cVector3d paddlePos = paddleNode_->getLocalPos();
+    double distance = cDistance(ballPos, paddlePos);
+    if (distance < 0.01) {
+        return;
+    }
 
+    double targetY = ballPos.y();
+    double speed = state.ballSpeed;
+    targetY = paddlePos.y() + (ballPos.y() - paddlePos.y()) * deltaTime * speed;
+    targetY = clampValue(targetY, clampMinY_, clampMaxY_);
+    paddleNode_->setLocalPos(baseX_, targetY, baseZ_);
+    
+    // Update state with current AI paddle info for collision detection
     state.aiPaddle.node = paddleNode_;
     state.aiPaddle.halfHeight = halfHeight_;
     state.aiPaddle.halfWidth = halfWidth_;
     state.aiPaddle.clampMinY = clampMinY_;
     state.aiPaddle.clampMaxY = clampMaxY_;
-    state.aiPaddle.aiSpeed = aiSpeed_;
 }
 
 void PongPaddleObject::updatePhysics(chai3d::cGenericObject* object, double deltaTime) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TrialConfig>
+  <Test>true</Test>
   <StartConditions>
     <!-- Immediate start -->
     <Condition name="time" success="true" priority="1">
@@ -81,7 +82,7 @@
         depth="0.04"
         clamp_min_y="-0.22"
         clamp_max_y="0.22"
-        ai_speed="0.45"/>
+        ai_speed="0.4"/>
     </Object>
 
     <!-- Pong ball -->
@@ -91,12 +92,12 @@
       <Color r="1.0" g="1.0" b="1.0"/>
       <Parameters
         radius="0.025"
-        speed="0.25"
+        speed="0.7"
         speed_increment="0.05"
         max_speed="1.4"
         field_half_width="0.36"
         field_half_height="0.24"
-        reset_delay="0.0"
+        reset_delay="2.0"
         max_bounce_angle_deg="55"
         serve_angle_deg="18"
         initial_direction="1"
