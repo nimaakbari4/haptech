@@ -12,9 +12,6 @@
     <Condition name="position" success="true" priority="1">
       <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
     </Condition>
-    <Condition name="time" success="true" priority="2">
-      <Parameters duration_seconds="120.0"/>
-    </Condition>
   </EndConditions>
 
   <!-- <CursorSettings object="sphere">

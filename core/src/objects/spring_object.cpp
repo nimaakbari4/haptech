@@ -76,9 +76,9 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     // Set position
     spring->setLocalPos(x, y, z);
     
-    // Set spring-specific physics properties
-    spring->m_material->setStiffness(stiffness);
-    spring->m_material->setDamping(damping);
+    // // Set spring-specific physics properties
+    // spring->m_material->setStiffness(stiffness);
+    // spring->m_material->setDamping(damping);
     
     // Add spring-like behavior (oscillation)
     // This is where the researcher's custom physics would go

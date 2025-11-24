@@ -191,6 +191,9 @@ bool SimulationManager::run() {
     // START SIMULATION
     //--------------------------------------------------------------------------
 
+    // initialize physics clock for graphics thread physics updates
+    simContext.physicsClock.start();
+
     // create a thread which starts the main haptics rendering loop
     simContext.hapticsThread = new cThread();
     simContext.hapticsThread->start(updateHaptics, CTHREAD_PRIORITY_HAPTICS);
@@ -703,6 +706,48 @@ void SimulationManager::updateGraphics(void) {
     // Process any pending deletions when haptics are disabled (safe point)
 
     /////////////////////////////////////////////////////////////////////
+    // UPDATE PHYSICS (moved from haptic loop for performance)
+    /////////////////////////////////////////////////////////////////////
+    
+    // Update physics for all objects that have custom interfaces
+    // This runs at graphics refresh rate (~60 Hz) instead of haptic rate (1000 Hz)
+    // to avoid slowing down the critical haptic loop
+    if (trialContext.trialRunning) {
+        // Calculate deltaTime for physics updates
+        simContext.physicsClock.stop();
+        double physicsDeltaTime = simContext.physicsClock.getCurrentTimeSeconds();
+        simContext.physicsClock.reset();
+        simContext.physicsClock.start();
+        
+        // Clamp deltaTime to prevent large jumps (e.g., when window is minimized)
+        // Also ensure minimum deltaTime to avoid division by zero or very small values
+        if (physicsDeltaTime > 0.1) {
+            physicsDeltaTime = 0.016; // Cap at ~60 Hz equivalent
+        } else if (physicsDeltaTime < 0.0001) {
+            physicsDeltaTime = 0.016; // Minimum deltaTime for first frame or very fast updates
+        }
+        
+        // Update physics with proper mutex locking
+        {
+            std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+            for (const auto& objPair : simContext.objectMap) {
+                const std::string& objId = objPair.first;
+                cGenericObject* chaiObj = objPair.second.get();
+                
+                // Look for corresponding custom object interface
+                auto interfaceIt = simContext.objectInterfaceMap.find(objId);
+                if (interfaceIt != simContext.objectInterfaceMap.end()) {
+                    CustomObjectInterface* customInterface = interfaceIt->second.get();
+                    if (customInterface && chaiObj) {
+                        // Call physics update with deltaTime
+                        customInterface->updatePhysics(chaiObj, physicsDeltaTime);
+                    }
+                }
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////
     // UPDATE WIDGETS
     /////////////////////////////////////////////////////////////////////
 
@@ -787,13 +832,13 @@ void SimulationManager::updateHaptics(void) {
         }
 
         // Log the first few cycles after haptics is enabled
-        if (justEnabledHaptics && cyclesSinceEnabled < 3) {
-            std::cout << "[HAPTICS] Cycle " << cyclesSinceEnabled << " after enabling" << std::endl;
-            cyclesSinceEnabled++;
-            if (cyclesSinceEnabled >= 3) {
-                justEnabledHaptics = false;
-            }
-        }
+        // if (justEnabledHaptics && cyclesSinceEnabled < 3) {
+        //     std::cout << "[HAPTICS] Cycle " << cyclesSinceEnabled << " after enabling" << std::endl;
+        //     cyclesSinceEnabled++;
+        //     if (cyclesSinceEnabled >= 3) {
+        //         justEnabledHaptics = false;
+        //     }
+        // }
 
         // update world transforms
         simContext.world->computeGlobalPositions(true);
@@ -802,30 +847,30 @@ void SimulationManager::updateHaptics(void) {
         simContext.tool->updateFromDevice();
 
         // Log contacts BEFORE computing forces
-        if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {
-            int numPoints = simContext.tool->getNumHapticPoints();
-            std::cout << "[HAPTICS] Cycle " << (cyclesSinceEnabled-1) << " - checking " << numPoints << " haptic points:" << std::endl;
-            for (int i = 0; i < numPoints; i++) {
-                auto hp = simContext.tool->getHapticPoint(i);
-                if (hp) {
-                    int numContacts = hp->getNumCollisionEvents();
-                    cVector3d proxyPos = hp->getGlobalPosProxy();
-                    cVector3d devicePos = hp->getGlobalPosGoal();
-                    double separation = cDistance(proxyPos, devicePos);
-                    std::cout << "  Point " << i << ": " << numContacts << " contacts, separation=" 
-                              << separation << "m, proxy=" << proxyPos.str(3) 
-                              << ", device=" << devicePos.str(3) << std::endl;
+        // if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {
+        //     int numPoints = simContext.tool->getNumHapticPoints();
+        //     std::cout << "[HAPTICS] Cycle " << (cyclesSinceEnabled-1) << " - checking " << numPoints << " haptic points:" << std::endl;
+        //     for (int i = 0; i < numPoints; i++) {
+        //         auto hp = simContext.tool->getHapticPoint(i);
+        //         if (hp) {
+        //             int numContacts = hp->getNumCollisionEvents();
+        //             cVector3d proxyPos = hp->getGlobalPosProxy();
+        //             cVector3d devicePos = hp->getGlobalPosGoal();
+        //             double separation = cDistance(proxyPos, devicePos);
+        //             std::cout << "  Point " << i << ": " << numContacts << " contacts, separation=" 
+        //                       << separation << "m, proxy=" << proxyPos.str(3) 
+        //                       << ", device=" << devicePos.str(3) << std::endl;
                     
-                    for (int c = 0; c < numContacts; c++) {
-                        auto collision = hp->getCollisionEvent(c);
-                        if (collision && collision->m_object) {
-                            std::cout << "    Contact " << c << " with object at " 
-                                      << collision->m_object->getGlobalPos().str(3) << std::endl;
-                        }
-                    }
-                }
-            }
-        }
+        //             for (int c = 0; c < numContacts; c++) {
+        //                 auto collision = hp->getCollisionEvent(c);
+        //                 if (collision && collision->m_object) {
+        //                     std::cout << "    Contact " << c << " with object at " 
+        //                               << collision->m_object->getGlobalPos().str(3) << std::endl;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         
         // compute interaction forces
         simContext.tool->computeInteractionForces();
@@ -846,25 +891,9 @@ void SimulationManager::updateHaptics(void) {
         // update haptic loop frequency
         simContext.freqCounterHaptics.signal(1);
 
-        // PHYSICS
-        // Update physics for all objects that have custom interfaces
-        if (trialContext.trialRunning) {
-            std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
-            for (const auto& objPair : simContext.objectMap) {
-                const std::string& objId = objPair.first;
-                cGenericObject* chaiObj = objPair.second.get();
-                
-                // Look for corresponding custom object interface
-                auto interfaceIt = simContext.objectInterfaceMap.find(objId);
-                if (interfaceIt != simContext.objectInterfaceMap.end()) {
-                    CustomObjectInterface* customInterface = interfaceIt->second.get();
-                    if (customInterface && chaiObj) {
-                        // Call physics update with deltaTime
-                        customInterface->updatePhysics(chaiObj, deltaTime);
-                    }
-                }
-            }
-        }
+        // NOTE: Physics updates have been moved to the graphics thread
+        // to avoid slowing down the haptic loop. Physics runs at ~60 Hz
+        // which is sufficient for visual updates and collision detection.
 
         cSleepMs(1000 / HAPTICS_LOOP_FREQUENCY);
     }

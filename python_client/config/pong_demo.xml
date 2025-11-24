@@ -101,7 +101,7 @@
         max_bounce_angle_deg="55"
         serve_angle_deg="18"
         initial_direction="1"
-        score_limit="7"
+        score_limit="3"
         scoreboard_x="30"
         scoreboard_y="20"
         scoreboard_font_size="36"

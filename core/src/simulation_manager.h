@@ -86,6 +86,9 @@ struct SimulationContext {
     // a frequency counter to measure the simulation haptic rate
     cFrequencyCounter freqCounterHaptics;
 
+    // clock for physics updates in graphics thread
+    cPrecisionClock physicsClock;
+
     // haptic thread
     cThread* hapticsThread;
 
