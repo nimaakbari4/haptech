@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Trial>
+    <Test>true</Test>
+    
+    <StartConditions>
+        <Condition name="start" success="true" priority="1">
+            <Parameters timeout="5.0"/>
+        </Condition>
+    </StartConditions>
+    
+    <EndConditions>
+        <Condition name="end" success="true" priority="1"/>
+    </EndConditions>
+    
+    <SceneSettings>
+        <BackgroundColor r="128" g="64" b="255"/>
+        <Camera>
+            <Position x="0" y="0" z="1"/>
+            <LookAt x="0" y="0" z="0"/>
+            <Up x="0" y="1" z="0"/>
+        </Camera>
+        <TextOverlay>
+            <Text>Test overlay with color</Text>
+            <X>10</X>
+            <Y>20</Y>
+            <FontSize>24</FontSize>
+            <Color r="1.0" g="0.5" b="0.0"/>
+        </TextOverlay>
+        <TextOverlay>
+            <Text>Test overlay without color</Text>
+            <X>50</X>
+            <Y>60</Y>
+            <FontSize>16</FontSize>
+        </TextOverlay>
+    </SceneSettings>
+    
+    <Objects>
+        <Object id="test_box" type="box">
+            <Position x="0.1" y="0.2" z="0.3"/>
+            <Orientation x="30" y="40" z="50"/>
+        </Object>
+    </Objects>
+</Trial>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Trial>
+    <Test>true</Test>
+    
+    <StartConditions>
+        <Condition name="start" success="true" priority="1"/>
+    </StartConditions>
+    
+    <EndConditions>
+        <Condition name="end" success="true" priority="1"/>
+    </EndConditions>
+    
+    <HomePosition>
+        <Position x="0.0" y="0.0" z="0.1"/>
+        <Tolerance>0.01</Tolerance>
+    </HomePosition>
+    
+    <CursorSettings object="spring">
+        <Color r="0.8" g="0.2" b="0.6"/>
+        <Parameters radius="0.05" mass="1.0"/>
+    </CursorSettings>
+    
+    <SceneSettings>
+        <BackgroundColor r="0.2" g="0.4" b="0.8"/>
+        <Camera>
+            <Position x="0" y="0" z="1"/>
+            <LookAt x="0" y="0" z="0"/>
+            <Up x="0" y="1" z="0"/>
+        </Camera>
+    </SceneSettings>
+    
+    <Objects>
+        <Object id="test_box" type="box">
+            <Position x="0.1" y="0.2" z="0.3"/>
+            <Orientation x="30" y="40" z="50"/>
+        </Object>
+    </Objects>
+    
+    <DataCollection>
+        <Device>
+            <Position enabled="true"/>
+            <Velocity enabled="false"/>
+            <AngularVelocity enabled="true"/>
+            <Orientation enabled="false"/>
+            <ProxyPosition enabled="true"/>
+            <Force enabled="true"/>
+        </Device>
+        <Objects>
+            <Position enabled="true"/>
+            <Orientation enabled="true"/>
+            <Contact enabled="false"/>
+            <ContactPoint enabled="true"/>
+            <ContactNormal enabled="false"/>
+            <PenetrationDepth enabled="true"/>
+            <Force enabled="true"/>
+            <SpringForce enabled="false"/>
+            <DampingForce enabled="true"/>
+        </Objects>
+    </DataCollection>
+</Trial>

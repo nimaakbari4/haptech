@@ -1,0 +1,38 @@
+<TrialConfig>
+  <Test>false</Test>
+  
+  <StartConditions>
+    <Condition name="user_input" success="true" priority="1">
+      <Parameters message="Press any key to start"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>CLI Test</StartMessage>
+    <SuccessMessage>CLI Success!</SuccessMessage>
+    <FailureMessage>CLI Failed!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.0" g="0.0" b="0.0"/>
+    <Camera>
+      <Position x="0.0" y="0.0" z="1.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Objects>
+    <Object id="cli_sphere" type="sphere">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="1.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>
