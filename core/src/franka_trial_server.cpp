@@ -6,14 +6,16 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     const TrialRequest* request,
     grpc::ServerWriter<TrialResponseStream>* writer
 ) {
+    try {
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
+    bool clientCancelled = false;
 
     std::cout << "[SERVER] simContext address: " << &SimulationManager::simContext << std::endl;
 
     // ensure simulation is running (allow brief startup lag)
     if (!SimulationManager::simContext.simulationRunning) {
-        const double timeoutSec = 2.0;
+        const double timeoutSec = 5.0;
         cPrecisionClock waitClock; waitClock.start();
         while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
             cSleepMs(10);
@@ -43,6 +45,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status::OK;
     }
 
+        // Safely pause haptics before scene mutations
+        SimulationManager::simContext.hapticsEnabled = false;
+        cSleepMs(100);
+    
+        // Safely remove all existing objects (uses SimulationManager's safe path)
+        SimulationManager::removeAllObjects();
+
     // add objects (hard coded for now, load from config info later)
     // SimulationManager::reset();
     // Remove all objects in the object map from the world
@@ -54,14 +63,85 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
     
     SimulationManager::simContext.objectMap.clear();
+    
+    // Clear tool state NOW after all old objects are removed, BEFORE new objects load
+    std::cout << "[SETUP] Clearing tool state after removing old objects..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        SimulationManager::simContext.tool->initialize();
+    }
+    cSleepMs(50); // Let tool state fully clear
 
-    // Change the background color to a light blue
-    if (!SimulationManager::setBackgroundColor(204/255, 204/255, 255/255)) {
-        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        status->set_status(TrialStatus::ERROR);
-        status->set_message("Something went wrong loading the trial.");
-        writer->Write(statusMsg);
-        return grpc::Status::OK;
+    // Set background color from scene settings
+    if (request->has_scenesettings() && request->scenesettings().has_backgroundcolor()) {
+        const auto& bg_color = request->scenesettings().backgroundcolor();
+        if (!SimulationManager::setBackgroundColor(bg_color.r(), bg_color.g(), bg_color.b())) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Background color set to RGB(" << bg_color.r() << ", " << bg_color.g() << ", " << bg_color.b() << ")" << std::endl;
+    } else {
+        // Default background color if not specified
+        if (!SimulationManager::setBackgroundColor(0.0, 0.0, 0.0)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Something went wrong setting default background color.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+        std::cout << "[INFO] Using default background color (black)" << std::endl;
+    }
+
+    // Configure camera from scene settings
+    if (request->has_scenesettings() && request->scenesettings().has_camera()) {
+        const auto& cam = request->scenesettings().camera();
+
+        double px = cam.has_position() ? cam.position().x() : 1.0;
+        double py = cam.has_position() ? cam.position().y() : 0.0;
+        double pz = cam.has_position() ? cam.position().z() : 0.0;
+
+        double lx = cam.has_lookat() ? cam.lookat().x() : 0.0;
+        double ly = cam.has_lookat() ? cam.lookat().y() : 0.0;
+        double lz = cam.has_lookat() ? cam.lookat().z() : 0.0;
+
+        double ux = cam.has_up() ? cam.up().x() : 0.0;
+        double uy = cam.has_up() ? cam.up().y() : 0.0;
+        double uz = cam.has_up() ? cam.up().z() : 1.0;
+
+        if (!SimulationManager::setCamera(px, py, pz, lx, ly, lz, ux, uy, uz)) {
+            TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+            status->set_status(TrialStatus::ERROR);
+            status->set_message("Failed to apply camera settings.");
+            writer->Write(statusMsg);
+            return grpc::Status::OK;
+        }
+
+        std::cout << "[INFO] Camera set to position (" << px << ", " << py << ", " << pz
+                  << ") looking at (" << lx << ", " << ly << ", " << lz << ")" << std::endl;
+    }
+
+    // Clear any existing text overlays
+    SimulationManager::clearTextOverlays();
+
+    // Add text overlays from scene settings
+    if (request->has_scenesettings()) {
+        for (const auto& overlay : request->scenesettings().textoverlays()) {
+            double r = overlay.has_color() ? overlay.color().r() : 1.0;
+            double g = overlay.has_color() ? overlay.color().g() : 1.0;
+            double b = overlay.has_color() ? overlay.color().b() : 1.0;
+            double fontSize = overlay.fontsize() > 0 ? overlay.fontsize() : 20.0;
+            
+            if (!SimulationManager::addTextOverlay(overlay.text(), overlay.x(), overlay.y(), fontSize, r, g, b)) {
+                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+                status->set_status(TrialStatus::ERROR);
+                status->set_message("Failed to add text overlay: " + overlay.text());
+                writer->Write(statusMsg);
+                return grpc::Status::OK;
+            }
+        }
+        std::cout << "[INFO] Added " << request->scenesettings().textoverlays_size() << " text overlay(s)" << std::endl;
     }
 
     // Add objects from the request configuration
@@ -71,6 +151,27 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         for (const auto& param : obj.params()) {
             params[param.key()] = param.value();
         }
+        
+        // Handle cursor configuration objects specially
+        // bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
+        // if (isCursor) {
+        //     // Determine visual type from params (visual_type or type key)
+        //     std::string visualType;
+        //     auto itVT = params.find("visual_type");
+        //     if (itVT != params.end()) visualType = itVT->second; else {
+        //         auto itType = params.find("type");
+        //         if (itType != params.end()) visualType = itType->second; else visualType = "";
+        //     }
+        //     if (!SimulationManager::applyCursorConfig(visualType, params)) {
+        //         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        //         status->set_status(TrialStatus::ERROR);
+        //         status->set_message("Failed to apply cursor configuration");
+        //         writer->Write(statusMsg);
+        //         return grpc::Status::OK;
+        //     }
+        //     // Do not add this as a world object
+        //     continue;
+        // }
         
         // Get color values
         double r = obj.has_color() ? obj.color().r() : 1.0;
@@ -91,6 +192,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             return grpc::Status::OK;
         }
     }
+
+    // DO NOT enable haptics here - objects might be at device position
+    // Haptics will be enabled later after proper initialization
 
     // Add trial start conditions
     SimulationManager::trialContext.startConditions.clear();
@@ -152,10 +256,51 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // start trial
     std::cout << "[TRIAL] Trial created: " << request->trial_id() << " (start conditions: " << request->startconditions_size() << " condition(s), end conditions: " << request->endconditions_size() << " condition(s))" << std::endl;
 
+    // Update world transforms to ensure all NEW objects are in their final positions
+    std::cout << "[TRIAL] Updating world transforms for new objects..." << std::endl;
+    SimulationManager::simContext.world->computeGlobalPositions(true);
+    
+    // Clear tool state AGAIN after new objects are positioned to ensure clean start
+    std::cout << "[TRIAL] Final tool contact state clear before enabling haptics..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        // Initialize clears all haptic points and contact states
+        SimulationManager::simContext.tool->initialize();
+        std::cout << "[TRIAL] Tool contact state cleared" << std::endl;
+        
+        // Enable force rise to prevent sudden force spikes on first contact
+        SimulationManager::simContext.tool->setUseForceRise(true);
+        SimulationManager::simContext.tool->setRiseTime(0.3); // 300ms gradual ramp
+        std::cout << "[TRIAL] Enabled force rise with 300ms ramp time" << std::endl;
+    }
+    
+    // Set force to zero before enabling
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+        cVector3d currentForce;
+        SimulationManager::simContext.hapticDevice->getForce(currentForce);
+        std::cout << "[TRIAL] Force before enabling: " << currentForce.str(3) << " (mag: " << currentForce.length() << "N)" << std::endl;
+    }
+    
+    // DON'T call updateFromDevice here - it would trigger collision detection
+    // The haptics loop will call it on the first cycle after enabling
+    
+    // Enable haptics for this trial AFTER all objects are positioned and tool is cleared
+    std::cout << "[TRIAL] All objects positioned and tool cleared - enabling haptics" << std::endl;
+    SimulationManager::simContext.hapticsEnabled = true;
+    
+    // Give haptics loop a few cycles to initialize properly with zero forces
+    std::cout << "[TRIAL] Waiting for haptics to stabilize..." << std::endl;
+    cSleepMs(100); // ~100 cycles at 1kHz
+
     TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
     status->set_status(TrialStatus::STARTED);
     status->set_message("The trial has been created. Waiting for trial start.");
-    writer->Write(statusMsg);
+    if (!writer->Write(statusMsg)) {
+        std::cout << "[WARN] Client disconnected before trial could start." << std::endl;
+        SimulationManager::trialContext.trialRunning = false;
+        SimulationManager::reset();
+        return grpc::Status(grpc::StatusCode::CANCELLED, "Client disconnected");
+    }
 
     SimulationManager::trialContext.trialRunning = true;
 
@@ -197,13 +342,18 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
             status->set_status(TrialStatus::STARTED);
             status->set_message("Trial started after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.startConditionMet->getMessage());
-            writer->Write(statusMsg);
+            if (!writer->Write(statusMsg)) {
+                std::cout << "[WARN] Client disconnected while waiting for trial start." << std::endl;
+                clientCancelled = true;
+                break;
+            }
             updatedTrialStart = true;
             SimulationManager::trialContext.startTime = SimulationManager::trialContext.time;
         }
 
-        if (SimulationManager::trialContext.startConditionMet != nullptr &&
-            SimulationManager::trialContext.endConditionMet != nullptr) {
+        if (clientCancelled ||
+            (SimulationManager::trialContext.startConditionMet != nullptr &&
+             SimulationManager::trialContext.endConditionMet != nullptr)) {
             break;
         }
         
@@ -269,7 +419,17 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
         }
 
-        writer->Write(dataPointMsg);
+        if (context->IsCancelled()) {
+            std::cout << "[WARN] Client cancelled trial stream." << std::endl;
+            clientCancelled = true;
+            break;
+        }
+
+        if (!writer->Write(dataPointMsg)) {
+            std::cout << "[WARN] Failed to write to client stream (likely disconnected)." << std::endl;
+            clientCancelled = true;
+            break;
+        }
 
         /*
         // Check if cursor reached goal (look for goal object at x=0.5)
@@ -287,7 +447,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         */
 
         if (SimulationManager::simContext.debug) {
-            std::cout << "[DEBUG] [" << SimulationManager::trialContext.trialId << "] t = " << SimulationManager::trialContext.time << std::endl;
         }
 
         double dt = clock.getCurrentTimeSeconds();
@@ -300,25 +459,100 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
-    // ensure haptics is disabled and ramp forces to zero during teardown
+    std::cout << "[TEARDOWN] Trial stopping, beginning force teardown sequence" << std::endl;
+    
+    // Read current force before any teardown
+    cVector3d forceBeforeTeardown(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceBeforeTeardown);
+        std::cout << "[TEARDOWN] Current force: " << forceBeforeTeardown.str(3) 
+                  << " (mag: " << forceBeforeTeardown.length() << "N)" << std::endl;
+    }
+    
+    // Graceful force teardown to prevent controller_torque_discontinuity
+    // Clear tool's internal contact state so it stops computing forces
+    std::cout << "[TEARDOWN] Clearing tool contacts..." << std::endl;
+    if (SimulationManager::simContext.tool) {
+        SimulationManager::simContext.tool->initialize();
+    }
+    
+    // Let haptics loop continue running for several cycles with cleared contacts
+    // This allows forces to naturally decay to zero through smoothing and force rise
+    std::cout << "[TEARDOWN] Waiting 150ms for forces to decay naturally..." << std::endl;
+    cSleepMs(150); // ~150 haptic cycles at 1kHz
+    
+    cVector3d forceAfterDecay(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceAfterDecay);
+        std::cout << "[TEARDOWN] Force after decay: " << forceAfterDecay.str(3) 
+                  << " (mag: " << forceAfterDecay.length() << "N)" << std::endl;
+    }
+    
+    // Now safe to disable haptics - forces should already be near zero
+    std::cout << "[TEARDOWN] Disabling haptics..." << std::endl;
     SimulationManager::simContext.hapticsEnabled = false;
-    SimulationManager::rampDeviceForceToZero(150);
+    
+    // Final safety: manually ramp any remaining forces
+    std::cout << "[TEARDOWN] Ramping remaining forces to zero..." << std::endl;
+    SimulationManager::rampDeviceForceToZero(100);
+    
+    cVector3d forceFinal(0, 0, 0);
+    if (SimulationManager::simContext.hapticDevice) {
+        SimulationManager::simContext.hapticDevice->getForce(forceFinal);
+        std::cout << "[TEARDOWN] Final force: " << forceFinal.str(3) 
+                  << " (mag: " << forceFinal.length() << "N)" << std::endl;
+    }
+    std::cout << "[TEARDOWN] Force teardown complete" << std::endl;
 
     // output results
     std::cout << "[TRIAL] Trial results: " << SimulationManager::trialContext.trialId << std::endl;
     std::cout << "[TRIAL] Duration: " << SimulationManager::trialContext.time << " seconds" << std::endl;
+
+    if (clientCancelled) {
+        std::cout << "[TRIAL] Trial aborted: " << SimulationManager::trialContext.trialId
+                  << ", lasted " << SimulationManager::trialContext.time << "s (client disconnected)" << std::endl;
+        SimulationManager::reset();
+        return grpc::Status(grpc::StatusCode::CANCELLED, "Client disconnected");
+    }
 
     if (SimulationManager::trialContext.endConditionMet != nullptr) {
         std::cout << "[TRIAL] End condition met: " << SimulationManager::trialContext.endConditionMet->getMessage() << std::endl;
 
         status->set_status(TrialStatus::COMPLETED);
         status->set_message("Trial completed after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.endConditionMet->getMessage());
-        writer->Write(statusMsg);
+        if (!writer->Write(statusMsg)) {
+            std::cout << "[WARN] Unable to send completion status to client (disconnected)." << std::endl;
+        }
     }
 
     // reset environment
     SimulationManager::reset();
+    SimulationManager::simContext.hapticsEnabled = false;
+    SimulationManager::simContext.tool->initialize();
+    SimulationManager::simContext.world->computeGlobalPositions(true);
+    SimulationManager::simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    cVector3d currentForce;
+    SimulationManager::simContext.hapticDevice->getForce(currentForce);
+    std::cout << "[TRIAL] Force after reset: " << currentForce.str(3) 
+              << " (mag: " << currentForce.length() << "N)" << std::endl;
+    SimulationManager::simContext.hapticsEnabled = true;
     return grpc::Status::OK;
+    } catch (const std::exception& ex) {
+        TrialResponseStream statusMsg;
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message(std::string("Unhandled server exception in RunTrial: ") + ex.what());
+        // Best-effort write; swallow any errors here
+        (void)writer->Write(statusMsg);
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
+    } catch (...) {
+        TrialResponseStream statusMsg;
+        TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+        status->set_status(TrialStatus::ERROR);
+        status->set_message("Unhandled server exception in RunTrial: unknown");
+        (void)writer->Write(statusMsg);
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
+    }
 }
 
 

@@ -15,6 +15,11 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     
     // Create helical spring using cMultiSegment
     cMultiSegment* spring = new cMultiSegment();
+
+        // Ensure material exists before using it
+        if (!spring->m_material) {
+            spring->m_material = cMaterial::create();
+        }
     
     // Connect segments to form a spring
     double h = 0.0;
@@ -71,9 +76,9 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
     // Set position
     spring->setLocalPos(x, y, z);
     
-    // Set spring-specific physics properties
-    spring->m_material->setStiffness(stiffness);
-    spring->m_material->setDamping(damping);
+    // // Set spring-specific physics properties
+    // spring->m_material->setStiffness(stiffness);
+    // spring->m_material->setDamping(damping);
     
     // Add spring-like behavior (oscillation)
     // This is where the researcher's custom physics would go
@@ -84,8 +89,9 @@ cGenericObject* SpringObject::createObject(const std::map<std::string, std::stri
 }
 
 void SpringObject::updatePhysics(cGenericObject* object, double deltaTime) {
-    // TODO: Implement spring physics (e.g., oscillation, compression/extension dynamics)
-    // This is a stub implementation - no physics applied yet
+    (void)object;
+    (void)deltaTime;
+    // Placeholder: no dynamic physics for spring implemented yet.
 }
 
 double SpringObject::getStiffness(const std::map<std::string, std::string>& params) const {
@@ -106,4 +112,8 @@ double SpringObject::getRadius(const std::map<std::string, std::string>& params)
 double SpringObject::getHeight(const std::map<std::string, std::string>& params) const {
     auto it = params.find("height");
     return (it != params.end()) ? std::stod(it->second) : 0.1; // Default height
+}
+
+void updatePhysics(cGenericObject* object, double deltaTime) {
+    
 }

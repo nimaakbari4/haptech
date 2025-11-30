@@ -4,6 +4,11 @@ CHAI3D_DIR = external/chai3d-Franka-integration
 CHAI3D_BUILD_DIR = $(CHAI3D_DIR)/build
 GLFW_BUILD_DIR = $(CHAI3D_BUILD_DIR)/extras/GLFW
 FRANKA_BUILD_DIR = $(CHAI3D_BUILD_DIR)/external/libfranka/src
+PROTO_DIR = ../proto
+PROTO_FILE = $(PROTO_DIR)/franka_trial.proto
+
+PROTO_DIR ?= ../proto
+PROTO_FILE ?= $(PROTO_DIR)/franka_trial.proto
 
 SRC_DIR = src
 BIN_DIR = bin
@@ -25,6 +30,7 @@ CXXFLAGS = -I$(CHAI3D_DIR)/src \
 	-I$(CHAI3D_DIR)/external/libfranka/include \
 	-I$(CHAI3D_DIR)/external/libfranka/common/include \
 	-I$(SRC_DIR) \
+	-I$(SRC_DIR)/proto \
 	-I$(SRC_DIR)/objects \
 	-I$(SRC_DIR)/trial_conditions \
 	-I/usr/include \
@@ -43,7 +49,7 @@ LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 	-L$(FRANKA_BUILD_DIR) \
 	-L/usr/lib/x86_64-linux-gnu
 
-	
+
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
 $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
@@ -59,9 +65,13 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 # Homebrew default prefix on Apple Silicon
  CXXFLAGS += -I/opt/homebrew/include -I/opt/homebrew/include/eigen3 -I/opt/homebrew/include/GL
+ # Re-enable deprecated std::binder1st/2nd expected by older Eigen in CHAI3D
+ CXXFLAGS += -D_LIBCPP_ENABLE_CXX17_REMOVED_BINDERS
  LDFLAGS += -L/opt/homebrew/lib -L/opt/homebrew/lib/glu
  # Drop Linux/OpenGL/X11-specific libs on macOS; frameworks are linked via chai3d
  LDLIBS := $(filter-out -lrt -lGL -lGLU -lX11 -lXcursor -lXrandr -lXinerama,$(LDLIBS))
+ # Drop Linux-specific libfranka .so on macOS
+ LDLIBS := $(filter-out $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3,$(LDLIBS))
  # Link GLU explicitly from Homebrew
  LDLIBS += -lGLU \
  	-framework Cocoa -framework IOKit -framework CoreVideo \
@@ -74,9 +84,9 @@ ifeq ($(UNAME_S),Darwin)
  LDLIBS += $(shell pkg-config --libs grpc++) $(shell pkg-config --libs protobuf)
 endif
 
-.PHONY: all cmake_chai3d_build clean
+.PHONY: all cmake_chai3d_build clean generate_proto proto_clean
 
-all: cmake_chai3d_build $(TARGET)
+all: generate_proto cmake_chai3d_build $(TARGET)
 
 cmake_chai3d_build:
 	@mkdir -p $(CHAI3D_BUILD_DIR)
@@ -116,5 +126,15 @@ $(BIN_DIR):
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(TARGET)
 
+# --- Protobuf / gRPC codegen ---
+generate_proto:
+	@echo "[PROTO] Generating C++ sources from $(PROTO_FILE)"
+	@mkdir -p $(SRC_DIR)
+	@protoc -I$(PROTO_DIR) --cpp_out=$(SRC_DIR) --grpc_out=$(SRC_DIR) --plugin=protoc-gen-grpc=$$(which grpc_cpp_plugin) $(PROTO_FILE)
+
+proto_clean:
+	@rm -f $(SRC_DIR)/franka_trial.pb.cc $(SRC_DIR)/franka_trial.pb.h \
+	       $(SRC_DIR)/franka_trial.grpc.pb.cc $(SRC_DIR)/franka_trial.grpc.pb.h
+
 clean:
-	rm -rf $(BIN_DIR)/*.o $(TARGET)
+	rm -rf $(BIN_DIR)

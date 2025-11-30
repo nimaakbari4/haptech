@@ -1,0 +1,54 @@
+<TrialConfig>
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="120.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Test the researcher's custom objects!</StartMessage>
+    <SuccessMessage>Great job!</SuccessMessage>
+    <FailureMessage>Time's up. Try again!</FailureMessage>
+  </HUDText>
+ 
+  <SceneSettings>
+    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="2.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <CursorSettings object="sphere">
+    <Parameters
+        radius="0.01"
+        tether_enabled="true"
+        tether_mass="0.1"
+        tether_stiffness="15.0"
+        tether_damping="3.0"
+        tether_gravity_scale="0.0"
+        tether_max_force="5.0"
+        tether_anchor_id="regular_sphere" />
+    <Color r="0.0" g="0.1" b="0.0"/>
+  </CursorSettings>
+
+  <Objects>
+    <Object id="regular_sphere" type="sphere">
+      <Position x="0.5" y="0.0" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Color r="0.0" g="0.0" b="1.0"/>
+      <Parameters radius="0.06"/>
+    </Object>   
+  </Objects>
+</TrialConfig>

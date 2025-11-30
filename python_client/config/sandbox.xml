@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrialConfig>
+  <Test>true</Test>
+  
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="0.0"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <Condition name="position" success="true" priority="1">
+      <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
+    </Condition>
+  </EndConditions>
+
+  <!-- <CursorSettings object="sphere">
+    <Parameters radius="0.02"
+                contact_radius="0.02"
+                sample_count="24"/>
+    <Color r="0.0" g="0.1" b="0.0"/>
+  </CursorSettings> -->
+
+  <HUDText>
+    <StartMessage>Push the ball to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
+    <SuccessMessage>Great! You moved the ball to the target!</SuccessMessage>
+    <FailureMessage>You didn't move the ball to the target position.</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.8" g="0.8" b="1.0"/>
+    <Camera>
+      <Position x="1.0" y="0.0" z="0.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
+    </Camera>
+    <TextOverlay>
+      <Text>Explore the sandbox for up to 2 minutes, or move the ball to the red box when done.</Text>
+      <X>0</X>
+      <Y>50</Y>
+      <FontSize>32</FontSize>
+      <Color r="0" g="128" b="0"/>
+    </TextOverlay>
+  </SceneSettings>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
+
+  <Objects>
+    <!-- Ground platform -->
+    <Object id="ground" type="box">
+      <Position x="0.0" y="-0.15" z="-0.8"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters width="1.0" height="1.0" depth="1.0"/>
+      <Color r="0.5" g="0.5" b="0.5"/>
+    </Object>
+    
+    <!-- Target box -->
+    <Object id="target" type="box">
+      <Position x="0.0" y="0.5" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters width="0.1" height="0.1" depth="0.1"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+    </Object>
+
+    <Object id="ring_obstacle" type="torus">
+      <Position x="0.0" y="0.25" z="0.0"/>
+      <Orientation x="90" y="45" z="20"/>
+      <Parameters inner_radius="0.03" outer_radius="0.1" num_sides="16" num_rings="20"/>
+      <Color r="0.0" g="0.0" b="1.0"/>
+    </Object>
+
+    <Object id="spring_obstacle" type="spring">
+      <Position x="-0.2" y="-0.2" z="0.2"/>
+      <Orientation x="20" y="30" z="10"/>
+      <Color r="1.0" g="1.0" b="0.0"/>
+      <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
+    </Object>
+    
+    <!-- Pushable ball with friction -->
+    <Object id="pushable_ball" type="ball">
+      <Position x="0.0" y="-0.4" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.04" gravity_scale="0.0" mass="100.0" bounciness="1.0"/>
+      <Color r="0.2" g="0.8" b="1.0"/>
+    </Object>
+    <Object id="pushable_ball_2" type="ball">
+      <Position x="0.0" y="-0.10" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.02" gravity_scale="0.0" mass="10.0" bounciness="1.0"/>
+      <Color r="1.0" g="1.0" b="1.0"/>
+    </Object>
+    <Object id="pushable_ball_3" type="ball">
+      <Position x="0.0" y="-0.25" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="0.1" gravity_scale="0.0" mass="500.0" bounciness="1.0"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
+    </Object>
+  </Objects>
+</TrialConfig>

@@ -59,6 +59,9 @@ struct SimulationContext {
     // a label to display the current status, i.e. "waiting for trial to begin"
     cLabel* statusText;
 
+    // custom text overlays configured by the client
+    std::vector<cLabel*> customTextOverlays;
+
     // a virtual tool representing the haptic device in the scene
     cGenericTool* tool;
 
@@ -82,6 +85,9 @@ struct SimulationContext {
 
     // a frequency counter to measure the simulation haptic rate
     cFrequencyCounter freqCounterHaptics;
+
+    // clock for physics updates in graphics thread
+    cPrecisionClock physicsClock;
 
     // haptic thread
     cThread* hapticsThread;
@@ -141,6 +147,11 @@ public:
     // SCENE SETTINGS
     static bool reset();
     static bool setBackgroundColor(double r, double g, double b);
+    static bool setCamera(double px, double py, double pz,
+                          double lx, double ly, double lz,
+                          double ux, double uy, double uz);
+    static bool addTextOverlay(const std::string& text, double x, double y, double fontSize, double r, double g, double b);
+    static bool clearTextOverlays();
 
     // GENERAL OBJECT FUNCTIONALITY
 
@@ -164,8 +175,23 @@ public:
                                    double r, double g, double b,
                                    const std::map<std::string, std::string>& params);
     
+    // CURSOR CONFIG
+    // Apply cursor (tool) visual and haptic parameters from registry type + params
+    // Expected params (all optional unless noted):
+    //  - type (required): registry object type to use as visual
+    //  - radius: haptic proxy radius (meters)
+    //  - display_radius: visual proxy sphere radius (meters)
+    //  - show_contact_points: "true"/"false"
+    //  - scale: uniform visual scale factor
+    //  - rot_x/rot_y/rot_z: degrees to rotate the visual about local axes
+    static bool applyCursorConfig(const std::string& visualType,
+                                  const std::map<std::string, std::string>& params);
+    
     // ramp device force to zero over given milliseconds (exposed for server teardown)
     static void rampDeviceForceToZero(int durationMs);
+    
+    // apply a constant impulse force to simulate ball impact
+    static void applyConstantImpulse(double fx, double fy, double fz, int durationMs);
 
 private:
     // haptic tool management

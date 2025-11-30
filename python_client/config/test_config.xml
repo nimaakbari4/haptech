@@ -1,48 +1,53 @@
 <TrialConfig>
   <HomePosition>
-    <Position x="-0.5" y="0.0" z="0.0"/>
-    <Tolerance>0.05</Tolerance>
+    <Position x="0.0" y="0.0" z="0.0"/>
+    <Tolerance>0.01</Tolerance>
   </HomePosition>
 
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </StartConditions>
+
+  <!-- Trial End Conditions -->
   <EndConditions>
-    <!-- Ends by time for now; we can add goal-reached end next -->
     <Condition name="time" success="false" priority="1">
-      <Parameters duration_seconds="30.0"/>
+      <Parameters duration_seconds="10.0"/>
     </Condition>
   </EndConditions>
 
+  <!-- HUD Text -->
   <HUDText>
-    <StartMessage>Move the red sphere to the green goal on the right!</StartMessage>
-    <SuccessMessage>Well done!</SuccessMessage>
-    <FailureMessage>Time’s up. Try again!</FailureMessage>
+    <StartMessage>Testing dynamic object creation!</StartMessage>
+    <SuccessMessage>Great job!</SuccessMessage>
+    <FailureMessage>Try again.</FailureMessage>
   </HUDText>
 
+  <!-- Scene Settings -->
   <SceneSettings>
-    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <BackgroundColor r="0.8" g="0.8" b="0.9" />
     <Camera>
-      <Position x="1.0" y="1.0" z="2.0"/>
+      <Position x="0.5" y="0.5" z="1.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
       <Up x="0.0" y="1.0" z="0.0"/>
     </Camera>
   </SceneSettings>
 
-  <Controls>
-    <MouseCursor>true</MouseCursor>
-  </Controls>
-
+  <!-- Test Objects -->
   <Objects>
-    <Object id="cursor" type="sphere">
-      <Position x="0.0" y="-0.5" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Parameters radius="0.01"/>
+    <Object id="test_box" type="box">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation roll="45" pitch="45" yaw="0"/>
+      <Size width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
 
-    <Object id="goal" type="box">
-      <Position x="0.0" y="0.5" z="0.0"/>
-      <Orientation roll="0" pitch="0" yaw="0"/>
-      <Parameters width="0.02" height="0.02" depth="0.02"/>
-      <Color r="0.0" g="1.0" b="0.0"/>
+    <Object id="boxy" type="box">
+      <Position x="0.1" y="0.1" z="0.1"/>
+      <Orientation roll="45" pitch="45" yaw="0"/>
+      <Size width="0.1" height="0.3" depth="0.1"/>
+      <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
   </Objects>
 </TrialConfig>

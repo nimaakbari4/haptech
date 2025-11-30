@@ -8,10 +8,7 @@ void ExtensionsRegistry::registerAllExtensions() {
         return;
     }
     
-    std::cout << "[ExtensionsRegistry] Registering all extensions..." << std::endl;
-    
     // Register custom objects
-    std::cout << "[ExtensionsRegistry] Registering custom objects..." << std::endl;
     
     // Register SpringObject
     registerCustomObject("spring", []() -> std::unique_ptr<CustomObjectInterface> {
@@ -51,6 +48,14 @@ void ExtensionsRegistry::registerAllExtensions() {
     registerCustomObject("line", []() -> std::unique_ptr<CustomObjectInterface> {
         return std::make_unique<LineObject>();
     });
+
+    registerCustomObject("pong_ball", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<PongBallObject>();
+    });
+
+    registerCustomObject("pong_paddle", []() -> std::unique_ptr<CustomObjectInterface> {
+        return std::make_unique<PongPaddleObject>();
+    });
     
     // Register trial end conditions
     std::cout << "[ExtensionsRegistry] Registering trial end conditions..." << std::endl;
@@ -66,6 +71,24 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<VelocityCondition>(params, success, priority);
     });
     
+    // Aliases for common config names
+    registerTrialCondition("reach_target", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+        // Map 'target_distance' -> 'tolerance' for PositionCondition
+        auto tolIt = params.find("target_distance");
+        if (tolIt != params.end()) {
+            params["tolerance"] = tolIt->second;
+        }
+        return std::make_unique<PositionCondition>(params, success, priority);
+    });
+    registerTrialCondition("time_limit", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
+        // Map 'max_time' -> 'duration_seconds' for TimeCondition
+        auto maxIt = params.find("max_time");
+        if (maxIt != params.end()) {
+            params["duration_seconds"] = maxIt->second;
+        }
+        return std::make_unique<TimeCondition>(params, success, priority);
+    });
+    
     // TODO: Researchers can add their own extensions here
     // Example:
     // CustomObjectRegistry::registerType("my_object", []() -> std::unique_ptr<CustomObjectInterface> {
@@ -76,17 +99,14 @@ void ExtensionsRegistry::registerAllExtensions() {
     // });
     
     registered_ = true;
-    std::cout << "[ExtensionsRegistry] Registration complete!" << std::endl;
 }
 
 void ExtensionsRegistry::registerCustomObject(const std::string& typeName, 
                                              std::function<std::unique_ptr<CustomObjectInterface>()> creator) {
     CustomObjectRegistry::registerType(typeName, creator);
-    std::cout << "[ExtensionsRegistry] Registered custom object: " << typeName << std::endl;
 }
 
 void ExtensionsRegistry::registerTrialCondition(const std::string& typeName, 
                                              TrialConditionRegistry::ConditionCreator creator) {
     TrialConditionRegistry::registerCondition(typeName, creator);
-    std::cout << "[ExtensionsRegistry] Registered trial condition: " << typeName << std::endl;
 }
