@@ -66,6 +66,17 @@ set(CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/time_condition.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/position_condition.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/velocity_condition.cpp
+    # Custom object sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/custom_object_interface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/sphere_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/box_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/spring_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/cylinder_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/line_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/ellipsoid_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/ball_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/cup_object.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/objects/torus_object.cpp
 )
 
 # Add core sources library
@@ -85,6 +96,7 @@ add_executable(
   core_tests
   test_main.cpp
   test_trial_conditions.cpp
+  test_custom_objects.cpp
   simulation_manager_stubs.cpp
 )
 

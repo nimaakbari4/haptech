@@ -47,7 +47,13 @@ double TorusObject::getInnerRadius(const std::map<std::string, std::string>& par
         std::cout << "[ERROR] Torus requires 'inner_radius' parameter." << std::endl;
         return 0.02; // Default inner radius
     }
-    return std::stod(it->second);
+    
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        std::cout << "[ERROR] Invalid inner_radius value: " << it->second << ", using default 0.02" << std::endl;
+        return 0.02; // Default inner radius
+    }
 }
 
 double TorusObject::getOuterRadius(const std::map<std::string, std::string>& params) const {
@@ -56,7 +62,13 @@ double TorusObject::getOuterRadius(const std::map<std::string, std::string>& par
         std::cout << "[ERROR] Torus requires 'outer_radius' parameter." << std::endl;
         return 0.05; // Default outer radius
     }
-    return std::stod(it->second);
+    
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        std::cout << "[ERROR] Invalid outer_radius value: " << it->second << ", using default 0.05" << std::endl;
+        return 0.05; // Default outer radius
+    }
 }
 
 unsigned int TorusObject::getNumSides(const std::map<std::string, std::string>& params) const {
