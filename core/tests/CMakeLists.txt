@@ -5,6 +5,9 @@ project(CoreTests)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Coverage option
+option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
+
 # Find required packages
 find_package(GTest REQUIRED)
 find_package(Threads REQUIRED)
@@ -36,6 +39,12 @@ include_directories(
 # Compiler definitions
 add_definitions(-DLINUX -Wno-deprecated)
 
+# Coverage flags
+if(ENABLE_COVERAGE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+endif()
+
 # Build CHAI3D first (like cmake_chai3d_build in Makefile)
 include(ExternalProject)
 ExternalProject_Add(
@@ -55,6 +64,8 @@ ExternalProject_Add(
 set(CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/trial_condition.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/time_condition.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/position_condition.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/trial_conditions/velocity_condition.cpp
 )
 
 # Add core sources library
@@ -99,3 +110,63 @@ target_link_libraries(
 # Add tests to CTest
 include(GoogleTest)
 gtest_discover_tests(core_tests)
+
+# Coverage targets
+if(ENABLE_COVERAGE)
+    # Find required coverage tools
+    find_program(GCOV_PATH gcov)
+    find_program(LCOV_PATH lcov)
+    find_program(GENHTML_PATH genhtml)
+    
+    if(NOT GCOV_PATH)
+        message(FATAL_ERROR "gcov not found! Aborting...")
+    endif()
+    
+    if(NOT LCOV_PATH)
+        message(FATAL_ERROR "lcov not found! Aborting...")
+    endif()
+    
+    if(NOT GENHTML_PATH)
+        message(FATAL_ERROR "genhtml not found! Aborting...")
+    endif()
+    
+    # Setup target
+    add_custom_target(coverage
+        # Cleanup lcov
+        COMMAND ${LCOV_PATH} --directory . --zerocounters
+        
+        # Create baseline coverage data file
+        COMMAND ${LCOV_PATH} --capture --initial --directory . --output-file coverage.base
+        
+        # Run tests
+        COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process --verbose
+        
+        # Capturing lcov counters and generating report
+        COMMAND ${LCOV_PATH} --capture --directory . --output-file coverage.capture
+        
+        # Combine baseline and test coverage data
+        COMMAND ${LCOV_PATH} --add-tracefile coverage.base --add-tracefile coverage.capture --output-file coverage.total
+        
+        # Remove unwanted files from coverage (external libraries, system headers, test files)
+        COMMAND ${LCOV_PATH} --remove coverage.total '/usr/*' '*/external/*' '*/build/*' '*/test_*' '*/gtest/*' '*/gmock/*' --output-file coverage.info
+        
+        # Generate HTML coverage report
+        COMMAND ${GENHTML_PATH} coverage.info --output-directory coverage_html --title "Core Tests Coverage" --show-details --legend
+        
+        COMMAND ${CMAKE_COMMAND} -E echo "Coverage report generated in coverage_html/index.html"
+        
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS core_tests
+        COMMENT "Generating coverage report"
+    )
+    
+    # Clean coverage files
+    add_custom_target(coverage-clean
+        COMMAND ${CMAKE_COMMAND} -E remove -f coverage.base coverage.capture coverage.total coverage.info
+        COMMAND ${CMAKE_COMMAND} -E remove_directory coverage_html
+        COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
+        COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcno" -delete
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Cleaning coverage files"
+    )
+endif()
