@@ -1,8 +1,7 @@
 <TrialConfig>
-  <HomePosition>
-    <Position x="0.0" y="0.0" z="0.0"/>
-    <Tolerance>0.01</Tolerance>
-  </HomePosition>
+  <StartConditions>
+    <!-- No start conditions needed for this test -->
+  </StartConditions>
 
   <EndConditions>
     <Condition name="time" success="false" priority="0">

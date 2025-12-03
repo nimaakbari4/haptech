@@ -11,6 +11,7 @@ message TrialRequest {
     repeated TrialCondition startConditions = 3;
     repeated TrialCondition endConditions = 4;
     SceneSettings sceneSettings = 5;
+    DataCollectionConfig dataCollection = 6;
 }
 
 // Message structure for server responses (in a stream)
@@ -212,4 +213,31 @@ message Camera {
     Vector3 position = 1;
     Vector3 lookAt = 2;
     Vector3 up = 3;
+}
+
+// Data collection configuration
+message DataCollectionConfig {
+    DeviceDataConfig device = 1;
+    ObjectDataConfig objects = 2;
+}
+
+message DeviceDataConfig {
+    bool position = 1;
+    bool velocity = 2;
+    bool angular_velocity = 3;
+    bool orientation = 4;
+    bool proxy_position = 5;
+    bool force = 6;
+}
+
+message ObjectDataConfig {
+    bool position = 1;
+    bool orientation = 2;
+    bool contact = 3;
+    bool contact_point = 4;
+    bool contact_normal = 5;
+    bool penetration_depth = 6;
+    bool force = 7;
+    bool spring_force = 8;
+    bool damping_force = 9;
 }

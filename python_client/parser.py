@@ -23,11 +23,6 @@ class ObjectParameter:
     value: str
 
 @dataclass
-class HomePosition:
-    position: Position
-    tolerance: float
-
-@dataclass
 class Condition:
     name: str
     success: bool
@@ -47,10 +42,10 @@ class EndConditions:
     conditions: List[Condition]
 
 @dataclass
-class Color:
-    r: float
-    g: float
-    b: float
+class HUDText:
+    start_message: str
+    success_message: str
+    failure_message: str
 
 @dataclass
 class BackgroundColor:
@@ -84,16 +79,6 @@ class Camera:
     up: Position
 
 @dataclass
-class CursorSettings:
-    object_type: str
-    color: Color
-    params: List[ObjectParameter] = None
-
-    def __post_init__(self):
-        if self.params is None:
-            self.params = []
-
-@dataclass
 class TextOverlay:
     text: str
     x: float
@@ -110,16 +95,6 @@ class SceneSettings:
     def __post_init__(self):
         if self.text_overlays is None:
             self.text_overlays = []
-
-@dataclass
-class CursorSettings:
-    object_type: str
-    color: Optional[BackgroundColor] = None
-    params: List[ObjectParameter] = None
-    
-    def __post_init__(self):
-        if self.params is None:
-            self.params = []
 
 @dataclass
 class ObjectConfig:
@@ -164,10 +139,9 @@ class DataCollectionConfig:
 class TrialConfig:
     start_conditions: StartConditions
     end_conditions: EndConditions
+    hud_text: HUDText
     scene_settings: SceneSettings
     objects: List[ObjectConfig]
-    home: Optional[HomePosition] = None
-    cursor_settings: Optional[CursorSettings] = None
     data_collection: Optional[DataCollectionConfig] = None
     test: Optional[bool] = False
 
@@ -183,35 +157,22 @@ def xml_parser(xml_path: str) -> TrialConfig:
 
     #StartConditions
     start_conds = []
-    start_conditions_elem = root.find("StartConditions")
-    if start_conditions_elem is not None:
-        for c in start_conditions_elem.findall("Condition"):
-            # Parse parameters from Parameters element (consistent with Objects)
-            params = []
-            params_elem = c.find("Parameters")
-            if params_elem is not None:
-                for key, value in params_elem.attrib.items():
-                    params.append(ObjectParameter(key=key, value=value))
-            cond = Condition(
-                name = c.get("name"),
-                success = c.get("success", "false").lower() == "true",
-                priority = int(c.get("priority", "0")),
-                parameters = params
-            )
-            start_conds.append(cond)
-    start_conditions = StartConditions(conditions=start_conds)
+    for c in root.find("StartConditions").findall("Condition"):
+        # Parse parameters from Parameters element (consistent with Objects)
+        params = []
+        params_elem = c.find("Parameters")
+        if params_elem is not None:
+            for key, value in params_elem.attrib.items():
+                params.append(ObjectParameter(key=key, value=value))
+        cond = Condition(
+            name = c.get("name"),
+            success = c.get("success", "false").lower() == "true",
+            priority = int(c.get("priority", "0")),
+            parameters = params
+        )
+        start_conds.append(cond)
 
-    # HomePosition (optional - for backward compatibility)
-    home = None
-    home_elem = root.find("HomePosition")
-    if home_elem is not None:
-        pos_elem = home_elem.find("Position")
-        tol_elem = home_elem.find("Tolerance")
-        if pos_elem is not None and tol_elem is not None:
-            home = HomePosition(
-                position  = Position.from_elem(pos_elem),
-                tolerance = float(tol_elem.text)
-            )
+    start_conditions = StartConditions(conditions=start_conds)
 
     # EndConditions
     end_conds = []
@@ -232,33 +193,13 @@ def xml_parser(xml_path: str) -> TrialConfig:
         end_conds.append(cond)
     end_conditions = EndConditions(conditions=end_conds)
 
-
-    # CursorSettings (optional)
-    cursor_settings = None
-    cursor_elem = root.find("CursorSettings")
-    if cursor_elem is not None:
-        object_type = cursor_elem.get("object", "sphere")
-        color_elem = cursor_elem.find("Color")
-        if color_elem is not None:
-            cursor_color = Color(
-                r=float(color_elem.get("r", 1.0)),
-                g=float(color_elem.get("g", 0.0)),
-                b=float(color_elem.get("b", 0.0)),
-            )
-        else:
-            cursor_color = Color(r=1.0, g=0.0, b=0.0)
-
-        cursor_params: List[ObjectParameter] = []
-        params_elem = cursor_elem.find("Parameters")
-        if params_elem is not None:
-            for key, value in params_elem.attrib.items():
-                cursor_params.append(ObjectParameter(key=key, value=value))
-
-        cursor_settings = CursorSettings(
-            object_type=object_type,
-            color=cursor_color,
-            params=cursor_params,
-        )
+    # HUDText
+    hud = root.find("HUDText")
+    hud_text = HUDText(
+        start_message   = hud.findtext("StartMessage"),
+        success_message = hud.findtext("SuccessMessage"),
+        failure_message = hud.findtext("FailureMessage")
+    )
 
     # SceneSettings
     ss = root.find("SceneSettings")
@@ -302,55 +243,19 @@ def xml_parser(xml_path: str) -> TrialConfig:
             b = float(color_elem.get("b", "1.0"))
             overlay_color = BackgroundColor.from_rgb_float(r, g, b)
         
-        text_overlays.append(TextOverlay(text=text, x=x, y=y, font_size=font_size, color=overlay_color))
+        text_overlays.append(TextOverlay(
+            text=text,
+            x=x,
+            y=y,
+            font_size=font_size,
+            color=overlay_color
+        ))
     
     scene_settings = SceneSettings(
         background_color=background_color,
         camera=camera,
         text_overlays=text_overlays
     )
-
-    # CursorSettings (optional) - support both flat and nested formats
-    cursor_settings = None
-    cursor_elem = root.find("CursorSettings")
-    if cursor_elem is not None:
-        # Format A: <CursorSettings object="spring">...</CursorSettings>
-        object_type = cursor_elem.get("object")
-        color = None
-        params_list: List[ObjectParameter] = []
-        # Format B: <CursorSettings><Object type="spring">...</Object></CursorSettings>
-        if object_type is None:
-            obj_child = cursor_elem.find("Object")
-            if obj_child is not None:
-                object_type = obj_child.get("type", "sphere")
-                # Pull params and color from inside Object
-                params_elem = obj_child.find("Parameters")
-                if params_elem is not None:
-                    for key, value in params_elem.attrib.items():
-                        params_list.append(ObjectParameter(key=key, value=value))
-                color_elem = obj_child.find("Color")
-                if color_elem is not None:
-                    color = BackgroundColor.from_rgb_float(
-                        float(color_elem.get("r", "1.0")),
-                        float(color_elem.get("g", "1.0")),
-                        float(color_elem.get("b", "1.0")),
-                    )
-            else:
-                object_type = "sphere"
-        else:
-            # Flat format: read Parameters/Color directly under CursorSettings
-            params_elem = cursor_elem.find("Parameters")
-            if params_elem is not None:
-                for key, value in params_elem.attrib.items():
-                    params_list.append(ObjectParameter(key=key, value=value))
-            color_elem = cursor_elem.find("Color")
-            if color_elem is not None:
-                color = BackgroundColor.from_rgb_float(
-                    float(color_elem.get("r", "1.0")),
-                    float(color_elem.get("g", "1.0")),
-                    float(color_elem.get("b", "1.0")),
-                )
-        cursor_settings = CursorSettings(object_type=object_type, color=color, params=params_list)
 
     # Objects
     objs = []
@@ -420,10 +325,9 @@ def xml_parser(xml_path: str) -> TrialConfig:
     return TrialConfig(
         start_conditions = start_conditions,
         end_conditions = end_conditions,
+        hud_text       = hud_text,
         scene_settings = scene_settings,
         objects        = objs,
-        home           = home,
-        cursor_settings = cursor_settings,
         data_collection = data_collection,
         test           = test
     )
@@ -431,9 +335,6 @@ def xml_parser(xml_path: str) -> TrialConfig:
 
 if __name__ == "__main__":
     cfg = xml_parser(sys.argv[1])
-
-    if cfg.home:
-        print("Home Position:", cfg.home.position, "±", cfg.home.tolerance)
 
     print("\nStart Conditions:")
     for c in cfg.start_conditions.conditions:
@@ -447,16 +348,16 @@ if __name__ == "__main__":
         for param in c.parameters:
             print(f"   {param.key}: {param.value}")
 
+    print("\nHUD Messages:")
+    print(" Start:",   cfg.hud_text.start_message)
+    print(" Success:", cfg.hud_text.success_message)
+    print(" Failure:", cfg.hud_text.failure_message)
+
     print("\nScene Settings:")
     print(" Background color:", cfg.scene_settings.background_color)
     print(" Camera pos:",       cfg.scene_settings.camera.position)
     print(" Camera look-at:",   cfg.scene_settings.camera.look_at)
     print(" Camera up:",        cfg.scene_settings.camera.up)
-
-    if cfg.cursor_settings:
-        print("\nCursor Settings:")
-        print(" Object type:", cfg.cursor_settings.object_type)
-        print(" Color:", cfg.cursor_settings.color)
 
     print("\nObjects:")
     for obj in cfg.objects:
@@ -468,3 +369,23 @@ if __name__ == "__main__":
             print("    Parameters:")
             for param in obj.params:
                 print(f"      {param.key}: {param.value}")
+    
+    if cfg.data_collection:
+        print("\nData Collection Configuration:")
+        print(" Device:")
+        print(f"  Position: {cfg.data_collection.device.position}")
+        print(f"  Velocity: {cfg.data_collection.device.velocity}")
+        print(f"  Angular Velocity: {cfg.data_collection.device.angular_velocity}")
+        print(f"  Orientation: {cfg.data_collection.device.orientation}")
+        print(f"  Proxy Position: {cfg.data_collection.device.proxy_position}")
+        print(f"  Force: {cfg.data_collection.device.force}")
+        print(" Objects:")
+        print(f"  Position: {cfg.data_collection.objects.position}")
+        print(f"  Orientation: {cfg.data_collection.objects.orientation}")
+        print(f"  Contact: {cfg.data_collection.objects.contact}")
+        print(f"  Contact Point: {cfg.data_collection.objects.contact_point}")
+        print(f"  Contact Normal: {cfg.data_collection.objects.contact_normal}")
+        print(f"  Penetration Depth: {cfg.data_collection.objects.penetration_depth}")
+        print(f"  Force: {cfg.data_collection.objects.force}")
+        print(f"  Spring Force: {cfg.data_collection.objects.spring_force}")
+        print(f"  Damping Force: {cfg.data_collection.objects.damping_force}")

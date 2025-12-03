@@ -6,36 +6,10 @@ import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
 def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, 
-             
-              objects=None, start_conditions=None, end_conditions=None, scene_settings=None, metadata={}, cursor_settings=None):
+              objects=None, start_conditions=None, end_conditions=None, scene_settings=None, 
+              data_collection=None, metadata={}):
     request = pb2.TrialRequest(trial_id=trial_id)
     
-    # Emit a special cursor object if provided via config
-    if cursor_settings is not None:
-        cursor_obj = request.objects.add()
-        cursor_obj.id = "cursor"
-        cursor_obj.type = "cursor"
-        # Pass the desired visual type via params
-        p = cursor_obj.params.add()
-        p.key = "visual_type"
-        p.value = str(cursor_settings.object_type)
-        # Optionally expose as_cursor flag for server-side detection (redundant but harmless)
-        p2 = cursor_obj.params.add()
-        p2.key = "as_cursor"
-        p2.value = "1"
-        # Forward color as params if provided
-        if hasattr(cursor_settings, "color") and cursor_settings.color:
-            cr = cursor_obj.params.add(); cr.key = "color_r"; cr.value = str(cursor_settings.color.r)
-            cg = cursor_obj.params.add(); cg.key = "color_g"; cg.value = str(cursor_settings.color.g)
-            cb = cursor_obj.params.add(); cb.key = "color_b"; cb.value = str(cursor_settings.color.b)
-        # Forward any additional cursor parameters (e.g., radius, height, stiffness, damping,
-        # sample_count, contact_radius, scale, rot_x/rot_y/rot_z)
-        if hasattr(cursor_settings, "params") and cursor_settings.params:
-            for param in cursor_settings.params:
-                fp = cursor_obj.params.add()
-                fp.key = str(param.key)
-                fp.value = str(param.value)
-
     # Add objects to the request if provided
     if objects:
         for obj in objects:
@@ -177,9 +151,37 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
         request.sceneSettings.CopyFrom(scene_msg)
         print(f"[INFO] Scene settings applied: Background {scene_settings.background_color}")
     
+    # Add data collection configuration if provided
+    if data_collection:
+        dc_msg = pb2.DataCollectionConfig()
+        
+        # Device data configuration
+        if data_collection.device:
+            dc_msg.device.position = data_collection.device.position
+            dc_msg.device.velocity = data_collection.device.velocity
+            dc_msg.device.angular_velocity = data_collection.device.angular_velocity
+            dc_msg.device.orientation = data_collection.device.orientation
+            dc_msg.device.proxy_position = data_collection.device.proxy_position
+            dc_msg.device.force = data_collection.device.force
+        
+        # Objects data configuration
+        if data_collection.objects:
+            dc_msg.objects.position = data_collection.objects.position
+            dc_msg.objects.orientation = data_collection.objects.orientation
+            dc_msg.objects.contact = data_collection.objects.contact
+            dc_msg.objects.contact_point = data_collection.objects.contact_point
+            dc_msg.objects.contact_normal = data_collection.objects.contact_normal
+            dc_msg.objects.penetration_depth = data_collection.objects.penetration_depth
+            dc_msg.objects.force = data_collection.objects.force
+            dc_msg.objects.spring_force = data_collection.objects.spring_force
+            dc_msg.objects.damping_force = data_collection.objects.damping_force
+        
+        request.dataCollection.CopyFrom(dc_msg)
+        print(f"[INFO] Data collection configuration applied")
+    
     try:
         response_stream = stub.RunTrial(request)
-        handle_stream(response_stream, output_csv_stream, metadata)
+        handle_stream(response_stream, output_csv_stream, metadata, data_collection)
     except grpc.RpcError as e:
         logger = logging.getLogger("haptech")
         code = e.code() if hasattr(e, 'code') else None
@@ -190,12 +192,12 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
         raise
 
 # Process messages coming from the stream
-def handle_stream(stream, output_csv_stream, metadata={}):
+def handle_stream(stream, output_csv_stream, metadata={}, data_collection=None):
     for message in stream:
         if message.HasField("statusUpdate"):
             handle_status_update(message.statusUpdate, metadata)
         elif message.HasField("dataPoint"):
-            handle_data_point(message.dataPoint, output_csv_stream, metadata)
+            handle_data_point(message.dataPoint, output_csv_stream, metadata, data_collection)
 
 # Handle a TrialStatusUpdate
 def handle_status_update(status, metadata):
@@ -216,47 +218,83 @@ def handle_status_update(status, metadata):
     print(f"Status Update: {status.message} (Status: {name})")
 
 # Handle a TrialDataPoint
-def handle_data_point(data, output_csv_stream, metadata):
+def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
     timestamp = data.timestamp
-    device_pos = data.devicePosition
-    proxy_pos = data.proxyPosition
-    force = data.force
+    
+    # Default to collecting all data if no config specified
+    device_cfg = data_collection.device if data_collection else None
+    
+    # Extract data fields
+    device_pos = data.devicePosition if data.HasField("devicePosition") else None
+    proxy_pos = data.proxyPosition if data.HasField("proxyPosition") else None
+    force = data.force if data.HasField("force") else None
     device_vel = data.deviceVelocity if data.HasField("deviceVelocity") else None
     device_ang_vel = data.deviceAngularVelocity if data.HasField("deviceAngularVelocity") else None
     device_quat = data.deviceOrientation if data.HasField("deviceOrientation") else None
 
-    # Format vectors as [x, y, z]
-    device_pos_str = f"[{device_pos.x:.4f}, {device_pos.y:.4f}, {device_pos.z:.4f}]"
-    proxy_pos_str = f"[{proxy_pos.x:.4f}, {proxy_pos.y:.4f}, {proxy_pos.z:.4f}]"
-    force_str = f"[{force.x:.4f}, {force.y:.4f}, {force.z:.4f}]"
+    # Build display string based on what's enabled
+    display_parts = [f"{timestamp:.4f}s"]
+    
+    if not device_cfg or device_cfg.position:
+        if device_pos:
+            device_pos_str = f"[{device_pos.x:.4f}, {device_pos.y:.4f}, {device_pos.z:.4f}]"
+            display_parts.append(f"Device Position: {device_pos_str}")
+    
+    if not device_cfg or device_cfg.proxy_position:
+        if proxy_pos:
+            proxy_pos_str = f"[{proxy_pos.x:.4f}, {proxy_pos.y:.4f}, {proxy_pos.z:.4f}]"
+            display_parts.append(f"Proxy Position: {proxy_pos_str}")
+    
+    if not device_cfg or device_cfg.force:
+        if force:
+            force_str = f"[{force.x:.4f}, {force.y:.4f}, {force.z:.4f}]"
+            display_parts.append(f"Force: {force_str}")
 
     # display data point
-    print(f"Data Point: {timestamp:.4f}s | Device Position: {device_pos_str} | Proxy Position: {proxy_pos_str} | Force: {force_str}")
+    print(f"Data Point: {' | '.join(display_parts)}")
 
     # log to CSV file
     if output_csv_stream:
         writer = csv.writer(output_csv_stream)
-        row = [
-            timestamp,
-            device_pos.x, device_pos.y, device_pos.z,
-            proxy_pos.x, proxy_pos.y, proxy_pos.z,
-            force.x, force.y, force.z,
-        ]
-
-        if device_vel:
-            row += [device_vel.x, device_vel.y, device_vel.z]
-        else:
-            row += ["", "", ""]
-
-        if device_ang_vel:
-            row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
-        else:
-            row += ["", "", ""]
-
-        if device_quat:
-            row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
-        else:
-            row += ["", "", "", ""]
+        row = [timestamp]
+        
+        # Add fields based on data collection config
+        # If no config, collect everything (backward compatibility)
+        if not device_cfg or device_cfg.position:
+            if device_pos:
+                row += [device_pos.x, device_pos.y, device_pos.z]
+            else:
+                row += ["", "", ""]
+        
+        if not device_cfg or device_cfg.proxy_position:
+            if proxy_pos:
+                row += [proxy_pos.x, proxy_pos.y, proxy_pos.z]
+            else:
+                row += ["", "", ""]
+        
+        if not device_cfg or device_cfg.force:
+            if force:
+                row += [force.x, force.y, force.z]
+            else:
+                row += ["", "", ""]
+        
+        if not device_cfg or device_cfg.velocity:
+            if device_vel:
+                row += [device_vel.x, device_vel.y, device_vel.z]
+            else:
+                row += ["", "", ""]
+        
+        if not device_cfg or device_cfg.angular_velocity:
+            if device_ang_vel:
+                row += [device_ang_vel.x, device_ang_vel.y, device_ang_vel.z]
+            else:
+                row += ["", "", ""]
+        
+        if not device_cfg or device_cfg.orientation:
+            if device_quat:
+                row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
+            else:
+                row += ["", "", "", ""]
 
         writer.writerow(row)
 
