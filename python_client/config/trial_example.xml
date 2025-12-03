@@ -1,9 +1,9 @@
 <TrialConfig>
   <Test>false</Test>
   <StartConditions>
-    <Condition name="time" success="true" priority="1">
-      <Parameters duration_seconds="2.0"/>
-    </Condition>
+  <Condition name="position" success="true" priority="1">
+    <Parameters target_x="0.0" target_y="-0.5" target_z="0.0" tolerance="0.1"/>
+  </Condition>
   </StartConditions>
 
   <EndConditions>
@@ -11,6 +11,29 @@
     <Parameters target_x="0.0" target_y="0.5" target_z="0.0" tolerance="0.1"/>
   </Condition>
   </EndConditions>
+
+
+  <DataCollection>
+    <Device>
+      <Position enabled="true"/>
+      <Velocity enabled="true"/>
+      <AngularVelocity enabled="true"/>
+      <Orientation enabled="true"/>
+      <ProxyPosition enabled="true"/>
+      <Force enabled="true"/>
+    </Device>
+    <Objects>
+      <Position enabled="true"/>
+      <Orientation enabled="false"/>
+      <Contact enabled="true"/>
+      <ContactPoint enabled="true"/>
+      <ContactNormal enabled="true"/>
+      <PenetrationDepth enabled="true"/>
+      <Force enabled="true"/>
+      <SpringForce enabled="true"/>
+      <DampingForce enabled="true"/>
+    </Objects>
+  </DataCollection>
 
   <HUDText>
     <StartMessage>Move to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
@@ -21,9 +44,9 @@
   <SceneSettings>
     <BackgroundColor r="106" g="137" b="167"/>
     <Camera>
-      <Position x="1.0" y="1.0" z="2.0"/>
+      <Position x="1.0" y="0.0" z="0.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
-      <Up x="0.0" y="1.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
     <TextOverlay>
       <Text>Move to target position (0, 0.5, 0)</Text>
@@ -44,29 +67,6 @@
   <Controls>
     <MouseCursor>true</MouseCursor>
   </Controls>
-
-  <!-- Collect everything: all device and per-object data enabled -->
-  <DataCollection>
-    <Device>
-      <Position enabled="true"/>
-      <Velocity enabled="true"/>
-      <AngularVelocity enabled="true"/>
-      <Orientation enabled="true"/>
-      <ProxyPosition enabled="true"/>
-      <Force enabled="true"/>
-    </Device>
-    <Objects>
-      <Position enabled="true"/>
-      <Orientation enabled="true"/>
-      <Contact enabled="true"/>
-      <ContactPoint enabled="true"/>
-      <ContactNormal enabled="true"/>
-      <PenetrationDepth enabled="true"/>
-      <Force enabled="true"/>
-      <SpringForce enabled="true"/>
-      <DampingForce enabled="true"/>
-    </Objects>
-  </DataCollection>
 
   <Objects>
     <Object id="home" type="box">

@@ -25,15 +25,37 @@
   <SceneSettings>
     <BackgroundColor r="0.2" g="0.2" b="0.2"/>
     <Camera>
-      <Position x="1.0" y="1.0" z="2.0"/>
+      <Position x="1.0" y="0.0" z="0.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
-      <Up x="0.0" y="1.0" z="0.0"/>
+      <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
   </SceneSettings>
 
   <Controls>
     <MouseCursor>true</MouseCursor>
   </Controls>
+
+  <DataCollection>
+    <Device>
+      <Position enabled="true"/>
+      <Velocity enabled="true"/>
+      <AngularVelocity enabled="true"/>
+      <Orientation enabled="true"/>
+      <ProxyPosition enabled="true"/>
+      <Force enabled="true"/>
+    </Device>
+    <Objects>
+      <Position enabled="true"/>
+      <Orientation enabled="false"/>
+      <Contact enabled="true"/>
+      <ContactPoint enabled="true"/>
+      <ContactNormal enabled="true"/>
+      <PenetrationDepth enabled="true"/>
+      <Force enabled="true"/>
+      <SpringForce enabled="true"/>
+      <DampingForce enabled="true"/>
+    </Objects>
+  </DataCollection>
 
   <Objects>
     <Object id="home" type="box">
@@ -48,13 +70,6 @@
       <Parameters width="0.1" height="0.1" depth="0.1"/>
       <Color r="1.0" g="0.0" b="0.0"/>
     </Object>
-<<<<<<<< HEAD:python_client/config/test_position_condition.xml
-    <Object id="bouncy bouncy" type="ball">
-      <Position x="0.0" y="0.0" z="1.0"/>
-      <Orientation x="0" y="0" z="0"/>
-      <Parameters radius="0.05" gravity_scale="1" bounciness="0.8"/>
-      <Color r="1.0" g="0.5" b="0.2"/>
-========
     <Object id="physics_cube" type="box">
       <Position x="0.0" y="0.0" z="0.0"/>
       <Orientation x="0" y="0" z="0"/>
@@ -66,7 +81,6 @@
       <Orientation x="20" y="30" z="10"/>
       <Color r="1.0" g="1.0" b="0.0"/>
       <Parameters radius="0.08" height="0.20" stiffness="1000.0" damping="100.0"/>
->>>>>>>> d80c0f672d4505ef5cc257ba2ea51a355ac1664a:python_client/trail_example.xml
     </Object>
   </Objects>
 </TrialConfig>

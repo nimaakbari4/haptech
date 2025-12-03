@@ -251,7 +251,7 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
             display_parts.append(f"Force: {force_str}")
 
     # display data point
-    print(f"Data Point: {' | '.join(display_parts)}")
+    # print(f"Data Point: {' | '.join(display_parts)}")
 
     # log to CSV file
     if output_csv_stream:

@@ -3,6 +3,6 @@
     "results_path": "results",
     "server_host": "localhost",
     "server_port": 50051,
-    "trial_subject": "1",
-    "last_configuration_file": "sandbox.xml"
+    "trial_subject": "peter",
+    "last_configuration_file": "trail_example.xml"
 }
