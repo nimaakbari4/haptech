@@ -2,6 +2,10 @@
 
 Welcome to the comprehensive documentation for the Haptech haptic research platform.
 
+## Documentation Notice
+
+This documentation was generated with AI assistance (Claude Sonnet 4.5) based on codebase analysis. While we've aimed for accuracy, please verify critical information against the actual source code. If you find errors or have improvements, contributions are welcome.
+
 ## Documentation Sections
 
 - [Technical Documentation](technical/README.md) - Code documentation, APIs, and system architecture
