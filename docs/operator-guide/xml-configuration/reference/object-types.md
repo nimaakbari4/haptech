@@ -34,16 +34,6 @@ The haptic system supports several built-in object types, each with specific geo
 |-----------|------|-------------|
 | `radius` | float | Sphere radius |
 
-### Optional Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `stiffness` | float | 1000 | Haptic stiffness |
-| `damping` | float | 50 | Haptic damping |
-| `static_friction` | float | 0.1 | Static friction coefficient |
-| `dynamic_friction` | float | 0.05 | Dynamic friction coefficient |
-| `mass` | float | 0.05 | Object mass (for physics) |
-
 ### Example with All Parameters
 
 ```xml
@@ -52,11 +42,6 @@ The haptic system supports several built-in object types, each with specific geo
     <Color r="1.0" g="0.0" b="0.0"/>
     <Parameters 
         radius="0.04"
-        stiffness="1200"
-        damping="75"
-        static_friction="0.3"
-        dynamic_friction="0.2"
-        mass="0.08"
     />
 </Object>
 ```
@@ -80,16 +65,6 @@ The haptic system supports several built-in object types, each with specific geo
 | `width` | float | Width along X-axis |
 | `height` | float | Height along Y-axis |
 | `depth` | float | Depth along Z-axis |
-
-### Optional Parameters
-
-| Parameter | Type | Default | Description | Units | Range |
-|-----------|------|---------|-------------|-------|-------|
-| `stiffness` | float | 1000 | Haptic stiffness | N/m | 10 - 5000 |
-| `damping` | float | 50 | Haptic damping | Ns/m | 1 - 200 |
-| `static_friction` | float | 0.1 | Static friction coefficient | - | 0.0 - 2.0 |
-| `dynamic_friction` | float | 0.05 | Dynamic friction coefficient | - | 0.0 - 2.0 |
-| `mass` | float | 0.1 | Object mass | kg | 0.001 - 1.0 |
 
 ### Common Box Configurations
 
@@ -125,16 +100,6 @@ The haptic system supports several built-in object types, each with specific geo
 |-----------|------|-------------|
 | `radius` | float | Cylinder radius |
 | `height` | float | Cylinder height |
-
-### Optional Parameters
-
-| Parameter | Type | Default | Description | Units | Range |
-|-----------|------|---------|-------------|-------|-------|
-| `stiffness` | float | 1000 | Haptic stiffness | N/m | 10 - 5000 |
-| `damping` | float | 50 | Haptic damping | Ns/m | 1 - 200 |
-| `static_friction` | float | 0.1 | Static friction coefficient | - | 0.0 - 2.0 |
-| `dynamic_friction` | float | 0.05 | Dynamic friction coefficient | - | 0.0 - 2.0 |
-| `mass` | float | 0.1 | Object mass | kg | 0.001 - 1.0 |
 
 ### Common Cylinder Configurations
 
@@ -217,7 +182,7 @@ The haptic system supports several built-in object types, each with specific geo
 <Object id="ring_target" type="torus">
     <Position x="0.0" y="0.1" z="0.0"/>
     <Color r="0.8" g="0.0" b="0.8"/>
-    <Parameters major_radius="0.06" minor_radius="0.02"/>
+    <Parameters outer_radius="0.06" inner_radius="0.02"/>
 </Object>
 ```
 
@@ -225,32 +190,23 @@ The haptic system supports several built-in object types, each with specific geo
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `major_radius` | float | Distance from center to tube center |
-| `minor_radius` | float | Radius of the tube |
-
-### Optional Parameters
-
-| Parameter | Type | Default | Description | Units | Range |
-|-----------|------|---------|-------------|-------|-------|
-| `stiffness` | float | 1000 | Haptic stiffness | N/m | 10 - 5000 |
-| `damping` | float | 50 | Haptic damping | Ns/m | 1 - 200 |
-| `static_friction` | float | 0.1 | Static friction coefficient | - | 0.0 - 2.0 |
-| `dynamic_friction` | float | 0.05 | Dynamic friction coefficient | - | 0.0 - 2.0 |
+| `inner_radius` | float | Distance from center to torus center |
+| `outer_radius` | float | Radius of the torus |
 
 ### Torus Size Guidelines
 
 ```xml
 <!-- Small ring -->
-<Parameters major_radius="0.03" minor_radius="0.008"/>
+<Parameters outer_radius="0.03" inner_radius="0.008"/>
 
 <!-- Medium donut -->
-<Parameters major_radius="0.05" minor_radius="0.015"/>
+<Parameters outer_radius="0.05" inner_radius="0.015"/>
 
 <!-- Large ring -->
-<Parameters major_radius="0.1" minor_radius="0.025"/>
+<Parameters outer_radius="0.1" inner_radius="0.025"/>
 ```
 
-**Note**: `major_radius` must be greater than `minor_radius` for valid torus geometry.
+**Note**: `outer_radius` must be greater than `inner_radius` for valid torus geometry.
 
 ## Spring Objects
 
@@ -273,15 +229,6 @@ The haptic system supports several built-in object types, each with specific geo
 | `stiffness` | float | Spring constant |
 | `damping` | float | Damping coefficient |
 
-### Optional Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `coils` | int | 8 | Number of spring coils |
-| `wire_thickness` | float | 0.002 | Spring wire thickness |
-| `compression_limit` | float | 0.8 | Maximum compression ratio |
-| `extension_limit` | float | 2.0 | Maximum extension ratio |
-
 ### Spring Behavior Examples
 
 ```xml
@@ -291,7 +238,6 @@ The haptic system supports several built-in object types, each with specific geo
     height="0.08" 
     stiffness="200" 
     damping="30"
-    coils="10"
 />
 
 <!-- Stiff spring -->
@@ -300,7 +246,6 @@ The haptic system supports several built-in object types, each with specific geo
     height="0.05" 
     stiffness="2000" 
     damping="150"
-    coils="6"
 />
 
 <!-- Long extension spring -->
@@ -309,61 +254,6 @@ The haptic system supports several built-in object types, each with specific geo
     height="0.12" 
     stiffness="500" 
     damping="80"
-    extension_limit="3.0"
-/>
-```
-
-## Line Objects
-
-### Basic Configuration
-
-```xml
-<Object id="guide_line" type="line">
-    <Position x="0.0" y="0.0" z="0.0"/>
-    <Color r="1.0" g="1.0" b="1.0"/>
-    <Parameters start_x="0.0" start_y="0.0" start_z="0.0" 
-                end_x="0.1" end_y="0.1" end_z="0.0" 
-                thickness="0.002"/>
-</Object>
-```
-
-### Required Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `start_x` | float | Start point X coordinate |
-| `start_y` | float | Start point Y coordinate |
-| `start_z` | float | Start point Z coordinate |
-| `end_x` | float | End point X coordinate |
-| `end_y` | float | End point Y coordinate |
-| `end_z` | float | End point Z coordinate |
-| `thickness` | float | Line thickness |
-
-### Optional Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `stiffness` | float | 1500 | Haptic stiffness |
-| `damping` | float | 100 | Haptic damping |
-| `tangent_stiffness` | float | 800 | Tangent direction stiffness |
-
-### Line Usage Examples
-
-```xml
-<!-- Horizontal guide -->
-<Parameters 
-    start_x="-0.1" start_y="0.0" start_z="0.0"
-    end_x="0.1" end_y="0.0" end_z="0.0"
-    thickness="0.003"
-/>
-
-<!-- Curved path approximation -->
-<Parameters 
-    start_x="0.0" start_y="0.0" start_z="0.0"
-    end_x="0.05" end_y="0.05" end_z="0.02"
-    thickness="0.002"
-    stiffness="800"
-    tangent_stiffness="400"
 />
 ```
 
@@ -387,14 +277,6 @@ The haptic system supports several built-in object types, each with specific geo
 | `radius_y` | float | Radius along Y-axis |
 | `radius_z` | float | Radius along Z-axis |
 
-### Optional Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `stiffness` | float | 1000 | Haptic stiffness |
-| `damping` | float | 50 | Haptic damping |
-| `mass` | float | 0.05 | Object mass |
-
 ### Ellipsoid Shape Examples
 
 ```xml
@@ -407,146 +289,3 @@ The haptic system supports several built-in object types, each with specific geo
 <!-- Asymmetric shape -->
 <Parameters radius_x="0.05" radius_y="0.03" radius_z="0.025"/>
 ```
-
-## Universal Optional Elements
-
-All object types support these optional elements:
-
-### Visibility Control
-
-```xml
-<Visible>false</Visible>  <!-- Object starts hidden -->
-```
-
-### Transparency
-
-```xml
-<Transparency>0.5</Transparency>  <!-- 0.0 = opaque, 1.0 = transparent -->
-```
-
-### Material Properties
-
-```xml
-<Material>
-    <Ambient r="0.2" g="0.2" b="0.2"/>
-    <Diffuse r="0.8" g="0.8" b="0.8"/>
-    <Specular r="0.5" g="0.5" b="0.5"/>
-    <Shininess>50.0</Shininess>
-</Material>
-```
-
-### Texture Mapping
-
-```xml
-<Texture>
-    <File>textures/surface.jpg</File>
-    <Scale>1.0</Scale>
-    <Rotation>0.0</Rotation>
-</Texture>
-```
-
-## Object Interaction Properties
-
-### Collision Detection
-
-All objects support collision detection with these properties:
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `collision_enabled` | bool | true | Enable/disable collision |
-| `collision_margin` | float | 0.001 | Collision detection tolerance |
-| `collision_response` | string | "haptic" | "haptic", "visual", "both", "none" |
-
-```xml
-<Parameters 
-    radius="0.03"
-    collision_enabled="true"
-    collision_margin="0.002"
-    collision_response="haptic"
-/>
-```
-
-### Physics Simulation
-
-For dynamic objects (mainly `ball` type):
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `gravity_enabled` | bool | true | Enable gravity effects |
-| `kinematic` | bool | false | Object moved by script only |
-| `fixed_rotation` | bool | false | Prevent rotation |
-| `continuous_collision` | bool | false | High-precision collision |
-
-```xml
-<Parameters 
-    radius="0.025"
-    mass="0.1"
-    gravity_enabled="true"
-    kinematic="false"
-    continuous_collision="true"
-/>
-```
-
-## Performance Considerations
-
-### Complexity Levels
-
-**Low complexity** (best performance):
-- `sphere`, `box` with default parameters
-- No physics simulation
-- Simple collision detection
-
-**Medium complexity**:
-- `cylinder`, `torus`, `ellipsoid`
-- Basic physics properties
-- Standard collision detection
-
-**High complexity** (may impact performance):
-- `ball` with full physics
-- `spring` with detailed simulation
-- Complex `line` paths
-- Advanced material properties
-
-### Optimization Guidelines
-
-1. **Use simple shapes** when possible
-2. **Limit dynamic objects** (balls with physics)
-3. **Avoid excessive detail** in object parameters
-4. **Test performance** with your target hardware
-5. **Consider LOD** (level of detail) for distant objects
-
-## Best Practices
-
-### Object Sizing
-- **Minimum size**: 2mm radius/width for reliable haptic feedback
-- **Maximum size**: Stay within workspace bounds (±30cm)
-- **Proportional**: Scale objects appropriately for the task
-
-### Parameter Selection
-- **Start with defaults**: Begin with default stiffness/damping
-- **Adjust gradually**: Make small parameter changes
-- **Test thoroughly**: Verify haptic feel with target users
-- **Document changes**: Record parameter modifications
-
-### Naming Conventions
-- Use descriptive IDs: `target_sphere`, `obstacle_box`
-- Include size indicators: `small_target`, `large_barrier`
-- Group related objects: `waypoint_1`, `waypoint_2`
-
-### Common Parameter Ranges
-
-**Stiffness values**:
-- Soft objects: 100-500 N/m
-- Normal objects: 500-1500 N/m
-- Hard objects: 1500-3000 N/m
-- Very hard: 3000+ N/m
-
-**Damping values**:
-- Low damping: 10-30 Ns/m
-- Normal damping: 30-100 Ns/m
-- High damping: 100-200 Ns/m
-
-**Object sizes**:
-- Small targets: 1-3cm radius
-- Medium objects: 3-6cm radius
-- Large objects: 6-10cm radius
