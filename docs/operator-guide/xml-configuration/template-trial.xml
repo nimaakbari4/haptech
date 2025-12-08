@@ -209,83 +209,23 @@ GETTING HELP:
     
     <DataCollection>
         <Device>
-        <Position enabled="true"/>
-        <Velocity enabled="true"/>
-        <AngularVelocity enabled="true"/>
-        <Orientation enabled="true"/>
-        <ProxyPosition enabled="true"/>
-        <Force enabled="true"/>
+            <Position enabled="true"/>
+            <Velocity enabled="true"/>
+            <AngularVelocity enabled="true"/>
+            <Orientation enabled="true"/>
+            <ProxyPosition enabled="true"/>
+            <Force enabled="true"/>
         </Device>
         <Objects>
-        <Position enabled="true"/>
-        <Orientation enabled="false"/>
-        <Contact enabled="true"/>
-        <ContactPoint enabled="true"/>
-        <ContactNormal enabled="true"/>
-        <PenetrationDepth enabled="true"/>
-        <Force enabled="true"/>
-        <SpringForce enabled="true"/>
-        <DampingForce enabled="true"/>
+            <Position enabled="true"/>
+            <Orientation enabled="false"/>
+            <Contact enabled="true"/>
+            <ContactPoint enabled="true"/>
+            <ContactNormal enabled="true"/>
+            <PenetrationDepth enabled="true"/>
+            <Force enabled="true"/>
+            <SpringForce enabled="true"/>
+            <DampingForce enabled="true"/>
         </Objects>
     </DataCollection>
-    
-    
 </TrialConfig>
-
-<!--
-COMMON MODIFICATIONS:
-=====================
-
-1. SIMPLE REACHING TASK:
-   - Keep one target sphere
-   - Use position end condition
-   - Set appropriate tolerance (0.01-0.03m)
-
-2. MULTI-TARGET SEQUENCE:
-   - Add multiple target spheres
-   - Use contact_sequence condition
-   - Make targets different colors
-
-3. OBSTACLE AVOIDANCE:
-   - Add obstacle boxes between start and target
-   - Use contact conditions with success="false"
-   - Set high stiffness on obstacles
-
-4. FORCE APPLICATION:
-   - Use force conditions in EndConditions
-   - Add springs or deformable objects
-   - Set appropriate force thresholds
-
-5. SPEED CONSTRAINTS:
-   - Add velocity conditions
-   - Set max_velocity parameters
-   - Balance speed vs accuracy requirements
-
-6. PATH FOLLOWING:
-   - Add line objects for path guidance
-   - Use path_following conditions
-   - Set appropriate tolerance values
-
-VALIDATION CHECKLIST:
-====================
-□ All object positions within workspace (±0.3m)
-□ All object IDs are unique
-□ All objects have required elements: Position, Orientation, Color, Parameters
-□ End conditions include time limit
-□ Color values between 0.0 and 1.0
-□ Orientation values in degrees (can be any real number)
-□ Tolerances appropriate for task difficulty
-□ Camera can see all important objects
-□ Objects don't overlap
-□ Force/stiffness values reasonable
-
-TESTING STEPS:
-=============
-1. Save configuration with descriptive filename
-2. Load in haptic system: python main.py your_config.xml
-3. Test with short trial run
-4. Verify all objects appear correctly
-5. Check that conditions trigger as expected
-6. Adjust parameters based on pilot testing
-7. Document final settings in experiment notes
--->
