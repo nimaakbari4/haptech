@@ -167,7 +167,7 @@ GETTING HELP:
         
         <!-- DEFAULT: Angled perspective view -->
         <Camera>
-            <Position x="1.0" y="1.0" z="1.5"/>    <!-- Camera position -->
+            <Position x="1.0" y="0.0" z="0.0"/>    <!-- Camera position -->
             <LookAt x="0.0" y="0.0" z="0.0"/>      <!-- What to look at -->
             <Up x="0.0" y="0.0" z="1.0"/>          <!-- Up direction -->
         </Camera>

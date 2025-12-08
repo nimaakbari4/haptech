@@ -9,8 +9,7 @@ Scene settings control the visual environment for your haptic trials. These sett
 **Key components**:
 - **Camera**: Viewpoint and perspective 
 - **Background**: Colors and environment
-- **Lighting**: Illumination and shadows
-- **Visual effects**: Transparency, materials, post-processing
+- **Text Overlays**: Text HUD elements for the participant conveying instructions or information
 
 ## Basic Scene Structure
 
@@ -18,19 +17,22 @@ Scene settings control the visual environment for your haptic trials. These sett
 <SceneSettings>
     <!-- Camera position and orientation -->
     <Camera>
-        <Position x="1.0" y="1.0" z="2.0"/>
+        <Position x="1.0" y="0.0" z="0.5"/>
         <LookAt x="0.0" y="0.0" z="0.0"/>
-        <Up x="0.0" y="1.0" z="0.0"/>
+        <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
     
     <!-- Background appearance -->
     <BackgroundColor r="0.2" g="0.2" b="0.2"/>
     
-    <!-- Optional: Advanced lighting -->
-    <Lighting>
-        <AmbientLight intensity="0.3"/>
-        <DirectionalLight intensity="0.8"/>
-    </Lighting>
+    <!-- Text overlay on screen -->
+    <TextOverlay>
+        <Text>Move to target position</Text>
+        <X>400</X>
+        <Y>50</Y>
+        <FontSize>32</FontSize>
+        <Color r="255" g="0" b="0"/>
+    </TextOverlay>
 </SceneSettings>
 ```
 
@@ -137,15 +139,18 @@ Simple, distraction-free backgrounds:
 <BackgroundColor r="1.0" g="1.0" b="1.0"/>
 ```
 
-### Gradient Backgrounds
+### Text Overlays
+
+Add instructional text to the screen:
 
 ```xml
-<Background>
-    <Gradient>
-        <TopColor r="0.4" g="0.6" b="1.0"/>     <!-- Light blue top -->
-        <BottomColor r="0.1" g="0.2" b="0.4"/>  <!-- Dark blue bottom -->
-    </Gradient>
-</Background>
+<TextOverlay>
+    <Text>Reach the green target sphere</Text>
+    <X>400</X>          <!-- Horizontal position in pixels -->
+    <Y>50</Y>           <!-- Vertical position in pixels -->
+    <FontSize>32</FontSize>
+    <Color r="255" g="255" b="255"/>  <!-- White text (RGB 0-255) -->
+</TextOverlay>
 ```
 
 ### Background Best Practices
@@ -161,109 +166,17 @@ Simple, distraction-free backgrounds:
 - **Dark blue (0.1, 0.1, 0.3)**: Calming, good contrast
 - **Black (0.0, 0.0, 0.0)**: High contrast, minimal distraction
 
-## Lighting Configuration
+## Lighting
 
-### Basic Lighting
+Currently, lighting configuration is handled automatically by the system. The virtual environment uses default ambient lighting that provides good visibility for all objects.
 
-Simple ambient lighting (usually sufficient):
+**Default lighting features**:
+- Even illumination from all directions
+- Optimized for haptic task visibility
+- No shadows or complex lighting effects
+- Consistent across all trials
 
-```xml
-<Lighting>
-    <!-- Even illumination from all directions -->
-    <AmbientLight intensity="0.7"/>
-</Lighting>
-```
-
-### Advanced Lighting
-
-Directional lighting for depth perception:
-
-```xml
-<Lighting>
-    <!-- Base ambient light -->
-    <AmbientLight intensity="0.3"/>
-    
-    <!-- Main directional light -->
-    <DirectionalLight intensity="0.8">
-        <Direction x="-0.5" y="-0.3" z="-1.0"/>
-        <Color r="1.0" g="1.0" b="0.9"/>
-    </DirectionalLight>
-    
-    <!-- Optional: Fill light -->
-    <DirectionalLight intensity="0.3">
-        <Direction x="0.5" y="0.2" z="-0.8"/>
-        <Color r="0.8" g="0.9" b="1.0"/>  <!-- Slight blue tint -->
-    </DirectionalLight>
-</Lighting>
-```
-
-### Lighting Types
-
-#### Ambient Light
-Provides even illumination without shadows:
-
-```xml
-<AmbientLight intensity="0.5"/>  <!-- 0.0 = dark, 1.0 = full -->
-```
-
-#### Directional Light
-Simulates sunlight with shadows:
-
-```xml
-<DirectionalLight intensity="0.8">
-    <Direction x="-1.0" y="-1.0" z="-2.0"/>  <!-- From upper-left -->
-    <Color r="1.0" g="1.0" b="0.9"/>         <!-- Warm white -->
-</DirectionalLight>
-```
-
-#### Point Light
-Localized light source:
-
-```xml
-<PointLight intensity="1.0">
-    <Position x="0.5" y="0.5" z="1.0"/>
-    <Color r="1.0" g="0.9" b="0.8"/>  <!-- Warm light -->
-    <Attenuation constant="1.0" linear="0.1" quadratic="0.01"/>
-</PointLight>
-```
-
-## Visual Effects
-
-### Material Properties
-
-Control how objects interact with light:
-
-```xml
-<MaterialSettings>
-    <DefaultMaterial>
-        <Ambient r="0.2" g="0.2" b="0.2"/>
-        <Diffuse r="0.8" g="0.8" b="0.8"/>
-        <Specular r="0.5" g="0.5" b="0.5"/>
-        <Shininess value="50.0"/>
-    </DefaultMaterial>
-</MaterialSettings>
-```
-
-### Shadows
-
-Enable shadows for better depth perception:
-
-```xml
-<RenderSettings>
-    <Shadows enabled="true" quality="medium"/>
-    <ShadowColor r="0.1" g="0.1" b="0.1"/>  <!-- Dark gray shadows -->
-</RenderSettings>
-```
-
-### Anti-aliasing
-
-Smooth edges for better visual quality:
-
-```xml
-<RenderSettings>
-    <Antialiasing enabled="true" samples="4"/>
-</RenderSettings>
-```
+**Note**: Advanced lighting configuration (directional lights, shadows, etc.) is not currently supported in XML configuration files. The system uses built-in lighting optimized for haptic applications.
 
 ## Complete Scene Examples
 
@@ -279,15 +192,11 @@ Clean and distraction-free:
     </Camera>
     
     <BackgroundColor r="0.95" g="0.95" b="0.95"/>  <!-- Light gray -->
-    
-    <Lighting>
-        <AmbientLight intensity="0.8"/>
-    </Lighting>
 </SceneSettings>
 ```
 
-### Professional Setup
-Balanced lighting with depth:
+### Standard Setup
+Balanced view with text instructions:
 
 ```xml
 <SceneSettings>
@@ -299,18 +208,13 @@ Balanced lighting with depth:
     
     <BackgroundColor r="0.25" g="0.25" b="0.25"/>  <!-- Dark gray -->
     
-    <Lighting>
-        <AmbientLight intensity="0.4"/>
-        <DirectionalLight intensity="0.7">
-            <Direction x="-0.6" y="-0.4" z="-1.0"/>
-            <Color r="1.0" g="1.0" b="0.95"/>
-        </DirectionalLight>
-    </Lighting>
-    
-    <RenderSettings>
-        <Shadows enabled="true" quality="medium"/>
-        <Antialiasing enabled="true" samples="4"/>
-    </RenderSettings>
+    <TextOverlay>
+        <Text>Reach the target as quickly as possible</Text>
+        <X>400</X>
+        <Y>50</Y>
+        <FontSize>24</FontSize>
+        <Color r="255" g="255" b="255"/>  <!-- White text -->
+    </TextOverlay>
 </SceneSettings>
 ```
 
@@ -327,9 +231,13 @@ Ideal for 2D navigation tasks:
     
     <BackgroundColor r="0.1" g="0.15" b="0.2"/>  <!-- Dark blue -->
     
-    <Lighting>
-        <AmbientLight intensity="0.9"/>  <!-- Bright even lighting -->
-    </Lighting>
+    <TextOverlay>
+        <Text>Navigate to each waypoint in order</Text>
+        <X>300</X>
+        <Y>30</Y>
+        <FontSize>28</FontSize>
+        <Color r="255" g="255" b="0"/>  <!-- Yellow text -->
+    </TextOverlay>
 </SceneSettings>
 ```
 
@@ -346,125 +254,12 @@ For fine manipulation tasks:
     
     <BackgroundColor r="0.0" g="0.0" b="0.0"/>  <!-- Pure black -->
     
-    <Lighting>
-        <AmbientLight intensity="0.3"/>
-        <PointLight intensity="1.2">
-            <Position x="0.2" y="0.1" z="0.3"/>
-            <Color r="1.0" g="1.0" b="1.0"/>
-        </PointLight>
-    </Lighting>
+    <TextOverlay>
+        <Text>Apply precise force to the object</Text>
+        <X>200</X>
+        <Y>40</Y>
+        <FontSize>20</FontSize>
+        <Color r="0" g="255" b="255"/>  <!-- Cyan text -->
+    </TextOverlay>
 </SceneSettings>
 ```
-
-## Task-Specific Recommendations
-
-### Reaching Tasks
-- **Camera**: Angled perspective to show depth
-- **Background**: Medium gray for good contrast
-- **Lighting**: Ambient with subtle directional light
-
-### Path Following
-- **Camera**: Overhead view for clear path visibility
-- **Background**: Dark to make path elements stand out
-- **Lighting**: Bright ambient for clear visibility
-
-### Precision Manipulation
-- **Camera**: Close side or angled view
-- **Background**: High contrast (black or white)
-- **Lighting**: Bright, focused lighting
-
-### Force Application
-- **Camera**: Side view to show force direction
-- **Background**: Neutral gray
-- **Lighting**: Directional to show object deformation
-
-### Multi-target Selection
-- **Camera**: Wide-angle view to show all targets
-- **Background**: Low distraction color
-- **Lighting**: Even ambient lighting
-
-## Performance Considerations
-
-### Rendering Optimization
-
-```xml
-<RenderSettings>
-    <!-- Reduce quality for better performance -->
-    <Shadows enabled="false"/>
-    <Antialiasing enabled="false"/>
-    <LOD enabled="true"/>  <!-- Level of detail -->
-    
-    <!-- Or maintain quality with selective settings -->
-    <Shadows enabled="true" quality="low"/>
-    <Antialiasing enabled="true" samples="2"/>
-</RenderSettings>
-```
-
-### Performance Guidelines
-- **Simple lighting**: Use mostly ambient light for best performance
-- **Minimal effects**: Avoid complex shadows and reflections for real-time trials
-- **Stable framerate**: Prioritize smooth haptic update rate over visual quality
-- **Test thoroughly**: Verify performance on target hardware
-
-## Troubleshooting
-
-### Common Issues
-
-**Camera not showing objects**:
-```
-Problem: Black screen or objects not visible
-Solution: Check camera Position and LookAt coordinates, verify objects are within view
-```
-
-**Poor visibility**:
-```
-Problem: Objects are too dark or washed out
-Solution: Adjust lighting intensity, check background contrast
-```
-
-**Confusing perspective**:
-```
-Problem: Difficult to judge object positions
-Solution: Try different camera angles, add subtle shadows for depth
-```
-
-**Performance issues**:
-```
-Problem: Slow rendering, choppy haptics
-Solution: Reduce lighting complexity, disable shadows, simplify effects
-```
-
-### Validation Checklist
-
-- **Camera position**: Is the camera outside the haptic workspace?
-- **Field of view**: Are all important objects visible?
-- **Contrast**: Can objects be clearly distinguished from background?
-- **Lighting**: Is the scene adequately lit without being too bright?
-- **Performance**: Does the scene maintain smooth haptic update rates?
-
-## Best Practices
-
-### Visual Design
-- **Consistency**: Use similar lighting across related trials
-- **Contrast**: Ensure adequate contrast between objects and background
-- **Simplicity**: Avoid unnecessary visual complexity
-- **Accessibility**: Consider colorblind and visually impaired users
-
-### Camera Placement
-- **Natural angles**: Choose viewpoints that feel intuitive
-- **Task appropriate**: Match camera angle to task requirements
-- **Avoid extremes**: Don't use angles that cause confusion
-- **Test thoroughly**: View the scene from the participant's perspective
-
-### Lighting Strategy
-- **Start simple**: Begin with ambient lighting only
-- **Add gradually**: Introduce directional lighting if needed for depth
-- **Performance first**: Prioritize haptic performance over visual effects
-- **Consistent mood**: Match lighting to experimental goals
-
-## Next Steps
-
-- **Objects**: Learn how lighting affects [object appearance](objects.md)
-- **Trial Conditions**: Configure [conditions](trial-conditions.md) for your visual setup
-- **Data Collection**: Set up [data logging](data-collection.md) for scene-related metrics
-- **Examples**: Browse scene examples in the examples directory
