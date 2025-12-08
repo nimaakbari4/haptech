@@ -194,6 +194,9 @@ public:
     static void applyConstantImpulse(double fx, double fy, double fz, int durationMs);
 
 private:
+    // Select default cursor implementation: true -> cToolMesh, false -> cToolCursor
+    static bool useMeshCursorByDefault;
+
     // haptic tool management
     static void createHapticTool();
     static void destroyHapticTool();

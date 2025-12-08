@@ -145,6 +145,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
 
     // Add objects from the request configuration
+    bool cursorApplied = false;
     for (const auto& obj : request->objects()) {
         std::cout << "[SERVER] Received object id=" << obj.id() << " type=" << obj.type() << std::endl;
         std::map<std::string, std::string> params;
@@ -171,6 +172,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
                 writer->Write(statusMsg);
                 return grpc::Status::OK;
             }
+            cursorApplied = true;
             // Do not add this as a world object
             continue;
         }
@@ -193,6 +195,12 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             writer->Write(statusMsg);
             return grpc::Status::OK;
         }
+    }
+
+    // If no cursor object was provided, reset to default cursor
+    if (!cursorApplied) {
+        std::map<std::string, std::string> empty;
+        SimulationManager::applyCursorConfig("", empty);
     }
 
     // DO NOT enable haptics here - objects might be at device position

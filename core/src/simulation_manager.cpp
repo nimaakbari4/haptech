@@ -9,10 +9,12 @@
 
 SimulationContext SimulationManager::simContext;
 TrialContext SimulationManager::trialContext;
+// Toggle default cursor implementation: true = cToolMesh, false = cToolCursor.
+bool SimulationManager::useMeshCursorByDefault = true;
 
 bool SimulationManager::run() {
     //--------------------------------------------------------------------------
-    // INITIALIZATION
+    // INITIALIZATIONa
     //--------------------------------------------------------------------------
 
     std::cout << "[SimulationManager] simContext address: " << &simContext << std::endl;
@@ -353,9 +355,10 @@ bool SimulationManager::reset() {
     // allow one or two frames for deferred deletion to flush
     cSleepMs(100);
 
-    // DO NOT re-enable haptics - leave disabled until next trial explicitly enables it
-    // This prevents force spikes when reset completes
-    std::cout << "[RESET] Haptics remains disabled - will be enabled by next trial" << std::endl;
+    // Re-enable haptics so the user can move the cursor in the wait room.
+    std::cout << "[RESET] Re-enabling haptics for wait room cursor control" << std::endl;
+    simContext.hapticsEnabled = true;
+
     std::cout << "[RESET] Reset complete" << std::endl;
     return true;
 }
@@ -852,6 +855,35 @@ void SimulationManager::updateHaptics(void) {
         // update tool from device only (mouse controls removed)
         simContext.tool->updateFromDevice();
 
+        // Heuristic to unstick the proxy if it gets wedged deep inside objects.
+        // If the separation between proxy and goal stays large, reset the tool.
+        if (simContext.tool) {
+            static int stuckCounter = 0;
+            const double STUCK_SEPARATION = 0.03; // 3 cm
+            const int STUCK_CYCLES = 20;          // ~20 ms at 1 kHz
+
+            cHapticPoint* hp = simContext.tool->getHapticPoint(0);
+            if (hp) {
+                cVector3d proxyPos = hp->getGlobalPosProxy();
+                cVector3d goalPos  = hp->getGlobalPosGoal();
+                double separation = cDistance(proxyPos, goalPos);
+
+                if (separation > STUCK_SEPARATION) {
+                    stuckCounter++;
+                    if (stuckCounter >= STUCK_CYCLES) {
+                        std::cout << "[HAPTICS] Proxy stuck (separation=" << separation
+                                  << "m). Re-initializing tool to unstick." << std::endl;
+                        simContext.tool->initialize();
+                        stuckCounter = 0;
+                    }
+                } else {
+                    stuckCounter = 0;
+                }
+            } else {
+                stuckCounter = 0;
+            }
+        }
+
         // Log contacts BEFORE computing forces
         // if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {
         //     int numPoints = simContext.tool->getNumHapticPoints();
@@ -1008,6 +1040,37 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
     std::cout << "[CURSOR] No haptic device present; cannot create tool." << std::endl;
     simContext.hapticsEnabled = true;
     return false;
+    }
+
+    // Default cursor path when no custom visual type is provided:
+    // just reset to default visual/tether on the existing tool.
+    if (visualType.empty()) {
+        if (simContext.tool) {
+            if (useMeshCursorByDefault) {
+                if (auto toolMeshPtr = dynamic_cast<cToolMesh*>(simContext.tool)) {
+                    const int sampleCount = 6;
+                    const double contactRadius = 0.02;
+                    cMultiMesh* sphereVisual = new cMultiMesh();
+                    cMesh* sub = sphereVisual->newMesh();
+                    cCreateSphere(sub, 0.02);
+                    sphereVisual->m_material->setWhite();
+                    toolMeshPtr->setVisual(sphereVisual, sampleCount, contactRadius);
+                    toolMeshPtr->setTetherEnabled(false);
+                    toolMeshPtr->setGravityForceScale(0.0);
+                    toolMeshPtr->setWaitForSmallForce(true);
+                    toolMeshPtr->initialize();
+                    toolMeshPtr->setShowContactPoints(false, false);
+                }
+            } else if (auto cursor = dynamic_cast<cToolCursor*>(simContext.tool)) {
+                const double radius = 0.01;
+                cursor->setRadius(radius);
+                cursor->setWaitForSmallForce(true);
+                cursor->initialize();
+                cursor->setShowContactPoints(false, false);
+            }
+        }
+        simContext.hapticsEnabled = true;
+        return true;
     }
 
     // Build visual mesh via registry if possible
@@ -1286,42 +1349,43 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    // Create default sphere cursor visual
-    auto sphereMulti = new cMultiMesh();
-    {
-        cMesh* sub = sphereMulti->newMesh();
-        cCreateSphere(sub, 0.02);
-        sphereMulti->m_material->setWhite();
+    if (useMeshCursorByDefault) {
+        // Default cursor: simple mesh-based cursor (sphere)
+        auto sphereMulti = new cMultiMesh();
+        {
+            cMesh* sub = sphereMulti->newMesh();
+            cCreateSphere(sub, 0.02);
+            sphereMulti->m_material->setWhite();
+        }
+
+        const int sampleCount = 6;
+        // Make haptic contact points smaller than the visual cursor sphere
+        const double contactRadius = 0.005;
+        simContext.tool = new cToolMesh(simContext.world, static_cast<cGenericObject*>(sphereMulti), sampleCount, contactRadius);
+        simContext.world->addChild(simContext.tool);
+        simContext.tool->setHapticDevice(simContext.hapticDevice);
+        simContext.tool->enableDynamicObjects(true);
+        simContext.tool->setWorkspaceRadius(1.0);
+        simContext.tool->setWaitForSmallForce(true);
+        simContext.tool->setShowContactPoints(false, false);
+        simContext.tool->start();
+        std::cout << "[DEBUG] Created and started new mesh cursor tool (default)." << std::endl;
+    } else {
+        // Default cursor: CHAI3D cToolCursor
+        auto cursor = new cToolCursor(simContext.world);
+        simContext.tool = cursor;
+        simContext.world->addChild(cursor);
+
+        cursor->setHapticDevice(simContext.hapticDevice);
+        cursor->setWorkspaceRadius(1.0);
+
+        const double cursorRadius = 0.012;
+        cursor->setRadius(cursorRadius);
+        cursor->setWaitForSmallForce(true);
+        cursor->setShowContactPoints(false, false);
+        cursor->start();
+        std::cout << "[DEBUG] Created and started new CHAI cursor tool." << std::endl;
     }
-
-    // Instantiate cToolMesh with sampling and contact radius
-    const int sampleCount = 24;
-    const double contactRadius = 0.01;
-    simContext.tool = new cToolMesh(simContext.world, static_cast<cGenericObject*>(sphereMulti), sampleCount, contactRadius);
-
-    simContext.world->addChild(simContext.tool);
-
-    // connect the haptic device to the virtual tool
-    simContext.tool->setHapticDevice(simContext.hapticDevice);
-
-    simContext.tool->enableDynamicObjects(true);
-
-    // Enable force rise to prevent violent bounces/impacts
-    // simContext.tool->setUseForceRise(true);
-    // simContext.tool->setRiseTime(0.05); // 50ms ramp time for smooth force onset
-
-    // map the physical workspace of the haptic device to a larger virtual workspace.
-    simContext.tool->setWorkspaceRadius(1.0);
-
-    // haptic forces are enabled only if small forces are first sent to the device;
-    // this mode avoids the force spike that occurs when the application starts when 
-    // the tool is located inside an object for instance. 
-    simContext.tool->setWaitForSmallForce(true);
-
-    // start the haptic tool
-    simContext.tool->start();
-    
-    std::cout << "[DEBUG] Created and started new haptic tool." << std::endl;
 }
 
 void SimulationManager::destroyHapticTool() {
