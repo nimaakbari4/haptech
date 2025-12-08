@@ -101,6 +101,8 @@ def run_trial(config_file_path, trial_subject, trial_id):
         }
 
         print("Starting trial...\n")
+        print(f"[CLIENT] Parsed cursor_settings={config.cursor_settings}")
+        print(f"[CLIENT] Parsed data_collection type={type(config.data_collection)}")
         util.run_trial(
             stub,
             trial_id,
@@ -109,8 +111,9 @@ def run_trial(config_file_path, trial_subject, trial_id):
             config.start_conditions.conditions,
             config.end_conditions.conditions,
             config.scene_settings,
-            metadata,
             config.cursor_settings,
+            config.data_collection,
+            metadata,
         )
 
         metadata["ended_at"] = datetime.datetime.now()

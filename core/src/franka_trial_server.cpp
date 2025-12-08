@@ -146,6 +146,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 
     // Add objects from the request configuration
     for (const auto& obj : request->objects()) {
+        std::cout << "[SERVER] Received object id=" << obj.id() << " type=" << obj.type() << std::endl;
         std::map<std::string, std::string> params;
         
         for (const auto& param : obj.params()) {
@@ -153,25 +154,26 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         }
         
         // Handle cursor configuration objects specially
-        // bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
-        // if (isCursor) {
-        //     // Determine visual type from params (visual_type or type key)
-        //     std::string visualType;
-        //     auto itVT = params.find("visual_type");
-        //     if (itVT != params.end()) visualType = itVT->second; else {
-        //         auto itType = params.find("type");
-        //         if (itType != params.end()) visualType = itType->second; else visualType = "";
-        //     }
-        //     if (!SimulationManager::applyCursorConfig(visualType, params)) {
-        //         TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
-        //         status->set_status(TrialStatus::ERROR);
-        //         status->set_message("Failed to apply cursor configuration");
-        //         writer->Write(statusMsg);
-        //         return grpc::Status::OK;
-        //     }
-        //     // Do not add this as a world object
-        //     continue;
-        // }
+        bool isCursor = (obj.type() == "cursor") || (params.find("as_cursor") != params.end() && (params["as_cursor"] == "true" || params["as_cursor"] == "1"));
+        if (isCursor) {
+            // Determine visual type from params (visual_type or type key)
+            std::string visualType;
+            auto itVT = params.find("visual_type");
+            if (itVT != params.end()) visualType = itVT->second; else {
+                auto itType = params.find("type");
+                if (itType != params.end()) visualType = itType->second; else visualType = "";
+            }
+            std::cout << "[SERVER] Applying cursor config: visual_type=" << visualType << std::endl;
+            if (!SimulationManager::applyCursorConfig(visualType, params)) {
+                TrialStatusUpdate* status = statusMsg.mutable_statusupdate();
+                status->set_status(TrialStatus::ERROR);
+                status->set_message("Failed to apply cursor configuration");
+                writer->Write(statusMsg);
+                return grpc::Status::OK;
+            }
+            // Do not add this as a world object
+            continue;
+        }
         
         // Get color values
         double r = obj.has_color() ? obj.color().r() : 1.0;

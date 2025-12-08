@@ -284,6 +284,12 @@ bool SimulationManager::reset() {
 
     std::cout << "[RESET] Starting environment reset..." << std::endl;
     
+    // Ensure an OpenGL context is current before deleting GL resources.
+    // reset() is invoked from the gRPC thread, not the graphics thread.
+    if (simContext.window) {
+        glfwMakeContextCurrent(simContext.window);
+    }
+    
     // Check force before disabling haptics
     cVector3d forceBeforeReset(0, 0, 0);
     if (simContext.hapticDevice) {
@@ -1064,12 +1070,13 @@ bool SimulationManager::applyCursorConfig(const std::string& visualType,
     }
     }
 
-    // Fallback: simple box
+    // Fallback: simple sphere (should rarely happen)
     if (!visual) {
-    cMultiMesh* mm = new cMultiMesh(); visual = mm;
-    cMesh* sub = mm->newMesh();
-    cCreateSphere(sub, 0.02);
-    mm->m_material->setWhite();
+        std::cout << "[CURSOR] Visual creation failed; falling back to default sphere." << std::endl;
+        cMultiMesh* mm = new cMultiMesh(); visual = mm;
+        cMesh* sub = mm->newMesh();
+        cCreateSphere(sub, 0.02);
+        mm->m_material->setWhite();
     }
 
     // Optional visual color (from params: color_r,color_g,color_b)
@@ -1279,30 +1286,18 @@ void SimulationManager::createHapticTool() {
         return;
     }
 
-    // create a tool (mesh-based cursor) and insert into the world
-    
-
-    auto teapotMulti = new cMultiMesh();
+    // Create default sphere cursor visual
+    auto sphereMulti = new cMultiMesh();
     {
-        cMesh* sub = teapotMulti->newMesh();
+        cMesh* sub = sphereMulti->newMesh();
         cCreateSphere(sub, 0.02);
-        teapotMulti->m_material->setWhite();
-    }
-
-    auto boxMulti = new cMultiMesh();
-    {
-        cMesh* sub = boxMulti->newMesh();
-        cCreateBox(sub, 0.02, 0.02, 0.02);
-        boxMulti->m_material->setWhite();
+        sphereMulti->m_material->setWhite();
     }
 
     // Instantiate cToolMesh with sampling and contact radius
     const int sampleCount = 24;
     const double contactRadius = 0.01;
-    //simContext.tool = new cToolMesh(simContext.world, boxMulti, sampleCount, contactRadius);
-    
-    simContext.tool = new cToolCursor(simContext.world);
-    simContext.tool->setRadius(0.02);
+    simContext.tool = new cToolMesh(simContext.world, static_cast<cGenericObject*>(sphereMulti), sampleCount, contactRadius);
 
     simContext.world->addChild(simContext.tool);
 

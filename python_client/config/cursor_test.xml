@@ -12,25 +12,35 @@
   </EndConditions>
 
   <HUDText>
-    <StartMessage>Test the researcher's custom objects!</StartMessage>
-    <SuccessMessage>Great job!</SuccessMessage>
-    <FailureMessage>Time's up. Try again!</FailureMessage>
+    <StartMessage>Move to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
+    <SuccessMessage>Great! You reached the target position!</SuccessMessage>
+    <FailureMessage>You didn't reach the target position.</FailureMessage>
   </HUDText>
+
+
  
   <SceneSettings>
-    <BackgroundColor r="0.2" g="0.2" b="0.2"/>
+    <BackgroundColor r="106" g="137" b="167"/>
     <Camera>
       <Position x="1.0" y="1.0" z="2.0"/>
       <LookAt x="0.0" y="0.0" z="0.0"/>
       <Up x="0.0" y="0.0" z="1.0"/>
     </Camera>
+
+    <TextOverlay>
+      <Text>Automatically homing the robot, please dont hold on! </Text>
+      <X>400</X>
+      <Y>0</Y>
+      <FontSize>50</FontSize>
+      <Color r="0" g="128" b="0"/>
+    </TextOverlay>
   </SceneSettings>
 
   <Controls>
     <MouseCursor>true</MouseCursor>
   </Controls>
 
-  <CursorSettings object="sphere">
+  <CursorSettings object="spring">
     <Parameters
         radius="0.01"
         tether_enabled="true"

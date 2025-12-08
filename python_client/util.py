@@ -6,8 +6,12 @@ import franka_trial_pb2_grpc as pb2_grpc
 
 # Start a trial and stream back data/status updates
 def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_stream, 
-              objects=None, start_conditions=None, end_conditions=None, scene_settings=None, 
-              data_collection=None, metadata={}):
+              objects=None, start_conditions=None, end_conditions=None, scene_settings=None,
+              cursor_settings=None, data_collection=None, metadata=None):
+    if metadata is None:
+        metadata = {}
+    print(f"[CLIENT] cursor_settings={cursor_settings}")
+    print(f"[CLIENT] data_collection type={type(data_collection)}")
     request = pb2.TrialRequest(trial_id=trial_id)
     
     # Add objects to the request if provided
@@ -153,33 +157,70 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
     
     # Add data collection configuration if provided
     if data_collection:
-        dc_msg = pb2.DataCollectionConfig()
-        
-        # Device data configuration
-        if data_collection.device:
-            dc_msg.device.position = data_collection.device.position
-            dc_msg.device.velocity = data_collection.device.velocity
-            dc_msg.device.angular_velocity = data_collection.device.angular_velocity
-            dc_msg.device.orientation = data_collection.device.orientation
-            dc_msg.device.proxy_position = data_collection.device.proxy_position
-            dc_msg.device.force = data_collection.device.force
-        
-        # Objects data configuration
-        if data_collection.objects:
-            dc_msg.objects.position = data_collection.objects.position
-            dc_msg.objects.orientation = data_collection.objects.orientation
-            dc_msg.objects.contact = data_collection.objects.contact
-            dc_msg.objects.contact_point = data_collection.objects.contact_point
-            dc_msg.objects.contact_normal = data_collection.objects.contact_normal
-            dc_msg.objects.penetration_depth = data_collection.objects.penetration_depth
-            dc_msg.objects.force = data_collection.objects.force
-            dc_msg.objects.spring_force = data_collection.objects.spring_force
-            dc_msg.objects.damping_force = data_collection.objects.damping_force
-        
-        request.dataCollection.CopyFrom(dc_msg)
-        print(f"[INFO] Data collection configuration applied")
+        if isinstance(data_collection, dict):
+            print("[CLIENT] data_collection is dict; treating as None (expected DataCollectionConfig)")
+            data_collection = None
+        else:
+            dc_msg = pb2.DataCollectionConfig()
+            
+            # Device data configuration
+            if data_collection.device:
+                dc_msg.device.position = data_collection.device.position
+                dc_msg.device.velocity = data_collection.device.velocity
+                dc_msg.device.angular_velocity = data_collection.device.angular_velocity
+                dc_msg.device.orientation = data_collection.device.orientation
+                dc_msg.device.proxy_position = data_collection.device.proxy_position
+                dc_msg.device.force = data_collection.device.force
+            
+            # Objects data configuration
+            if data_collection.objects:
+                dc_msg.objects.position = data_collection.objects.position
+                dc_msg.objects.orientation = data_collection.objects.orientation
+                dc_msg.objects.contact = data_collection.objects.contact
+                dc_msg.objects.contact_point = data_collection.objects.contact_point
+                dc_msg.objects.contact_normal = data_collection.objects.contact_normal
+                dc_msg.objects.penetration_depth = data_collection.objects.penetration_depth
+                dc_msg.objects.force = data_collection.objects.force
+                dc_msg.objects.spring_force = data_collection.objects.spring_force
+                dc_msg.objects.damping_force = data_collection.objects.damping_force
+            
+            request.dataCollection.CopyFrom(dc_msg)
+            print(f"[INFO] Data collection configuration applied")
+
+    # Emit a special cursor object if provided via config
+    if cursor_settings is not None:
+        print(f"[CLIENT] Adding cursor object type={cursor_settings.object_type}")
+        cursor_obj = request.objects.add()
+        cursor_obj.id = "cursor"
+        cursor_obj.type = "cursor"
+        # Pass the desired visual type via params
+        p = cursor_obj.params.add()
+        p.key = "visual_type"
+        p.value = str(cursor_settings.object_type)
+        # Optionally expose as_cursor flag for server-side detection (redundant but harmless)
+        p2 = cursor_obj.params.add()
+        p2.key = "as_cursor"
+        p2.value = "1"
+        # Forward color as params if provided
+        if hasattr(cursor_settings, "color") and cursor_settings.color:
+            cr = cursor_obj.params.add(); cr.key = "color_r"; cr.value = str(cursor_settings.color.r)
+            cg = cursor_obj.params.add(); cg.key = "color_g"; cg.value = str(cursor_settings.color.g)
+            cb = cursor_obj.params.add(); cb.key = "color_b"; cb.value = str(cursor_settings.color.b)
+        # Forward any additional cursor parameters
+        if hasattr(cursor_settings, "params") and cursor_settings.params:
+            for param in cursor_settings.params:
+                fp = cursor_obj.params.add()
+                fp.key = str(param.key)
+                fp.value = str(param.value)
     
     try:
+        # Debug: log outgoing objects to confirm cursor is present
+        obj_summaries = []
+        for o in request.objects:
+            params_dict = {p.key: p.value for p in o.params}
+            obj_summaries.append(f"{o.id}:{o.type}:{params_dict}")
+        print(f"[CLIENT] Sending {len(request.objects)} object(s): {obj_summaries}")
+
         response_stream = stub.RunTrial(request)
         handle_stream(response_stream, output_csv_stream, metadata, data_collection)
     except grpc.RpcError as e:

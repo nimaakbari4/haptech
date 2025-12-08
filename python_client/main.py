@@ -54,6 +54,8 @@ def main():
 
     settings.change_setting("last_configuration_file", config_file_path)
     config = xml_parser(f"{config_path}/{config_file_path}")
+    print(f"[MAIN] cursor_settings={config.cursor_settings}")
+    print(f"[MAIN] data_collection type={type(config.data_collection)}")
 
     if not config.test:
         if not trial_subject:
@@ -141,7 +143,7 @@ def main():
         print("Starting trial...\n")
         util.run_trial(stub, trial_id, output_filestream, config.objects, 
                        config.start_conditions.conditions, config.end_conditions.conditions, config.scene_settings, 
-                       config.data_collection, metadata)
+                       config.cursor_settings, config.data_collection, metadata)
 
         metadata["ended_at"] = datetime.datetime.now()
         metadata["configuration"] = asdict(config)
