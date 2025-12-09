@@ -70,7 +70,7 @@ You'll see prompts like:
 Trial configuration file: 
 ```
 
-**Enter**: `builtin_objects_test.xml` (this is a safe test configuration)
+**Enter**: `sandbox.xml` (this is a safe test configuration)
 
 ```
 Trial subject: 
@@ -217,10 +217,9 @@ In the core server terminal:
 
 ### The Test Configuration
 
-`builtin_objects_test.xml` creates a simple scene with:
+`sandbox.xml` creates a simple scene with:
 - **Multiple objects**: Sphere, box, cylinder, ball, torus
 - **Different properties**: Various sizes, colors, and haptic properties
-- **Simple conditions**: Start immediately, end after 60 seconds
 - **Data collection**: Position, velocity, and force data every ~16ms
 
 ### System Interaction

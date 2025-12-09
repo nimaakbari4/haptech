@@ -162,6 +162,12 @@ handler->getDevice(hapticDevice, 0);  // Get first device
 creatHapticTool();
 ```
 
+**Special Cursor Flag**: You can choose whether to use our own cursor implementation (cToolMesh) or a built-in CHAI3D one. When the flag below in `simulation_manager.cpp` is set to true, it will use our cursor implementation which can be configured in XML. If false, it will use the built-in CHAI3D cToolCursor. Note that you will have to re-build the core using make when you change this.
+
+```cpp
+bool SimulationManager::useMeshCursorByDefault = true;
+```
+
 ### 4. UI Widgets
 
 ```cpp

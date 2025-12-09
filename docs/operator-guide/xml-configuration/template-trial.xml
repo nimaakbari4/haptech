@@ -27,22 +27,6 @@ GETTING HELP:
 -->
 
 <TrialConfig>
-    
-    <!-- ===== TRIAL IDENTIFICATION ===== -->
-    <!-- Give your trial a descriptive name and description -->
-    <name>template_trial</name>
-    <description>Template trial configuration - modify for your experiment</description>
-    
-    
-    <!-- ===== STARTING POSITION (OPTIONAL) ===== -->
-    <!-- Define where participants should start the trial -->
-    <!-- Remove this section if no specific starting position is needed -->
-    <HomePosition>
-        <Position x="-0.1" y="0.0" z="0.0"/>  <!-- 10cm to the left of center -->
-        <Tolerance>0.02</Tolerance>            <!-- 2cm tolerance -->
-    </HomePosition>
-    
-    
     <!-- ===== START CONDITIONS ===== -->
     <!-- Define when the trial begins and data collection starts -->
     <!-- Choose ONE of the options below or combine multiple conditions -->
@@ -81,38 +65,30 @@ GETTING HELP:
         <!-- Modify target coordinates and tolerance for your task -->
         <Condition name="position" success="true" priority="1">
             <Parameters 
-                target_x="0.15"     <!-- 15cm to the right -->
-                target_y="0.0"      <!-- No front/back offset -->
-                target_z="0.0"      <!-- No up/down offset -->
-                tolerance="0.02"    <!-- 2cm tolerance (adjust as needed) -->
+                target_x="0.15"     
+                target_y="0.0"      
+                target_z="0.0"      
+                tolerance="0.02"    
             />
         </Condition>
         
         <!-- SAFETY: Time limit to prevent infinite trials -->
         <!-- Adjust duration based on your task complexity -->
-        <Condition name="time_limit" success="false" priority="2">
+        <Condition name="time" success="false" priority="2">
             <Parameters duration_seconds="30.0"/>  <!-- 30 second limit -->
         </Condition>
         
         <!-- OPTIONAL: Speed limit to encourage smooth movements (uncomment to use) -->
-        <!--
         <Condition name="velocity" success="false" priority="3">
             <Parameters max_velocity="0.5"/>  <!-- Fail if faster than 50cm/s -->
         </Condition>
-        -->
-        
-        <!-- OPTIONAL: Contact with forbidden objects (uncomment and modify to use) -->
-        <!--
-        <Condition name="contact" success="false" priority="2">
-            <Parameters object_id="obstacle_box"/>
-        </Condition>
-        -->
         
     </EndConditions>
     
     
     <!-- ===== VIRTUAL OBJECTS ===== -->
     <!-- Define the virtual objects participants interact with -->
+    <!-- NOTE: All objects require Position, Orientation, Color, and Parameters elements -->
     
     <Objects>
         
@@ -120,20 +96,18 @@ GETTING HELP:
         <!-- Modify position, size, and color as needed -->
         <Object id="target_sphere" type="sphere">
             <Position x="0.15" y="0.0" z="0.0"/>    <!-- Position coordinates -->
+            <Orientation x="0" y="0" z="0"/>          <!-- Orientation angles in degrees -->
             <Color r="0.0" g="1.0" b="0.0"/>        <!-- Green color (RGB 0-1) -->
-            <Parameters 
-                radius="0.03"        <!-- 3cm radius -->
-                stiffness="800"      <!-- Haptic stiffness (N/m) -->
-                damping="60"         <!-- Haptic damping (Ns/m) -->
-            />
+            <Parameters radius="0.03"/>
         </Object>
         
         <!-- OPTIONAL: Starting reference sphere (uncomment to use) -->
         <!--
         <Object id="start_reference" type="sphere">
             <Position x="-0.1" y="0.0" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
             <Color r="0.5" g="0.5" b="0.5"/>
-            <Parameters radius="0.02" stiffness="500"/>
+            <Parameters radius="0.02" />
         </Object>
         -->
         
@@ -141,12 +115,12 @@ GETTING HELP:
         <!--
         <Object id="obstacle_box" type="box">
             <Position x="0.05" y="0.0" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
             <Color r="1.0" g="0.0" b="0.0"/>
             <Parameters 
                 width="0.03" 
                 height="0.03" 
                 depth="0.06" 
-                stiffness="1500"
             />
         </Object>
         -->
@@ -155,12 +129,12 @@ GETTING HELP:
         <!--
         <Object id="platform" type="box">
             <Position x="0.0" y="0.0" z="-0.05"/>
+            <Orientation x="0" y="0" z="0"/>
             <Color r="0.8" g="0.8" b="0.8"/>
             <Parameters 
                 width="0.3" 
                 height="0.3" 
                 depth="0.02" 
-                stiffness="2000"
             />
         </Object>
         -->
@@ -169,12 +143,13 @@ GETTING HELP:
         <!--
         <Object id="movable_ball" type="ball">
             <Position x="0.0" y="0.05" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
             <Color r="0.0" g="0.5" b="1.0"/>
             <Parameters 
                 radius="0.02" 
-                mass="0.05" 
-                elasticity="0.7"
-                friction="0.1"
+                gravity_scale="0.0" 
+                mass="100.0" 
+                bounciness="1.0"
             />
         </Object>
         -->
@@ -192,7 +167,7 @@ GETTING HELP:
         
         <!-- DEFAULT: Angled perspective view -->
         <Camera>
-            <Position x="1.0" y="1.0" z="1.5"/>    <!-- Camera position -->
+            <Position x="1.0" y="0.0" z="0.0"/>    <!-- Camera position -->
             <LookAt x="0.0" y="0.0" z="0.0"/>      <!-- What to look at -->
             <Up x="0.0" y="0.0" z="1.0"/>          <!-- Up direction -->
         </Camera>
@@ -219,120 +194,38 @@ GETTING HELP:
         <!-- Common options: Dark gray (0.2,0.2,0.2), Light gray (0.8,0.8,0.8), Black (0,0,0) -->
         <BackgroundColor r="0.2" g="0.2" b="0.2"/>  <!-- Dark gray background -->
         
-        <!-- LIGHTING: Simple ambient lighting (good for most trials) -->
-        <Lighting>
-            <AmbientLight intensity="0.7"/>
-        </Lighting>
-        
+        <!-- TEXT OVERLAY: Add as many text labels on the screen as you'd like -->
+        <TextOverlay>
+            <Text>Move to target position (0.15, 0, 0)</Text>
+            <X>400</X>
+            <Y>50</Y>
+            <FontSize>32</FontSize>
+            <Color r="255" g="0" b="0"/>
+        </TextOverlay>
     </SceneSettings>
     
-    
-    <!-- ===== USER INTERFACE MESSAGES (OPTIONAL) ===== -->
-    <!-- Define messages shown to participants -->
-    
-    <HUDText>
-        <StartMessage>Move to the green sphere target as quickly and accurately as possible.</StartMessage>
-        <SuccessMessage>Well done! You reached the target.</SuccessMessage>
-        <FailureMessage>Time's up! Try again.</FailureMessage>
-    </HUDText>
-    
-    
-    <!-- ===== CONTROL SETTINGS (OPTIONAL) ===== -->
-    <!-- Configure user interface elements -->
-    
-    <Controls>
-        <MouseCursor>true</MouseCursor>  <!-- Show mouse cursor -->
-    </Controls>
-    
-    
-    <!-- ===== DATA COLLECTION (OPTIONAL) ===== -->
+    <!-- ===== DATA COLLECTION ===== -->
     <!-- Configure what data to record during the trial -->
-    <!-- Remove this section to use default data collection settings -->
     
     <DataCollection>
-        
-        <!-- DEVICE DATA: What to record from the haptic device -->
         <Device>
-            <Position enabled="true"/>          <!-- 3D position -->
-            <Velocity enabled="true"/>          <!-- Movement speed -->
-            <Force enabled="true"/>             <!-- Applied forces -->
-            <ProxyPosition enabled="false"/>    <!-- Haptic proxy position -->
-            <Acceleration enabled="false"/>     <!-- Movement acceleration -->
+            <Position enabled="true"/>
+            <Velocity enabled="true"/>
+            <AngularVelocity enabled="true"/>
+            <Orientation enabled="true"/>
+            <ProxyPosition enabled="true"/>
+            <Force enabled="true"/>
         </Device>
-        
-        <!-- OBJECT DATA: What to record about object interactions -->
         <Objects>
-            <Contact enabled="true"/>           <!-- Contact detection -->
-            <ContactPoint enabled="true"/>      <!-- Contact coordinates -->
-            <Force enabled="true"/>             <!-- Interaction forces -->
-            <Position enabled="false"/>         <!-- Object positions (if they move) -->
+            <Position enabled="true"/>
+            <Orientation enabled="false"/>
+            <Contact enabled="true"/>
+            <ContactPoint enabled="true"/>
+            <ContactNormal enabled="true"/>
+            <PenetrationDepth enabled="true"/>
+            <Force enabled="true"/>
+            <SpringForce enabled="true"/>
+            <DampingForce enabled="true"/>
         </Objects>
-        
-        <!-- OUTPUT SETTINGS: File format and sampling rate -->
-        <Output>
-            <SamplingRate>1000</SamplingRate>   <!-- 1000 samples/second -->
-            <Format>csv</Format>                <!-- CSV format (easy to analyze) -->
-            <Filename>trial_data</Filename>     <!-- Base filename -->
-            <Directory>results/</Directory>     <!-- Output directory -->
-        </Output>
-        
     </DataCollection>
-    
-    
 </TrialConfig>
-
-<!--
-COMMON MODIFICATIONS:
-=====================
-
-1. SIMPLE REACHING TASK:
-   - Keep one target sphere
-   - Use position end condition
-   - Set appropriate tolerance (0.01-0.03m)
-
-2. MULTI-TARGET SEQUENCE:
-   - Add multiple target spheres
-   - Use contact_sequence condition
-   - Make targets different colors
-
-3. OBSTACLE AVOIDANCE:
-   - Add obstacle boxes between start and target
-   - Use contact conditions with success="false"
-   - Set high stiffness on obstacles
-
-4. FORCE APPLICATION:
-   - Use force conditions in EndConditions
-   - Add springs or deformable objects
-   - Set appropriate force thresholds
-
-5. SPEED CONSTRAINTS:
-   - Add velocity conditions
-   - Set max_velocity parameters
-   - Balance speed vs accuracy requirements
-
-6. PATH FOLLOWING:
-   - Add line objects for path guidance
-   - Use path_following conditions
-   - Set appropriate tolerance values
-
-VALIDATION CHECKLIST:
-====================
-□ All object positions within workspace (±0.3m)
-□ All object IDs are unique
-□ End conditions include time limit
-□ Color values between 0.0 and 1.0
-□ Tolerances appropriate for task difficulty
-□ Camera can see all important objects
-□ Objects don't overlap
-□ Force/stiffness values reasonable
-
-TESTING STEPS:
-=============
-1. Save configuration with descriptive filename
-2. Load in haptic system: python main.py your_config.xml
-3. Test with short trial run
-4. Verify all objects appear correctly
-5. Check that conditions trigger as expected
-6. Adjust parameters based on pilot testing
-7. Document final settings in experiment notes
--->
