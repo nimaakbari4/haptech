@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TrialConfig>
-  <Test>true</Test>
+  <Test>false</Test>
   
   <StartConditions>
     <Condition name="time" success="true" priority="1">
@@ -29,6 +29,29 @@
       <Color r="0" g="128" b="0"/>
     </TextOverlay>
   </SceneSettings>
+
+  <DataCollection>
+    <Device>
+      <Position enabled="true"/>
+      <Velocity enabled="true"/>
+      <AngularVelocity enabled="true"/>
+      <Orientation enabled="true"/>
+      <ProxyPosition enabled="true"/>
+      <Force enabled="true"/>
+    </Device>
+    <Objects>
+      <Position enabled="true"/>
+      <Orientation enabled="true"/>
+      <Contact enabled="true"/>
+      <ContactPoint enabled="true"/>
+      <ContactNormal enabled="true"/>
+      <PenetrationDepth enabled="true"/>
+    </Objects>
+  </DataCollection>
+
+  <Controls>
+    <MouseCursor>true</MouseCursor>
+  </Controls>
 
   <Objects>
     <!-- Ground platform -->

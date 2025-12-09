@@ -223,6 +223,7 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
     
     # Default to collecting all data if no config specified
     device_cfg = data_collection.device if data_collection else None
+    objects_cfg = data_collection.objects if data_collection else None
     
     # Extract data fields
     device_pos = data.devicePosition if data.HasField("devicePosition") else None
@@ -295,6 +296,61 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
                 row += [device_quat.x, device_quat.y, device_quat.z, device_quat.w]
             else:
                 row += ["", "", "", ""]
+        
+        # Add object data if configured
+        if objects_cfg:
+            # Create a dict for quick lookup by object ID
+            obj_dict = {obj.id: obj for obj in data.objects}
+            
+            # Create a dict for quick lookup of contact data by object ID
+            contact_dict = {}
+            if hasattr(data, 'contacts') and len(data.contacts) > 0:
+                for contact in data.contacts:
+                    # Store LAST contact for each object (in case there are duplicates)
+                    contact_dict[contact.objectId] = contact
+            
+            # Store object IDs on first data point if not already set (for consistent column ordering)
+            if "object_ids" not in metadata:
+                metadata["object_ids"] = sorted([obj.id for obj in data.objects])
+
+            # Write data for each object in consistent order
+            for obj_id in metadata.get("object_ids", []):
+                obj = obj_dict.get(obj_id, None)
+                contact = contact_dict.get(obj_id, None)
+                
+                if objects_cfg.position:
+                    if obj and obj.HasField("position"):
+                        row += [obj.position.x, obj.position.y, obj.position.z]
+                    else:
+                        row += ["", "", ""]
+                
+                if objects_cfg.orientation:
+                    if obj and obj.HasField("orientation"):
+                        row += [obj.orientation.x, obj.orientation.y, obj.orientation.z, obj.orientation.w]
+                    else:
+                        row += ["", "", "", ""]
+                
+                if objects_cfg.contact:
+                    # Boolean: is there a contact with this object?
+                    row += [1 if contact else 0]
+                
+                if objects_cfg.contact_point:
+                    if contact and contact.HasField("point"):
+                        row += [contact.point.x, contact.point.y, contact.point.z]
+                    else:
+                        row += ["", "", ""]
+                
+                if objects_cfg.contact_normal:
+                    if contact and contact.HasField("normal"):
+                        row += [contact.normal.x, contact.normal.y, contact.normal.z]
+                    else:
+                        row += ["", "", ""]
+                
+                if objects_cfg.penetration_depth:
+                    if contact:
+                        row += [contact.penetrationDepth if hasattr(contact, 'penetrationDepth') else ""]
+                    else:
+                        row += [""]
 
         writer.writerow(row)
 

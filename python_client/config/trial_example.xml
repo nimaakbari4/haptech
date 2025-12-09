@@ -15,23 +15,20 @@
 
   <DataCollection>
     <Device>
-      <Position enabled="true"/>
-      <Velocity enabled="true"/>
-      <AngularVelocity enabled="true"/>
-      <Orientation enabled="true"/>
-      <ProxyPosition enabled="true"/>
-      <Force enabled="true"/>
+      <Position enabled="false"/>
+      <Velocity enabled="false"/>
+      <AngularVelocity enabled="false"/>
+      <Orientation enabled="false"/>
+      <ProxyPosition enabled="false"/>
+      <Force enabled="false"/>
     </Device>
     <Objects>
       <Position enabled="true"/>
-      <Orientation enabled="false"/>
+      <Orientation enabled="true"/>
       <Contact enabled="true"/>
       <ContactPoint enabled="true"/>
       <ContactNormal enabled="true"/>
       <PenetrationDepth enabled="true"/>
-      <Force enabled="true"/>
-      <SpringForce enabled="true"/>
-      <DampingForce enabled="true"/>
     </Objects>
   </DataCollection>
 

@@ -12,9 +12,16 @@ cGenericObject* TorusObject::createObject(const std::map<std::string, std::strin
     unsigned int numSides = getNumSides(params);
     unsigned int numRings = getNumRings(params);
     
-    // Create torus mesh using cCreateRing (which creates a full torus)
-    cShapeTorus* torus = new cShapeTorus(innerRadius, outerRadius);
+    // Create torus as a mesh (instead of cShapeTorus) so it works with mesh-based collision detection
+    cMesh* torus = new cMesh();
+    cCreateRing(torus, innerRadius, outerRadius, numSides, numRings, 
+                cVector3d(0, 0, 0), cMatrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1), 
+                cColorf(r, g, b));
     
+    // Enable collision detection for the mesh
+    double maxDim = outerRadius * 2.0; // Use diameter as max dimension
+    torus->createAABBCollisionDetector(maxDim);
+
     // Set color
     torus->m_material->m_ambient.set(r, g, b);
     torus->m_material->m_diffuse.set(r, g, b);
@@ -22,7 +29,7 @@ cGenericObject* TorusObject::createObject(const std::map<std::string, std::strin
     
     // Position the torus
     torus->setLocalPos(x, y, z);
-
+    
     cEffectSurface* newEffect = new cEffectSurface(torus);
     torus->addEffect(newEffect);
     
