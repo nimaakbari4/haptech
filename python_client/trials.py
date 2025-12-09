@@ -55,6 +55,10 @@ def run_trial(config_file_path, trial_subject, trial_id):
     end_conditions = config.end_conditions.conditions
     start_conditions = config.start_conditions.conditions
     
+    # Get data collection config for use throughout
+    device_cfg = config.data_collection.device if config.data_collection else None
+    objects_cfg = config.data_collection.objects if config.data_collection else None
+    
     # Only create output files if not in test mode
     output_filestream = None
     if not config.test:
@@ -71,15 +75,44 @@ def run_trial(config_file_path, trial_subject, trial_id):
         metadata_file_path = os.path.join(output_dir, f"{trial_id}_metadata.json")
         
         output_filestream = open(csv_file_path, 'w')
-        output_filestream.write(
-            "t,"
-            "device_pos_x,device_pos_y,device_pos_z,"
-            "proxy_pos_x,proxy_pos_y,proxy_pos_z,"
-            "force_x,force_y,force_z,"
-            "device_vel_x,device_vel_y,device_vel_z,"
-            "device_ang_vel_x,device_ang_vel_y,device_ang_vel_z,"
-            "device_quat_x,device_quat_y,device_quat_z,device_quat_w\n"
-        )
+        
+        # Build CSV header based on data collection config
+        header_fields = ["t"]
+        
+        # If no config, collect everything (backward compatibility)
+        if not device_cfg or device_cfg.position:
+            header_fields.extend(["device_pos_x", "device_pos_y", "device_pos_z"])
+        if not device_cfg or device_cfg.proxy_position:
+            header_fields.extend(["proxy_pos_x", "proxy_pos_y", "proxy_pos_z"])
+        if not device_cfg or device_cfg.force:
+            header_fields.extend(["force_x", "force_y", "force_z"])
+        if not device_cfg or device_cfg.velocity:
+            header_fields.extend(["device_vel_x", "device_vel_y", "device_vel_z"])
+        if not device_cfg or device_cfg.angular_velocity:
+            header_fields.extend(["device_ang_vel_x", "device_ang_vel_y", "device_ang_vel_z"])
+        if not device_cfg or device_cfg.orientation:
+            header_fields.extend(["device_quat_x", "device_quat_y", "device_quat_z", "device_quat_w"])
+        
+        # Add object data headers if configured
+        if objects_cfg and config.objects:
+            # Sort object IDs for consistent ordering
+            object_ids = sorted([obj.id for obj in config.objects])
+            
+            for obj_id in object_ids:
+                if objects_cfg.position:
+                    header_fields.extend([f"{obj_id}_pos_x", f"{obj_id}_pos_y", f"{obj_id}_pos_z"])
+                if objects_cfg.orientation:
+                    header_fields.extend([f"{obj_id}_quat_x", f"{obj_id}_quat_y", f"{obj_id}_quat_z", f"{obj_id}_quat_w"])
+                if objects_cfg.contact:
+                    header_fields.append(f"{obj_id}_contact")
+                if objects_cfg.contact_point:
+                    header_fields.extend([f"{obj_id}_contact_pt_x", f"{obj_id}_contact_pt_y", f"{obj_id}_contact_pt_z"])
+                if objects_cfg.contact_normal:
+                    header_fields.extend([f"{obj_id}_contact_norm_x", f"{obj_id}_contact_norm_y", f"{obj_id}_contact_norm_z"])
+                if objects_cfg.penetration_depth:
+                    header_fields.append(f"{obj_id}_penetration_depth")
+        
+        output_filestream.write(",".join(header_fields) + "\n")
 
     try:
         # connect to the server
@@ -99,6 +132,10 @@ def run_trial(config_file_path, trial_subject, trial_id):
             "configuration_file": config_file_path,
             "started_at": datetime.datetime.now(),
         }
+        
+        # Store object IDs for consistent CSV column ordering
+        if objects_cfg and config.objects:
+            metadata["object_ids"] = sorted([obj.id for obj in config.objects])
 
         print("Starting trial...\n")
         util.run_trial(
@@ -109,8 +146,8 @@ def run_trial(config_file_path, trial_subject, trial_id):
             config.start_conditions.conditions,
             config.end_conditions.conditions,
             config.scene_settings,
+            config.data_collection,
             metadata,
-            config.cursor_settings,
         )
 
         metadata["ended_at"] = datetime.datetime.now()
