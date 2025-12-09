@@ -365,6 +365,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         retrievedDeviceAngVel = SimulationManager::simContext.tool->getDeviceGlobalAngVel();
         retrievedDeviceRot = SimulationManager::simContext.tool->getDeviceGlobalRot();
 
+        // Clear the previous data point to prevent accumulation
+        dataPointMsg.Clear();
         TrialDataPoint* dataPoint = dataPointMsg.mutable_datapoint();
 
         dataPoint->set_timestamp(SimulationManager::trialContext.time);
@@ -417,6 +419,89 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             cQuaternion oq; oq.fromRotMat(R);
             Quaternion* oso = os->mutable_orientation();
             oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
+        }
+
+        // Contact data collection
+        if (SimulationManager::simContext.tool) {
+            // Get the first (and typically only) haptic point
+            auto hapticPoint = SimulationManager::simContext.tool->getHapticPoint(0);
+            if (hapticPoint && hapticPoint->m_algorithmFingerProxy) {
+                // Debug output every 100 samples
+                static int sampleCount = 0;
+                sampleCount++;
+                
+                // Use a map to store only ONE contact per object
+                // (multiple collision events might reference the same object)
+                std::map<std::string, int> contactedObjects;
+                
+                // CHAI3D stores up to 3 simultaneous collision events per haptic point
+                for (int i = 0; i < 3; i++) {
+                    auto collisionEvent = hapticPoint->m_algorithmFingerProxy->m_collisionEvents[i];
+                    if (!collisionEvent || !collisionEvent->m_object) continue;
+                    
+                    // Find the object ID for this collision
+                    std::string contactObjectId;
+                    for (const auto& kv : SimulationManager::simContext.objectMap) {
+                        if (kv.second.get() == collisionEvent->m_object) {
+                            contactObjectId = kv.first;
+                            break;
+                        }
+                    }
+                    
+                    if (contactObjectId.empty()) continue;
+                    
+                    // Skip if we've already processed a contact for this object
+                    if (contactedObjects.find(contactObjectId) != contactedObjects.end()) continue;
+                    contactedObjects[contactObjectId] = i;
+                    
+                    // Create contact message
+                    Contact* contact = dataPoint->add_contacts();
+                    contact->set_objectid(contactObjectId);
+                    
+                    // Contact point in global coordinates
+                    cVector3d contactPt = collisionEvent->m_globalPos;
+                    Vector3* cp = contact->mutable_point();
+                    cp->set_x(contactPt.x());
+                    cp->set_y(contactPt.y());
+                    cp->set_z(contactPt.z());
+                    
+                    // Contact normal in global coordinates
+                    cVector3d contactNorm = collisionEvent->m_globalNormal;
+                    if (contactNorm.length() > 0.001) {
+                        contactNorm.normalize();
+                    }
+                    Vector3* cn = contact->mutable_normal();
+                    cn->set_x(contactNorm.x());
+                    cn->set_y(contactNorm.y());
+                    cn->set_z(contactNorm.z());
+                    
+                    // Penetration depth (distance from proxy to device)
+                    double penetration = sqrt(collisionEvent->m_squareDistance);
+                    contact->set_penetrationdepth(penetration);
+                }
+                
+                // Debug output
+                if (contactedObjects.size() > 0 && sampleCount % 100 == 1) {
+                    std::cout << "\n[SERVER-DEBUG] t=" << SimulationManager::trialContext.time 
+                              << "s: " << contactedObjects.size() << " unique object(s) in contact" << std::endl;
+                    
+                    // Show device and proxy positions
+                    cVector3d devPos = SimulationManager::simContext.tool->getDeviceGlobalPos();
+                    cVector3d proxyPos = hapticPoint->getGlobalPosProxy();
+                    std::cout << "[SERVER-DEBUG] Device pos: " << devPos.str(3) << std::endl;
+                    std::cout << "[SERVER-DEBUG] Proxy pos: " << proxyPos.str(3) << std::endl;
+                    
+                    // Show each contacted object and its position
+                    for (const auto& kv : contactedObjects) {
+                        auto objIt = SimulationManager::simContext.objectMap.find(kv.first);
+                        if (objIt != SimulationManager::simContext.objectMap.end()) {
+                            cVector3d objPos = objIt->second->getGlobalPos();
+                            std::cout << "[SERVER-DEBUG]   Contact with '" << kv.first 
+                                      << "' at pos: " << objPos.str(3) << std::endl;
+                        }
+                    }
+                }
+            }
         }
 
         if (context->IsCancelled()) {
