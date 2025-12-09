@@ -305,27 +305,9 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
             # Create a dict for quick lookup of contact data by object ID
             contact_dict = {}
             if hasattr(data, 'contacts') and len(data.contacts) > 0:
-                # Debug: Print contact info every 100 samples
-                if not hasattr(metadata, '_contact_sample_count'):
-                    metadata['_contact_sample_count'] = 0
-                metadata['_contact_sample_count'] += 1
-                
-                if metadata['_contact_sample_count'] % 100 == 1:
-                    print(f"\n[DEBUG] Contacts at t={data.timestamp:.3f}s: {len(data.contacts)} total")
-                    for i, contact in enumerate(data.contacts):  # Show all contacts
-                        print(f"  Contact[{i}]: objectId='{contact.objectId}'")
-                        print(f"    - penetration: {contact.penetrationDepth:.6f}m")
-                        print(f"    - point: ({contact.point.x:.4f}, {contact.point.y:.4f}, {contact.point.z:.4f})")
-                        print(f"    - normal: ({contact.normal.x:.4f}, {contact.normal.y:.4f}, {contact.normal.z:.4f})")
-                    print(f"[DEBUG] Known object_ids: {metadata.get('object_ids', [])}")
-                
                 for contact in data.contacts:
                     # Store LAST contact for each object (in case there are duplicates)
                     contact_dict[contact.objectId] = contact
-                    
-                # Debug: Show what's in the contact_dict
-                if metadata['_contact_sample_count'] % 100 == 1:
-                    print(f"[DEBUG] contact_dict keys: {list(contact_dict.keys())}")
             
             # Store object IDs on first data point if not already set (for consistent column ordering)
             if "object_ids" not in metadata:
@@ -335,10 +317,6 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
             for obj_id in metadata.get("object_ids", []):
                 obj = obj_dict.get(obj_id, None)
                 contact = contact_dict.get(obj_id, None)
-                
-                # Debug contact lookup every 100 samples
-                if hasattr(metadata, '_contact_sample_count') and metadata['_contact_sample_count'] % 100 == 1:
-                    print(f"[DEBUG] Writing data for obj_id='{obj_id}': contact={contact is not None}")
                 
                 if objects_cfg.position:
                     if obj and obj.HasField("position"):

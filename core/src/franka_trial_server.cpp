@@ -426,17 +426,14 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             // Get the first (and typically only) haptic point
             auto hapticPoint = SimulationManager::simContext.tool->getHapticPoint(0);
             if (hapticPoint && hapticPoint->m_algorithmFingerProxy) {
-                // Debug output every 100 samples
-                static int sampleCount = 0;
-                sampleCount++;
-                
                 // Use a map to store only ONE contact per object
                 // (multiple collision events might reference the same object)
                 std::map<std::string, int> contactedObjects;
                 
-                // CHAI3D stores up to 3 simultaneous collision events per haptic point
-                for (int i = 0; i < 3; i++) {
-                    auto collisionEvent = hapticPoint->m_algorithmFingerProxy->m_collisionEvents[i];
+                // Use the proper API to get collision events (works for both mesh and shape objects)
+                int numCollisions = hapticPoint->getNumCollisionEvents();
+                for (int i = 0; i < numCollisions; i++) {
+                    auto collisionEvent = hapticPoint->getCollisionEvent(i);
                     if (!collisionEvent || !collisionEvent->m_object) continue;
                     
                     // Find the object ID for this collision
@@ -478,28 +475,6 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
                     // Penetration depth (distance from proxy to device)
                     double penetration = sqrt(collisionEvent->m_squareDistance);
                     contact->set_penetrationdepth(penetration);
-                }
-                
-                // Debug output
-                if (contactedObjects.size() > 0 && sampleCount % 100 == 1) {
-                    std::cout << "\n[SERVER-DEBUG] t=" << SimulationManager::trialContext.time 
-                              << "s: " << contactedObjects.size() << " unique object(s) in contact" << std::endl;
-                    
-                    // Show device and proxy positions
-                    cVector3d devPos = SimulationManager::simContext.tool->getDeviceGlobalPos();
-                    cVector3d proxyPos = hapticPoint->getGlobalPosProxy();
-                    std::cout << "[SERVER-DEBUG] Device pos: " << devPos.str(3) << std::endl;
-                    std::cout << "[SERVER-DEBUG] Proxy pos: " << proxyPos.str(3) << std::endl;
-                    
-                    // Show each contacted object and its position
-                    for (const auto& kv : contactedObjects) {
-                        auto objIt = SimulationManager::simContext.objectMap.find(kv.first);
-                        if (objIt != SimulationManager::simContext.objectMap.end()) {
-                            cVector3d objPos = objIt->second->getGlobalPos();
-                            std::cout << "[SERVER-DEBUG]   Contact with '" << kv.first 
-                                      << "' at pos: " << objPos.str(3) << std::endl;
-                        }
-                    }
                 }
             }
         }
