@@ -30,14 +30,11 @@ Data collection configuration controls what information is recorded during trial
     <!-- What object interaction data to record -->
     <Objects>
         <Position enabled="true"/>
-        <Orientation enabled="false"/>
+        <Orientation enabled="true"/>
         <Contact enabled="true"/>
         <ContactPoint enabled="true"/>
         <ContactNormal enabled="true"/>
         <PenetrationDepth enabled="true"/>
-        <Force enabled="true"/>
-        <SpringForce enabled="true"/>
-        <DampingForce enabled="true"/>
     </Objects>
 </DataCollection>
 ```
@@ -47,22 +44,6 @@ Data collection configuration controls what information is recorded during trial
 Records data from the haptic device itself.
 
 ### Position and Motion Data
-
-```xml
-<Device>
-    <!-- 3D position of haptic device end-effector -->
-    <Position enabled="true"/>
-    
-    <!-- Linear velocity in 3D space -->
-    <Velocity enabled="true"/>
-    
-    <!-- Device orientation (quaternion) -->
-    <Orientation enabled="true"/>
-    
-    <!-- Angular velocity -->
-    <AngularVelocity enabled="true"/>
-</Device>
-```
 
 **Position data includes**:
 - X, Y, Z coordinates in meters
@@ -75,16 +56,6 @@ Records data from the haptic device itself.
 - Direction vector
 
 ### Force and Haptic Data
-
-```xml
-<Device>
-    <!-- Forces applied by haptic device -->
-    <Force enabled="true"/>
-    
-    <!-- Position of haptic proxy/avatar -->
-    <ProxyPosition enabled="true"/>
-</Device>
-```
 
 **Force data includes**:
 - Force vector in X, Y, Z directions (Newtons)
@@ -100,15 +71,12 @@ Records data from the haptic device itself.
 
 ```xml
 <Device>
-    <!-- Essential data for most experiments -->
     <Position enabled="true"/>
     <Velocity enabled="true"/>
     <Force enabled="true"/>
     <ProxyPosition enabled="true"/>
-    
-    <!-- Optional orientation data -->
-    <Orientation enabled="false"/>
-    <AngularVelocity enabled="false"/>
+    <Orientation enabled="true"/>
+    <AngularVelocity enabled="true"/>
 </Device>
 ```
 
@@ -120,7 +88,7 @@ Records how participants interact with virtual objects.
 
 ```xml
 <Objects>
-    <!-- Position/orientation of objects (if they move) -->
+    <!-- Position/orientation of objects -->
     <Position enabled="true"/>
     <Orientation enabled="true"/>
     
@@ -128,24 +96,15 @@ Records how participants interact with virtual objects.
     <Contact enabled="true"/>
     <ContactPoint enabled="true"/>
     <ContactNormal enabled="true"/>
-    
-    <!-- Force interactions -->
-    <Force enabled="true"/>
     <PenetrationDepth enabled="true"/>
 </Objects>
 ```
 
-### Advanced Object Data
-
-```xml
-<Objects>
-    <!-- Detailed force breakdown -->
-    <SpringForce enabled="true"/>    <!-- Force from object stiffness -->
-    <DampingForce enabled="true"/>   <!-- Force from object damping -->
-</Objects>
-```
-
-**Note**: The object data collection system is automatically configured based on the enabled options. Advanced features like per-object filtering are not currently supported in XML configuration.
+**Contact data includes**:
+- Contact - boolean (0 = false, or 1 = true) indicating if the cursor is in contact with that object for a specific point in time
+- ContactPoint - Vector indicating the position where the cursor came in contact
+- ContactNormal - Normal vector of the collision
+- PenetrationDepth - Scalar distance, how much the cursor penetrated the surface of the object
 
 ## Data Format and Output
 
@@ -163,74 +122,6 @@ Data collection is automatically handled by the system:
 - Device orientation (if enabled)
 - Force data (X, Y, Z components)
 - Object contact information
-- Object interaction forces
-
-## Complete Configuration Examples
-
-### Minimal Data Collection
-Basic data for simple reaching tasks:
-
-```xml
-<DataCollection>
-    <Device>
-        <Position enabled="true"/>
-        <Force enabled="true"/>
-    </Device>
-    
-    <Objects>
-        <Contact enabled="true"/>
-    </Objects>
-</DataCollection>
-```
-
-### Standard Data Collection
-Recommended data for most research:
-
-```xml
-<DataCollection>
-    <Device>
-        <Position enabled="true"/>
-        <Velocity enabled="true"/>
-        <Force enabled="true"/>
-        <ProxyPosition enabled="true"/>
-    </Device>
-    
-    <Objects>
-        <Position enabled="true"/>
-        <Contact enabled="true"/>
-        <ContactPoint enabled="true"/>
-        <Force enabled="true"/>
-    </Objects>
-</DataCollection>
-```
-
-### Comprehensive Data Collection
-Detailed data for research analysis:
-
-```xml
-<DataCollection>
-    <Device>
-        <Position enabled="true"/>
-        <Velocity enabled="true"/>
-        <Orientation enabled="true"/>
-        <AngularVelocity enabled="true"/>
-        <Force enabled="true"/>
-        <ProxyPosition enabled="true"/>
-    </Device>
-    
-    <Objects>
-        <Position enabled="true"/>
-        <Orientation enabled="false"/>
-        <Contact enabled="true"/>
-        <ContactPoint enabled="true"/>
-        <ContactNormal enabled="true"/>
-        <PenetrationDepth enabled="true"/>
-        <Force enabled="true"/>
-        <SpringForce enabled="true"/>
-        <DampingForce enabled="true"/>
-    </Objects>
-</DataCollection>
-```
 
 ## Performance Considerations
 
@@ -265,8 +156,8 @@ Solution: Check that data collection options are enabled="true" in XML configura
 
 **No object interaction data**:
 ```
-Problem: Object contact/force data shows no values
-Solution: Ensure objects are being contacted during trial, verify object IDs match
+Problem: Object contact data shows no values
+Solution: Ensure objects are being contacted during trial, verify object IDs match, verify object actually has a collision detector
 ```
 
 **Performance impact**:
@@ -278,7 +169,7 @@ Solution: Reduce enabled data channels, check system resources
 **Empty or incomplete files**:
 ```
 Problem: Data files are empty or missing samples
-Solution: Verify trial runs to completion, check file permissions in results directory
+Solution: Verify trial runs to completion, check file permissions in results directory, check that DataCollection element in XML is set up correctly
 ```
 
 ### Validation Steps

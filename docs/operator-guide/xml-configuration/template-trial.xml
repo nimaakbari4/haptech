@@ -223,9 +223,6 @@ GETTING HELP:
             <ContactPoint enabled="true"/>
             <ContactNormal enabled="true"/>
             <PenetrationDepth enabled="true"/>
-            <Force enabled="true"/>
-            <SpringForce enabled="true"/>
-            <DampingForce enabled="true"/>
         </Objects>
     </DataCollection>
 </TrialConfig>
