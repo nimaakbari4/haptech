@@ -214,11 +214,9 @@ def xml_parser(xml_path: str) -> TrialConfig:
     if r_val > 1.0 or g_val > 1.0 or b_val > 1.0:
         # Convert from 0-255 to 0-1 range
         background_color = BackgroundColor.from_rgb_255(int(r_val), int(g_val), int(b_val))
-        print(f"[INFO] Converted RGB values from 0-255 range: {background_color}")
     else:
         # Use as 0-1 range
         background_color = BackgroundColor.from_rgb_float(r_val, g_val, b_val)
-        print(f"[INFO] Using RGB values in 0-1 range: {background_color}")
     cam = ss.find("Camera")
     camera = Camera(
         position = Position.from_elem(cam.find("Position")),

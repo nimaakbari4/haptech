@@ -121,10 +121,8 @@ def run_trial(config_file_path, trial_subject, trial_id):
 
         # call run_trial with those values
         condition_types = [c.name for c in start_conditions]
-        # print(f"Starting trial '{trial_id}' (start conditions: {', '.join(condition_types)})...")
 
         condition_types = [c.name for c in end_conditions]
-        # print(f"Starting trial '{trial_id}' (end conditions: {', '.join(condition_types)})...")
 
         metadata = {
             "trial_subject": trial_subject,
@@ -160,7 +158,6 @@ def run_trial(config_file_path, trial_subject, trial_id):
         else:
             print_trial_summary(metadata)
 
-        print("Trial complete.")
         logger.info("Trial '%s' completed successfully", trial_id)
     except grpc.RpcError as e:
         code = e.code() if hasattr(e, 'code') else None

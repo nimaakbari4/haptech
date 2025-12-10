@@ -146,10 +146,8 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
                     overlay_msg.color.r = 1.0
                     overlay_msg.color.g = 1.0
                     overlay_msg.color.b = 1.0
-            print(f"[INFO] Added {len(scene_settings.text_overlays)} text overlay(s)")
         
         request.sceneSettings.CopyFrom(scene_msg)
-        print(f"[INFO] Scene settings applied: Background {scene_settings.background_color}")
     
     # Add data collection configuration if provided
     if data_collection:
@@ -177,7 +175,6 @@ def run_trial(stub: pb2_grpc.FrankaTrialServiceStub, trial_id: str, output_csv_s
             dc_msg.objects.damping_force = data_collection.objects.damping_force
         
         request.dataCollection.CopyFrom(dc_msg)
-        print(f"[INFO] Data collection configuration applied")
     
     try:
         response_stream = stub.RunTrial(request)
