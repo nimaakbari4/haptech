@@ -39,8 +39,8 @@ cd core && make
 
 ## Running
 Server (C++):
+(From root directory)
 ```bash
-cd core/bin
 ./scripts/start_core_lab.sh
 ```
 
