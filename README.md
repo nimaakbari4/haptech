@@ -41,7 +41,7 @@ cd core && make
 Server (C++):
 ```bash
 cd core/bin
-./core
+./scripts/start_core_lab.sh
 ```
 
 Client (Python):
