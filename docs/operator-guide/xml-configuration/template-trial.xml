@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+HAPTIC TRIAL CONFIGURATION TEMPLATE
+=====================================
+
+This template provides a comprehensive starting point for creating haptic trial configurations.
+Copy this file and modify it for your specific experimental needs.
+
+INSTRUCTIONS FOR USE:
+1. Copy this file to your config directory
+2. Rename it to describe your trial (e.g., "reaching_baseline_v1.xml")
+3. Modify the sections below for your specific experiment
+4. Remove unused sections and comments to keep the file clean
+5. Test with a short trial run before using in experiments
+
+COORDINATE SYSTEM:
+- X-axis: Left (-) to Right (+)
+- Y-axis: Back (-) to Front (+)  
+- Z-axis: Down (-) to Up (+)
+- Origin (0,0,0) is at the center of the haptic workspace
+- Typical workspace limits: ±30cm in each direction
+
+GETTING HELP:
+- See documentation in docs/operator-guide/xml-configuration/
+- Check existing examples in python_client/config/
+- Run: python validate_config.py your_trial.xml
+-->
+
+<TrialConfig>
+    <!-- ===== START CONDITIONS ===== -->
+    <!-- Define when the trial begins and data collection starts -->
+    <!-- Choose ONE of the options below or combine multiple conditions -->
+    
+    <StartConditions>
+        
+        <!-- OPTION 1: Start immediately when trial loads -->
+        <Condition name="time" success="true" priority="1">
+            <Parameters duration_seconds="0.0"/>
+        </Condition>
+        
+        <!-- OPTION 2: Start after a delay (uncomment to use) -->
+        <!--
+        <Condition name="time" success="true" priority="1">
+            <Parameters duration_seconds="3.0"/>
+        </Condition>
+        -->
+        
+        <!-- OPTION 3: Start when reaching a specific position (uncomment to use) -->
+        <!--
+        <Condition name="position" success="true" priority="1">
+            <Parameters target_x="-0.1" target_y="0.0" target_z="0.0" tolerance="0.03"/>
+        </Condition>
+        -->
+        
+    </StartConditions>
+    
+    
+    <!-- ===== END CONDITIONS ===== -->
+    <!-- Define when the trial ends and determine success/failure -->
+    <!-- ALWAYS include a time limit as a safety measure -->
+    
+    <EndConditions>
+        
+        <!-- PRIMARY SUCCESS CONDITION: Reach the target -->
+        <!-- Modify target coordinates and tolerance for your task -->
+        <Condition name="position" success="true" priority="1">
+            <Parameters 
+                target_x="0.15"     
+                target_y="0.0"      
+                target_z="0.0"      
+                tolerance="0.02"    
+            />
+        </Condition>
+        
+        <!-- SAFETY: Time limit to prevent infinite trials -->
+        <!-- Adjust duration based on your task complexity -->
+        <Condition name="time" success="false" priority="2">
+            <Parameters duration_seconds="30.0"/>  <!-- 30 second limit -->
+        </Condition>
+        
+        <!-- OPTIONAL: Speed limit to encourage smooth movements (uncomment to use) -->
+        <Condition name="velocity" success="false" priority="3">
+            <Parameters max_velocity="0.5"/>  <!-- Fail if faster than 50cm/s -->
+        </Condition>
+        
+    </EndConditions>
+    
+    
+    <!-- ===== VIRTUAL OBJECTS ===== -->
+    <!-- Define the virtual objects participants interact with -->
+    <!-- NOTE: All objects require Position, Orientation, Color, and Parameters elements -->
+    
+    <Objects>
+        
+        <!-- TARGET SPHERE: Main target to reach -->
+        <!-- Modify position, size, and color as needed -->
+        <Object id="target_sphere" type="sphere">
+            <Position x="0.15" y="0.0" z="0.0"/>    <!-- Position coordinates -->
+            <Orientation x="0" y="0" z="0"/>          <!-- Orientation angles in degrees -->
+            <Color r="0.0" g="1.0" b="0.0"/>        <!-- Green color (RGB 0-1) -->
+            <Parameters radius="0.03"/>
+        </Object>
+        
+        <!-- OPTIONAL: Starting reference sphere (uncomment to use) -->
+        <!--
+        <Object id="start_reference" type="sphere">
+            <Position x="-0.1" y="0.0" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
+            <Color r="0.5" g="0.5" b="0.5"/>
+            <Parameters radius="0.02" />
+        </Object>
+        -->
+        
+        <!-- OPTIONAL: Obstacle box (uncomment to use) -->
+        <!--
+        <Object id="obstacle_box" type="box">
+            <Position x="0.05" y="0.0" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
+            <Color r="1.0" g="0.0" b="0.0"/>
+            <Parameters 
+                width="0.03" 
+                height="0.03" 
+                depth="0.06" 
+            />
+        </Object>
+        -->
+        
+        <!-- OPTIONAL: Platform/surface (uncomment to use) -->
+        <!--
+        <Object id="platform" type="box">
+            <Position x="0.0" y="0.0" z="-0.05"/>
+            <Orientation x="0" y="0" z="0"/>
+            <Color r="0.8" g="0.8" b="0.8"/>
+            <Parameters 
+                width="0.3" 
+                height="0.3" 
+                depth="0.02" 
+            />
+        </Object>
+        -->
+        
+        <!-- OPTIONAL: Movable ball (uncomment to use) -->
+        <!--
+        <Object id="movable_ball" type="ball">
+            <Position x="0.0" y="0.05" z="0.0"/>
+            <Orientation x="0" y="0" z="0"/>
+            <Color r="0.0" g="0.5" b="1.0"/>
+            <Parameters 
+                radius="0.02" 
+                gravity_scale="0.0" 
+                mass="100.0" 
+                bounciness="1.0"
+            />
+        </Object>
+        -->
+        
+    </Objects>
+    
+    
+    <!-- ===== SCENE SETTINGS (OPTIONAL) ===== -->
+    <!-- Configure camera view and background appearance -->
+    
+    <SceneSettings>
+        
+        <!-- CAMERA: Defines the viewing perspective -->
+        <!-- Choose ONE of the camera setups below -->
+        
+        <!-- DEFAULT: Angled perspective view -->
+        <Camera>
+            <Position x="1.0" y="0.0" z="0.0"/>    <!-- Camera position -->
+            <LookAt x="0.0" y="0.0" z="0.0"/>      <!-- What to look at -->
+            <Up x="0.0" y="0.0" z="1.0"/>          <!-- Up direction -->
+        </Camera>
+        
+        <!-- ALTERNATIVE: Overhead view (uncomment to use) -->
+        <!--
+        <Camera>
+            <Position x="0.0" y="0.0" z="1.2"/>
+            <LookAt x="0.0" y="0.0" z="0.0"/>
+            <Up x="0.0" y="1.0" z="0.0"/>
+        </Camera>
+        -->
+        
+        <!-- ALTERNATIVE: Side view (uncomment to use) -->
+        <!--
+        <Camera>
+            <Position x="0.8" y="0.0" z="0.0"/>
+            <LookAt x="0.0" y="0.0" z="0.0"/>
+            <Up x="0.0" y="0.0" z="1.0"/>
+        </Camera>
+        -->
+        
+        <!-- BACKGROUND COLOR: Choose a color that contrasts with your objects -->
+        <!-- Common options: Dark gray (0.2,0.2,0.2), Light gray (0.8,0.8,0.8), Black (0,0,0) -->
+        <BackgroundColor r="0.2" g="0.2" b="0.2"/>  <!-- Dark gray background -->
+        
+        <!-- TEXT OVERLAY: Add as many text labels on the screen as you'd like -->
+        <TextOverlay>
+            <Text>Move to target position (0.15, 0, 0)</Text>
+            <X>400</X>
+            <Y>50</Y>
+            <FontSize>32</FontSize>
+            <Color r="255" g="0" b="0"/>
+        </TextOverlay>
+    </SceneSettings>
+    
+    <!-- ===== DATA COLLECTION ===== -->
+    <!-- Configure what data to record during the trial -->
+    
+    <DataCollection>
+        <Device>
+            <Position enabled="true"/>
+            <Velocity enabled="true"/>
+            <AngularVelocity enabled="true"/>
+            <Orientation enabled="true"/>
+            <ProxyPosition enabled="true"/>
+            <Force enabled="true"/>
+        </Device>
+        <Objects>
+            <Position enabled="true"/>
+            <Orientation enabled="false"/>
+            <Contact enabled="true"/>
+            <ContactPoint enabled="true"/>
+            <ContactNormal enabled="true"/>
+            <PenetrationDepth enabled="true"/>
+        </Objects>
+    </DataCollection>
+</TrialConfig>
