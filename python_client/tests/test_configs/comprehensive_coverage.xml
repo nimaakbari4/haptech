@@ -1,0 +1,60 @@
+<TrialConfig>
+  <Test>false</Test>
+  
+  <StartConditions>
+    <Condition name="user_input" success="true" priority="1">
+      <Parameters message="Press any key to start"/>
+    </Condition>
+  </StartConditions>
+
+  <EndConditions>
+    <Condition name="time" success="false" priority="1">
+      <Parameters duration_seconds="5.0"/>
+    </Condition>
+  </EndConditions>
+
+  <HUDText>
+    <StartMessage>Coverage Test</StartMessage>
+    <SuccessMessage>Coverage Success!</SuccessMessage>
+    <FailureMessage>Coverage Failed!</FailureMessage>
+  </HUDText>
+
+  <SceneSettings>
+    <BackgroundColor r="0.5" g="0.5" b="0.5"/>
+    <Camera>
+      <Position x="1.0" y="1.0" z="1.0"/>
+      <LookAt x="0.0" y="0.0" z="0.0"/>
+      <Up x="0.0" y="1.0" z="0.0"/>
+    </Camera>
+  </SceneSettings>
+
+  <Objects>
+    <!-- Object with color and parameters -->
+    <Object id="full_object" type="box">
+      <Position x="1.0" y="2.0" z="3.0"/>
+      <Orientation x="10" y="20" z="30"/>
+      <Parameters width="1.0" height="2.0" depth="3.0"/>
+      <Color r="1.0" g="0.5" b="0.0"/>
+    </Object>
+    
+    <!-- Object without color -->
+    <Object id="no_color_object" type="sphere">
+      <Position x="0.0" y="0.0" z="0.0"/>
+      <Orientation x="0" y="0" z="0"/>
+      <Parameters radius="1.0"/>
+    </Object>
+    
+    <!-- Object without parameters -->
+    <Object id="no_params_object" type="cylinder">
+      <Position x="5.0" y="6.0" z="7.0"/>
+      <Orientation x="45" y="90" z="135"/>
+      <Color r="0.2" g="0.8" b="0.4"/>
+    </Object>
+    
+    <!-- Object with neither color nor parameters -->
+    <Object id="minimal_object" type="plane">
+      <Position x="10.0" y="11.0" z="12.0"/>
+      <Orientation x="0" y="0" z="0"/>
+    </Object>
+  </Objects>
+</TrialConfig>

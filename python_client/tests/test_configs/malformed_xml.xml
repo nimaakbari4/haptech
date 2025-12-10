@@ -1,0 +1,15 @@
+<TrialConfig></TrialConfig>
+  <Test>true</Test>
+  
+  <StartConditions>
+    <Condition name="time" success="true" priority="1">
+      <Parameters duration_seconds="0.0"/>
+    </Condition>
+  </StartConditions>
+  
+  <!-- Missing closing tag for TrialConfig -->
+  <Objects>
+    <Object id="test_box" type="box">
+      <Position x="0.1" y="0.2" z="0.3"/>
+    </Object>
+  </Objects>

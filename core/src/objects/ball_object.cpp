@@ -144,20 +144,46 @@ double BallObject::getRadius(const std::map<std::string, std::string>& params) c
         //std::cout << "[ERROR] Ball requires 'radius' parameter." << std::endl;
         return 0.05; // Default radius
     }
-    return std::stod(it->second);
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        //std::cout << "[ERROR] Invalid radius value: " << it->second << ", using default 0.05" << std::endl;
+        return 0.05; // Default radius
+    }
 }
 
 double BallObject::getBounciness(const std::map<std::string, std::string>& params) const {
     auto it = params.find("bounciness");
-    return (it != params.end()) ? std::stod(it->second) : 0.5; // Default bounciness
+    if (it == params.end()) {
+        return 0.5; // Default bounciness
+    }
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        return 0.5; // Default bounciness
+    }
 }
 
 double BallObject::getGravityScale(const std::map<std::string, std::string>& params) const {
     auto it = params.find("gravity_scale");
-    return (it != params.end()) ? std::stod(it->second) : 1.0; // Default gravity scale
+    if (it == params.end()) {
+        return 1.0; // Default gravity scale
+    }
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        return 1.0; // Default gravity scale
+    }
 }
 
 double BallObject::getMass(const std::map<std::string, std::string>& params) const {
     auto it = params.find("mass");
-    return (it != params.end()) ? std::stod(it->second) : 1.0; // Default gravity scale
+    if (it == params.end()) {
+        return 1.0; // Default mass
+    }
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        return 1.0; // Default mass
+    }
 }

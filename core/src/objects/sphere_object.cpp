@@ -38,5 +38,11 @@ double SphereObject::getRadius(const std::map<std::string, std::string>& params)
         std::cout << "[ERROR] Sphere requires 'radius' parameter." << std::endl;
         return 0.05; // Default radius
     }
-    return std::stod(it->second);
+    
+    try {
+        return std::stod(it->second);
+    } catch (const std::exception& e) {
+        std::cout << "[ERROR] Invalid radius value: " << it->second << ", using default 0.05" << std::endl;
+        return 0.05; // Default radius
+    }
 }
