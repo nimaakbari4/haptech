@@ -15,11 +15,6 @@
     </Condition>
   </EndConditions>
 
-  <HUDText>
-    <StartMessage>Welcome to Haptech Pong! Use the stylus to move the left paddle.</StartMessage>
-    <SuccessMessage>Great rally!</SuccessMessage>
-    <FailureMessage>Session complete.</FailureMessage>
-  </HUDText>
 
   <SceneSettings>
     <BackgroundColor r="0.05" g="0.05" b="0.08"/>

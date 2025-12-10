@@ -12,11 +12,6 @@
     </Condition>
   </EndConditions>
 
-  <HUDText>
-    <StartMessage>Move to the target position (0, 0.5, 0) to complete the trial!</StartMessage>
-    <SuccessMessage>Great! You reached the target position!</SuccessMessage>
-    <FailureMessage>You didn't reach the target position.</FailureMessage>
-  </HUDText>
 
   <SceneSettings>
     <BackgroundColor r="106" g="137" b="167"/>
