@@ -347,10 +347,19 @@ bool SimulationManager::reset() {
     // allow one or two frames for deferred deletion to flush
     cSleepMs(100);
 
-    // DO NOT re-enable haptics - leave disabled until next trial explicitly enables it
-    // This prevents force spikes when reset completes
-    std::cout << "[RESET] Haptics remains disabled - will be enabled by next trial" << std::endl;
-    std::cout << "[RESET] Reset complete" << std::endl;
+    // Re-enable haptics after reset so cursor is movable between trials
+    // Forces are already ramped to zero, so it's safe
+    simContext.hapticsEnabled = true;
+    
+    // Ensure tool is ready for free movement (no contacts, zero forces)
+    if (simContext.tool) {
+        simContext.tool->initialize();
+    }
+    if (simContext.hapticDevice) {
+        simContext.hapticDevice->setForce(cVector3d(0, 0, 0));
+    }
+    
+    std::cout << "[RESET] Reset complete - cursor ready for movement" << std::endl;
     return true;
 }
 
