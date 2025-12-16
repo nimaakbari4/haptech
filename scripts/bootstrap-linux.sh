@@ -147,6 +147,6 @@ if ! $NO_BUILD; then
 fi
 
 echo "[bootstrap] Done. Next steps:"
-echo "  1) Run server:   (cd core/bin && ./core)"
+echo "  1) Run server:   (./scripts/start_core_lab.sh)"
 echo "  2) Run client:   source .venv/bin/activate && python3 python_client/main.py"
 
