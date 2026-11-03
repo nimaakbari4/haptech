@@ -1,7 +1,7 @@
 [submodule "core/external/chai3d-Franka-integration"]
 	path = core/external/chai3d-Franka-integration
-	url = https://github.com/Haptech-Capstone/chai3d-Franka-integration.git
-	branch = virtual-test-env
+	url = https://github.com/nimaakbari4/chai3d-Franka-integration.git
+	branch = franka-update
 [submodule "core/external/frankx"]
 	path = core/external/frankx
 	url = https://github.com/pantor/frankx
