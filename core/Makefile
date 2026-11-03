@@ -138,3 +138,5 @@ proto_clean:
 
 clean:
 	rm -rf $(BIN_DIR)
+
+LDLIBS += $(shell pkg-config --libs grpc++ protobuf)
