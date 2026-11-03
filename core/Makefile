@@ -89,7 +89,7 @@ endif
 all: generate_proto cmake_chai3d_build $(TARGET)
 
 cmake_chai3d_build:
-	@sed -i 's|${CMAKE_SOURCE_DIR}/.git|${CMAKE_CURRENT_SOURCE_DIR}/.git|' "$(CHAI3D_DIR)/external/libfranka/cmake/SetVersionFromGit.cmake"
+	@sed -i 's|$${CMAKE_SOURCE_DIR}/.git|$${CMAKE_CURRENT_SOURCE_DIR}/.git|' "$(CHAI3D_DIR)/external/libfranka/cmake/SetVersionFromGit.cmake"
 	@mkdir -p $(CHAI3D_BUILD_DIR)
 	@cd $(CHAI3D_BUILD_DIR) && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		-DCMAKE_CXX_FLAGS="-DTCP_KEEPIDLE=TCP_KEEPALIVE" \
