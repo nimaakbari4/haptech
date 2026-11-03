@@ -9,6 +9,7 @@
 #include "objects/custom_object_interface.h"
 #include <GLFW/glfw3.h>
 #include <mutex>
+#include <atomic>
 #include <unordered_map>
 #include <set>
 
@@ -16,7 +17,7 @@ using namespace chai3d;
 
 struct SimulationContext {
     // flag to enable/disable haptic calculations
-    bool hapticsEnabled = true;
+    std::atomic<bool> hapticsEnabled{true};
     // stereo Mode
     /*
         C_STEREO_DISABLED:            Stereo is disabled 
@@ -72,13 +73,13 @@ struct SimulationContext {
     std::mutex objectMapMutex;
 
     // flag to indicate if the haptic simulation currently running
-    bool simulationRunning = true;
+    std::atomic<bool> simulationRunning{false};
 
     // flag to indicate if the haptic simulation has terminated
-    bool simulationFinished = false;
+    std::atomic<bool> simulationFinished{true};
 
     // flag to indicate data thread running
-    bool dataThreadRunning = false;
+    std::atomic<bool> dataThreadRunning{false};
 
     // a frequency counter to measure the simulation graphic rate
     cFrequencyCounter freqCounterGraphics;

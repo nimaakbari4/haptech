@@ -17,3 +17,6 @@ class FrankaTrialServiceImpl final : public FrankaTrialService::Service {
 };
 
 void runServer();
+
+// Cancel active requests and release the server thread, including during startup.
+void shutdownServer();

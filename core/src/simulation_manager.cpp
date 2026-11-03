@@ -1,4 +1,5 @@
 #include "simulation_manager.h"
+#include "franka_trial_server.h"
 #include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
 #include "extensions_registry.h"
@@ -37,7 +38,7 @@ bool SimulationManager::run() {
     {
         std::cout << "failed initialization" << std::endl;
         cSleepMs(1000);
-        return 1;
+        return false;
     }
 
     // set error callback
@@ -104,7 +105,7 @@ bool SimulationManager::run() {
     {
         std::cout << "failed to initialize GLEW library" << std::endl;
         glfwTerminate();
-        return 1;
+        return false;
     }
     #endif
 
@@ -194,6 +195,10 @@ bool SimulationManager::run() {
     // initialize physics clock for graphics thread physics updates
     simContext.physicsClock.start();
 
+    // Publish startup state before the worker can run or shutdown can begin.
+    simContext.simulationRunning = true;
+    simContext.simulationFinished = false;
+
     // create a thread which starts the main haptics rendering loop
     simContext.hapticsThread = new cThread();
     simContext.hapticsThread->start(updateHaptics, CTHREAD_PRIORITY_HAPTICS);
@@ -202,7 +207,6 @@ bool SimulationManager::run() {
     // simContext.dataThread = new cThread();
     // simContext.dataThread->start(dataPollingThread, CTHREAD_PRIORITY_GRAPHICS);
 
-    simContext.simulationRunning = true;
     // setup callback when application exits
     atexit(close);
 
@@ -232,7 +236,11 @@ bool SimulationManager::run() {
         simContext.freqCounterGraphics.signal(1);
     }
 
-    // close window
+    // Drain requests before deleting anything their handlers can access.
+    shutdownServer();
+    close();
+
+    // Release graphics only after device and scene cleanup.
     glfwDestroyWindow(simContext.window);
 
     // terminate GLFW library
@@ -811,8 +819,6 @@ void SimulationManager::updateGraphics(void) {
 
 // this function contains the main haptics simulation loop
 void SimulationManager::updateHaptics(void) {
-    simContext.simulationRunning = true;
-    simContext.simulationFinished = false;
     cPrecisionClock clock;
     double deltaTime;
     clock.start();
@@ -941,38 +947,52 @@ void SimulationManager::dataPollingThread() {
 
 // this function closes the application
 void SimulationManager::close(void) {
-    // disable haptic calculations
+    // Normal window shutdown and the atexit fallback must not clean up twice.
+    static bool closed = false;
+    if (closed) return;
+    closed = true;
+
     simContext.hapticsEnabled = false;
-    
-    // softly ramp to zero to avoid torque discontinuity reflex
-    rampDeviceForceToZero(100);
-
-    // remove all objects from the world
-    removeAllObjects();
-
-    // stop the simulation
     simContext.simulationRunning = false;
 
-    // wait for graphics and haptics loops to terminate
-    while (!simContext.simulationFinished) { cSleepMs(100); }
+    // No worker may use the tool or scene while they are being destroyed.
+    if (simContext.hapticsThread) {
+        while (!simContext.simulationFinished.load()) { cSleepMs(1); }
+    }
+    while (simContext.dataThreadRunning.load()) { cSleepMs(1); }
 
-    // destroy haptic tool cleanly
-    destroyHapticTool();
-    
+    // With force rendering stopped, retain the existing force ramp.
+    rampDeviceForceToZero(100);
+    if (simContext.tool) {
+        destroyHapticTool();
+    } else if (simContext.hapticDevice) {
+        simContext.hapticDevice->close();
+    }
+
     delete simContext.hapticsThread;
     simContext.hapticsThread = nullptr;
-
-    if (simContext.dataThreadRunning) {
-        cSleepMs(100);
-    }
     delete simContext.dataThread;
     simContext.dataThread = nullptr;
-    
+
+    // Map entries own these objects. Detach them so world destruction cannot
+    // delete the same objects again.
+    {
+        std::lock_guard<std::mutex> lock(simContext.objectMapMutex);
+        if (simContext.world) {
+            for (const auto& entry : simContext.objectMap) {
+                simContext.world->removeChild(entry.second.get());
+            }
+        }
+        simContext.objectInterfaceMap.clear();
+        simContext.objectMap.clear();
+    }
+
     delete simContext.handler;
     simContext.handler = nullptr;
-    
+    simContext.hapticDevice.reset();
+
     delete simContext.world;
-    simContext.world = nullptr;    
+    simContext.world = nullptr;
 }
 
 void SimulationManager::rampDeviceForceToZero(int durationMs) {

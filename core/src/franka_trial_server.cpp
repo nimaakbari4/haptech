@@ -1,4 +1,14 @@
 #include "franka_trial_server.h"
+#include <atomic>
+#include <chrono>
+#include <mutex>
+
+namespace {
+std::mutex serverMutex;
+grpc::Server* activeServer = nullptr;
+std::atomic<bool> serverShutdownRequested{false};
+}
+
 
 // Inside franka_server.cpp or similar
 grpc::Status FrankaTrialServiceImpl::RunTrial(
@@ -7,6 +17,9 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     grpc::ServerWriter<TrialResponseStream>* writer
 ) {
     try {
+    if (serverShutdownRequested.load()) {
+        return grpc::Status(grpc::StatusCode::UNAVAILABLE, "Server is shutting down");
+    }
     TrialResponseStream statusMsg;
     TrialResponseStream dataPointMsg;
     bool clientCancelled = false;
@@ -17,8 +30,14 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     if (!SimulationManager::simContext.simulationRunning) {
         const double timeoutSec = 5.0;
         cPrecisionClock waitClock; waitClock.start();
-        while (!SimulationManager::simContext.simulationRunning && waitClock.getCurrentTimeSeconds() < timeoutSec) {
+        while (!SimulationManager::simContext.simulationRunning &&
+               !serverShutdownRequested.load() &&
+               waitClock.getCurrentTimeSeconds() < timeoutSec) {
             cSleepMs(10);
+        }
+
+        if (serverShutdownRequested.load()) {
+            return grpc::Status(grpc::StatusCode::CANCELLED, "Server is shutting down");
         }
 
         std::cout << "[DEBUG] [server] simulationRunning: " << SimulationManager::simContext.simulationRunning << std::endl;
@@ -330,6 +349,10 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     // go until trial ends (end conditions are met)
     while (SimulationManager::trialContext.startConditionMet == nullptr ||
         SimulationManager::trialContext.endConditionMet == nullptr) {
+        if (serverShutdownRequested.load()) {
+            clientCancelled = true;
+            break;
+        }
         if (SimulationManager::trialContext.startConditionMet == nullptr) {
             SimulationManager::checkStartConditions();
         } else {
@@ -517,6 +540,12 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         cSleepMs(1000 / DATA_POLL_FREQUENCY);
     }
 
+    // Shutdown owns the remaining teardown; do not reset or mutate the scene.
+    if (serverShutdownRequested.load()) {
+        SimulationManager::trialContext.trialRunning = false;
+        return grpc::Status(grpc::StatusCode::CANCELLED, "Server is shutting down");
+    }
+
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
     std::cout << "[TEARDOWN] Trial stopping, beginning force teardown sequence" << std::endl;
@@ -616,6 +645,18 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
 }
 
 
+void shutdownServer() {
+    if (serverShutdownRequested.exchange(true)) {
+        return;
+    }
+
+    // Keep the pointer alive while Shutdown cancels and drains active RPCs.
+    std::lock_guard<std::mutex> lock(serverMutex);
+    if (activeServer) {
+        activeServer->Shutdown(std::chrono::system_clock::now());
+    }
+}
+
 void runServer() {
     std::string server_address("0.0.0.0:50051");
     FrankaTrialServiceImpl service;
@@ -625,6 +666,25 @@ void runServer() {
     builder.RegisterService(&service);
     std::unique_ptr<Server> server(builder.BuildAndStart());
 
+    if (!server) {
+        std::cerr << "[Server] Could not listen on " << server_address << std::endl;
+        return;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(serverMutex);
+        activeServer = server.get();
+        // The GUI may have failed or closed before BuildAndStart completed.
+        if (serverShutdownRequested.load()) {
+            activeServer->Shutdown(std::chrono::system_clock::now());
+        }
+    }
+
     std::cout << "[Server] Listening on " << server_address << std::endl;
     server->Wait();
+
+    {
+        std::lock_guard<std::mutex> lock(serverMutex);
+        activeServer = nullptr;
+    }
 }

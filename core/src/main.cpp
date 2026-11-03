@@ -20,10 +20,13 @@ int main() {
     std::thread serverThread(runServer);
 
     // Run simulation on main thread
-    SimulationManager::run();
+    const bool simulationOk = SimulationManager::run();
+
+    // Also stop the server if graphics initialization returned early.
+    shutdownServer();
 
     // Join test thread after simulation ends
     serverThread.join();
 
-    return 0;
+    return simulationOk ? 0 : 1;
 }
