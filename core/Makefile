@@ -52,7 +52,7 @@ LDFLAGS = -L$(CHAI3D_BUILD_DIR) \
 
 LDLIBS = $(CHAI3D_BUILD_DIR)/libchai3d.a \
 $(GLFW_BUILD_DIR)/libglfw.a \
-$(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3 \
+$(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.21.3 \
  -lgrpc++ -lgrpc -lgpr -lprotobuf \
  -lcares \
  -lz -lssl -lcrypto \
@@ -71,7 +71,7 @@ ifeq ($(UNAME_S),Darwin)
  # Drop Linux/OpenGL/X11-specific libs on macOS; frameworks are linked via chai3d
  LDLIBS := $(filter-out -lrt -lGL -lGLU -lX11 -lXcursor -lXrandr -lXinerama,$(LDLIBS))
  # Drop Linux-specific libfranka .so on macOS
- LDLIBS := $(filter-out $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.13.3,$(LDLIBS))
+ LDLIBS := $(filter-out $(CHAI3D_BUILD_DIR)/external/libfranka/libfranka.so.0.21.3,$(LDLIBS))
  # Link GLU explicitly from Homebrew
  LDLIBS += -lGLU \
  	-framework Cocoa -framework IOKit -framework CoreVideo \
