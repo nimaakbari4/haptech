@@ -118,8 +118,8 @@ if grep -q 'google/protobuf/runtime_version.h' "$ROOT_DIR/core/src/franka_trial.
     "$ROOT_DIR/proto/franka_trial.proto"
 fi
 
-if $REGEN; then
-  echo "[bootstrap] Regenerating protobuf/gRPC (C++ & Python)"
+if $REGEN || [[ ! -f "$ROOT_DIR/python_client/franka_trial_pb2_grpc.py" ]]; then
+echo "[bootstrap] Regenerating protobuf/gRPC (C++ & Python)"
   protoc --proto_path="$ROOT_DIR/proto" \
     --cpp_out="$ROOT_DIR/core/src" \
     --grpc_out="$ROOT_DIR/core/src" \
