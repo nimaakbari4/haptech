@@ -6,6 +6,22 @@ The core functionality of the Haptech project.
 - Linux (Ubuntu 22.04/24.04)
 - Windows via WSL2 (Ubuntu). Native Windows builds are not supported.
 
+## Clone the repository
+
+Clone the project together with its required submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/Haptech-Capstone/haptech.git
+cd haptech
+```
+
+If you already cloned the repository, initialize its submodules:
+
+```bash
+cd haptech
+git submodule update --init --recursive
+```
+
 ## One‑command setup
 
 ```bash
