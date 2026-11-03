@@ -92,8 +92,8 @@ cmake_chai3d_build:
 	@mkdir -p $(CHAI3D_BUILD_DIR)
 	@cd $(CHAI3D_BUILD_DIR) && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		-DCMAKE_CXX_FLAGS="-DTCP_KEEPIDLE=TCP_KEEPALIVE" \
-		-DCMAKE_PREFIX_PATH="/usr" \
-		-DPoco_DIR="/usr/lib/x86_64-linux-gnu/cmake/Poco" \
+	-DCMAKE_PREFIX_PATH="/opt/openrobots;/usr" \
+	-DPoco_DIR="/usr/lib/x86_64-linux-gnu/cmake/Poco" \
 		.. && $(MAKE)
 
 
