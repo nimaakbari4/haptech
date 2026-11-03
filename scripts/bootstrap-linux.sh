@@ -137,8 +137,8 @@ if ! $NO_BUILD; then
   make -C "$ROOT_DIR/core"
   
   echo "[bootstrap] Installing Franka library system-wide"
-  if [[ -f "$ROOT_DIR/core/external/chai3d-Franka-integration/build/external/libfranka/libfranka.so.0.13.3" ]]; then
-    sudo cp "$ROOT_DIR/core/external/chai3d-Franka-integration/build/external/libfranka/libfranka.so.0.13.3" /usr/local/lib/
+  if [[ -f "$ROOT_DIR/core/external/chai3d-Franka-integration/build/external/libfranka/libfranka.so.0.21.3" ]]; then
+    sudo cp "$ROOT_DIR/core/external/chai3d-Franka-integration/build/external/libfranka/libfranka.so.0.21.3" /usr/local/lib/
     sudo ldconfig
     echo "Franka library installed successfully"
   else
