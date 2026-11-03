@@ -11,7 +11,7 @@ The core functionality of the Haptech project.
 Clone the project together with its required submodules:
 
 ```bash
-git clone --recurse-submodules https://github.com/Haptech-Capstone/haptech.git
+git clone --recurse-submodules https://github.com/nimaakbari4/haptech.git
 cd haptech
 ```
 
