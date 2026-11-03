@@ -22,6 +22,20 @@ cd haptech
 git submodule update --init --recursive
 ```
 
+## Prerequisites for physical Franka FR3 operation
+
+- A real-time Linux kernel and permission to use real-time scheduling.
+  A generic kernel can be used for compilation.
+- Robot firmware compatible with the pinned libfranka version, 0.21.3.
+- Pinocchio and its dependencies installed before building.
+  The build searches `/opt/openrobots` and `/usr`.
+  The bootstrap script does not install Pinocchio.
+- The correct end-effector profile configured in Franka Desk.
+
+WSL2 instructions are for software development, not physical robot control.
+
+The updated fork still requires a full build and physical robot verification.
+
 ## One‑command setup
 
 ```bash
