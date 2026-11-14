@@ -1,4 +1,5 @@
 #include "simulation_manager.h"
+#include "nima_reaching_task.h"
 #include "franka_trial_server.h"
 #include "tool_mesh.h"
 #include "objects/custom_object_interface.h"
@@ -285,6 +286,7 @@ void SimulationManager::checkEndConditions() {
 // SIMULATION MANIPULATION //
 
 bool SimulationManager::reset() {
+    NimaReachingTask::clear();
     if (!simContext.simulationRunning) {
         std::cout << "[ERROR] Simulation is not running." << std::endl;
         return false;
@@ -780,7 +782,9 @@ void SimulationManager::updateGraphics(void) {
     simContext.labelRates->setLocalPos((int)(0.5 * (fbw - simContext.labelRates->getWidth())), 15);
 
     // update status text
-    if (trialContext.trialRunning) {
+    if (NimaReachingTask::active()) {
+        simContext.statusText->setText(NimaReachingTask::text());
+    } else if (trialContext.trialRunning) {
         simContext.statusText->setText("Trial running: " + trialContext.trialId + " | t = " + cStr(trialContext.time, 4));
     } else {
         simContext.statusText->setText("Waiting for a trial to begin");
@@ -889,6 +893,10 @@ void SimulationManager::updateHaptics(void) {
         
         // compute interaction forces
         simContext.tool->computeInteractionForces();
+        if (NimaReachingTask::returning()) {
+            simContext.tool->setDeviceGlobalForce(cVector3d(0,0,0));
+        }
+        NimaReachingTask::applyHaptics(deltaTime);
 
         // Log force after first few computations
         if (cyclesSinceEnabled > 0 && cyclesSinceEnabled <= 3) {

@@ -25,6 +25,10 @@ def main():
 
     settings.change_setting("last_configuration_file", config_file_path)
     config = xml_parser(f"{config_path}/{config_file_path}")
+    is_nima = any(
+        condition.name == "nima_reaching"
+        for condition in config.end_conditions.conditions
+    )
 
     if not config.test:
         if not trial_subject:
@@ -42,7 +46,27 @@ def main():
         trial_id = f"TEST_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Run the trial using the trials module
-    trials.run_trial(config_file_path, trial_subject, trial_id)
+
+    if not is_nima:
+        trials.run_trial(config_file_path, trial_subject, trial_id)
+        return
+
+    stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    session_id = f"{trial_id.strip() or 'reach'}_{stamp}"
+    trial_number = 1
+
+    while True:
+        numbered_id = f"{session_id}_{trial_number:03d}"
+        completed = trials.run_trial(config_file_path, trial_subject, numbered_id)
+        if not completed:
+            break
+
+        answer = input("Go for another trial? [y/N] ").strip().lower()
+        if answer not in {"y", "yes"}:
+            break
+
+        trial_number += 1
+
 
 if __name__ == "__main__":
     main()

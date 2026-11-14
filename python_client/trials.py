@@ -8,6 +8,7 @@ from parser import xml_parser
 import settings
 import datetime
 import os
+import csv
 from dataclasses import asdict
 
 def run_trial(config_file_path, trial_subject, trial_id):
@@ -86,6 +87,11 @@ def run_trial(config_file_path, trial_subject, trial_id):
             header_fields.extend(["proxy_pos_x", "proxy_pos_y", "proxy_pos_z"])
         if not device_cfg or device_cfg.force:
             header_fields.extend(["force_x", "force_y", "force_z"])
+            header_fields.extend([
+                "estimated_external_force_x",
+                "estimated_external_force_y",
+                "estimated_external_force_z",
+            ])
         if not device_cfg or device_cfg.velocity:
             header_fields.extend(["device_vel_x", "device_vel_y", "device_vel_z"])
         if not device_cfg or device_cfg.angular_velocity:
@@ -154,11 +160,18 @@ def run_trial(config_file_path, trial_subject, trial_id):
         # Only write metadata file if not in test mode
         if not config.test:
             json.dump(metadata, open(metadata_file_path, 'w'), default=str, indent=4)
+            output_filestream.close()
+            output_filestream = None
+            add_reaching_results(csv_file_path, metadata)
             print_trial_summary(metadata, csv_file_path, metadata_file_path)
         else:
             print_trial_summary(metadata)
 
-        logger.info("Trial '%s' completed successfully", trial_id)
+        if metadata.get("nima_reaching_completed") is False:
+            logger.error("Nima reaching session did not complete; inspect its events and robot error")
+        else:
+            logger.info("Trial '%s' completed successfully", trial_id)
+        return metadata.get("nima_reaching_completed") is True
     except grpc.RpcError as e:
         code = e.code() if hasattr(e, 'code') else None
         details = e.details() if hasattr(e, 'details') else str(e)
@@ -182,6 +195,118 @@ def run_trial(config_file_path, trial_subject, trial_id):
         if output_filestream:
             output_filestream.close()
 
+def add_reaching_results(csv_path, metadata):
+    import tempfile
+
+    # Keep the latest event for each movement.
+    movements = {}
+    hold_completions = {}
+    reach_events = metadata.get("nima_reaching_events", [])
+    for event in reach_events:
+        if event.get("onset_s", -1) >= 0:
+            trial = event["trial"]
+            movements[trial] = event
+            if event.get("phase") == "feedback":
+                hold_completions.setdefault(
+                    trial,
+                    (event["time_s"] - event["onset_s"]) * 1000,
+                )
+
+    events = sorted(movements.values(), key=lambda event: event["onset_s"])
+    if not reach_events:
+        return
+
+    workspace_scale = next(
+        (
+            event["workspace_scale"]
+            for event in reach_events
+            if isinstance(event.get("workspace_scale"), (int, float))
+            and 0 < event["workspace_scale"] < float("inf")
+        ),
+        None,
+    )
+
+    # Prepare a replacement before changing the original CSV.
+    folder = os.path.dirname(os.path.abspath(csv_path))
+    with tempfile.TemporaryDirectory(dir=folder) as temporary_folder:
+        temporary_path = os.path.join(temporary_folder, "results.csv")
+
+        with open(csv_path, newline="") as source:
+            reader = csv.DictReader(source)
+            fields = list(reader.fieldnames or [])
+            for field in ("movement_time_ms", "completion_time_ms", "timing_result"):
+                if field not in fields:
+                    fields.append(field)
+
+            meter_position_fields = [
+                f"nima_{point}_pos_{axis}"
+                for point in ("home", "target")
+                for axis in "xyz"
+                if f"nima_{point}_pos_{axis}" in fields
+            ]
+            fields.extend(f"{field}_m" for field in meter_position_fields
+                          if f"{field}_m" not in fields)
+
+            with open(temporary_path, "w", newline="") as destination:
+                writer = csv.DictWriter(destination, fieldnames=fields)
+                writer.writeheader()
+                first_csv_time = None
+
+                for row in reader:
+                    timestamp = float(row["t"])
+                    event = next(
+                        (item for item in reversed(events)
+                         if item["onset_s"] <= timestamp),
+                        None,
+                    )
+                    row["movement_time_ms"] = ""
+                    row["completion_time_ms"] = ""
+                    row["timing_result"] = ""
+
+                    if event:
+                        completion = hold_completions.get(event["trial"])
+                        if completion is not None:
+                            row["completion_time_ms"] = round(completion, 3)
+                        movement = event.get("movement_s", -1)
+                        if movement >= 0:
+                            row["movement_time_ms"] = round(movement * 1000, 3)
+                        result = event.get("result", "none")
+                        if result in ("good", "too_fast", "too_slow"):
+                            row["timing_result"] = result
+
+                    for field in meter_position_fields:
+                        value = row.get(field)
+                        row[f"{field}_m"] = (
+                            float(value) / workspace_scale
+                            if workspace_scale is not None and value not in (None, "")
+                            else ""
+                        )
+                    if first_csv_time is None:
+                        first_csv_time = timestamp
+                    row["t"] = timestamp - first_csv_time
+
+                    for axis in "xyz":
+                        home_scene = f"nima_home_pos_{axis}"
+                        target_scene = f"nima_target_pos_{axis}"
+
+                        home_m = row.get(f"{home_scene}_m")
+                        if home_m not in (None, ""):
+                            for field in (f"device_pos_{axis}", f"proxy_pos_{axis}",
+                                          f"{home_scene}_m", f"{target_scene}_m"):
+                                value = row.get(field)
+                                if value not in (None, ""):
+                                    row[field] = float(value) - float(home_m)
+
+                        scene_origin = row.get(home_scene)
+                        if scene_origin not in (None, ""):
+                            for field in (home_scene, target_scene):
+                                value = row.get(field)
+                                if value not in (None, ""):
+                                    row[field] = float(value) - float(scene_origin)
+
+                    writer.writerow(row)
+
+        os.replace(temporary_path, csv_path)
 def print_trial_summary(metadata, csv_file_path=None, metadata_file_path=None):
     # Calculate duration
     duration = metadata.get("trial_duration")

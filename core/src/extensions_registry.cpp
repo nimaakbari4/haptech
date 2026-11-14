@@ -1,4 +1,5 @@
 #include "extensions_registry.h"
+#include "nima_reaching_task.h"
 #include <iostream>
 
 bool ExtensionsRegistry::registered_ = false;
@@ -71,6 +72,10 @@ void ExtensionsRegistry::registerAllExtensions() {
         return std::make_unique<VelocityCondition>(params, success, priority);
     });
     
+    registerTrialCondition("nima_reaching", [](std::map<std::string,std::string>& params,bool success,int priority) -> std::unique_ptr<TrialConditionInterface> {
+        return std::make_unique<NimaReachingCondition>(params,success,priority);
+    });
+
     // Aliases for common config names
     registerTrialCondition("reach_target", [](std::map<std::string, std::string>& params, bool success, int priority) -> std::unique_ptr<TrialConditionInterface> {
         // Map 'target_distance' -> 'tolerance' for PositionCondition

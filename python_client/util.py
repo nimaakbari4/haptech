@@ -1,3 +1,4 @@
+import json
 import grpc
 import csv
 import logging
@@ -212,6 +213,24 @@ def handle_status_update(status, metadata):
 
     metadata["status_updates"].append({"message": status.message, "status": status.status})
 
+    marker = "NIMA_REACH_EVENT "
+    if marker in status.message:
+        payload = status.message.split(marker, 1)[1]
+        try:
+            event = json.loads(payload)
+        except json.JSONDecodeError:
+            logger.error("Invalid Nima reaching event: %s", payload)
+        else:
+            events = metadata.setdefault("nima_reaching_events", [])
+            if not events or events[-1] != event:
+                events.append(event)
+            metadata["device_position_units"] = "physical metres relative to Haptech device-open position"
+            metadata["device_velocity_units"] = "physical metres per second"
+            metadata["force_definition"] = "computed contact plus guidance request; not measured human force"
+            metadata["nima_reaching_completed"] = event.get("phase") == "done"
+            metadata["trial_duration"] = max(metadata.get("trial_duration", 0), event.get("time_s", 0))
+
+
     print(f"Status Update: {status.message} (Status: {name})")
 
 # Handle a TrialDataPoint
@@ -226,6 +245,9 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
     device_pos = data.devicePosition if data.HasField("devicePosition") else None
     proxy_pos = data.proxyPosition if data.HasField("proxyPosition") else None
     force = data.force if data.HasField("force") else None
+    external_force = (
+        data.measuredForce if data.HasField("measuredForce") else None
+    )
     device_vel = data.deviceVelocity if data.HasField("deviceVelocity") else None
     device_ang_vel = data.deviceAngularVelocity if data.HasField("deviceAngularVelocity") else None
     device_quat = data.deviceOrientation if data.HasField("deviceOrientation") else None
@@ -273,6 +295,15 @@ def handle_data_point(data, output_csv_stream, metadata, data_collection=None):
         if not device_cfg or device_cfg.force:
             if force:
                 row += [force.x, force.y, force.z]
+            else:
+                row += ["", "", ""]
+
+            if external_force is not None:
+                row += [
+                    external_force.x,
+                    external_force.y,
+                    external_force.z,
+                ]
             else:
                 row += ["", "", ""]
         

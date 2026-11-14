@@ -1,4 +1,7 @@
+#include <cmath>
+#include <Eigen/Geometry>
 #include "franka_trial_server.h"
+#include "nima_reaching_task.h"
 #include <atomic>
 #include <chrono>
 #include <mutex>
@@ -340,16 +343,19 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     }
     cVector3d retrievedProxyPos;
     cVector3d retrievedComputedForce;
+    cVector3d retrievedExternalForce;
     cVector3d retrievedDevicePos;
     bool updatedTrialStart = false;
     cVector3d retrievedDeviceVel;
     cVector3d retrievedDeviceAngVel;
     cMatrix3d retrievedDeviceRot;
 
+
     // go until trial ends (end conditions are met)
     while (SimulationManager::trialContext.startConditionMet == nullptr ||
         SimulationManager::trialContext.endConditionMet == nullptr) {
-        if (serverShutdownRequested.load()) {
+        if (serverShutdownRequested.load() || context->IsCancelled()) {
+            NimaReachingTask::cancel();
             clientCancelled = true;
             break;
         }
@@ -357,6 +363,13 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             SimulationManager::checkStartConditions();
         } else {
             SimulationManager::checkEndConditions();
+        }
+
+        for (const auto& event : NimaReachingTask::takeEvents()) {
+            TrialResponseStream eventMsg;
+            eventMsg.mutable_statusupdate()->set_status(TrialStatus::STARTED);
+            eventMsg.mutable_statusupdate()->set_message(event);
+            if(!writer->Write(eventMsg)){NimaReachingTask::cancel();clientCancelled=true;break;}
         }
 
         if (!updatedTrialStart && SimulationManager::trialContext.startConditionMet != nullptr) {
@@ -388,6 +401,17 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         retrievedDeviceAngVel = SimulationManager::simContext.tool->getDeviceGlobalAngVel();
         retrievedDeviceRot = SimulationManager::simContext.tool->getDeviceGlobalRot();
 
+        if (NimaReachingTask::active()) {
+                        if (!NimaReachingTask::readData(
+                    retrievedDevicePos, retrievedDeviceVel,
+                    retrievedComputedForce, &retrievedExternalForce, &retrievedDeviceAngVel)) {
+                NimaReachingTask::cancel();clientCancelled=true;break;
+            }
+            // Nima task CSV uses physical metres; original tasks retain their virtual coordinates.
+            retrievedProxyPos = NimaReachingTask::returning() ? retrievedDevicePos :
+                retrievedProxyPos / SimulationManager::simContext.tool->getWorkspaceScaleFactor();
+        }
+
         // Clear the previous data point to prevent accumulation
         dataPointMsg.Clear();
         TrialDataPoint* dataPoint = dataPointMsg.mutable_datapoint();
@@ -408,6 +432,12 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         force->set_x(retrievedComputedForce.x());
         force->set_y(retrievedComputedForce.y());
         force->set_z(retrievedComputedForce.z());
+        if (NimaReachingTask::active()) {
+            Vector3* externalForce = dataPoint->mutable_measuredforce();
+            externalForce->set_x(retrievedExternalForce.x());
+            externalForce->set_y(retrievedExternalForce.y());
+            externalForce->set_z(retrievedExternalForce.z());
+        }
 
         // Device kinematics
         Vector3* devVel = dataPoint->mutable_devicevelocity();
@@ -421,12 +451,19 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         devAngVel->set_z(retrievedDeviceAngVel.z());
 
         // Orientation as quaternion
-        cQuaternion q; q.fromRotMat(retrievedDeviceRot);
+        Eigen::Matrix3d rotation;
+        for (int row = 0; row < 3; ++row) {
+            for (int col = 0; col < 3; ++col) {
+                rotation(row, col) = retrievedDeviceRot(row, col);
+            }
+        }
+
+        const Eigen::Quaterniond q(rotation);
         Quaternion* devQuat = dataPoint->mutable_deviceorientation();
-        devQuat->set_x(q.x);
-        devQuat->set_y(q.y);
-        devQuat->set_z(q.z);
-        devQuat->set_w(q.w);
+        devQuat->set_x(q.x());
+        devQuat->set_y(q.y());
+        devQuat->set_z(q.z());
+        devQuat->set_w(q.w());
 
         // Object states snapshot
         for (const auto& kv : SimulationManager::simContext.objectMap) {
@@ -444,8 +481,8 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             oso->set_x(oq.x); oso->set_y(oq.y); oso->set_z(oq.z); oso->set_w(oq.w);
         }
 
-        // Contact data collection
-        if (SimulationManager::simContext.tool) {
+        // During automatic return no contact computation is applied; do not log stale contacts.
+        if (SimulationManager::simContext.tool && !NimaReachingTask::returning()) {
             // Get the first (and typically only) haptic point
             auto hapticPoint = SimulationManager::simContext.tool->getHapticPoint(0);
             if (hapticPoint && hapticPoint->m_algorithmFingerProxy) {
@@ -508,7 +545,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
             break;
         }
 
-        if (!writer->Write(dataPointMsg)) {
+                if (NimaReachingTask::shouldRecord() && !writer->Write(dataPointMsg)) {
             std::cout << "[WARN] Failed to write to client stream (likely disconnected)." << std::endl;
             clientCancelled = true;
             break;
@@ -546,6 +583,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         return grpc::Status(grpc::StatusCode::CANCELLED, "Server is shutting down");
     }
 
+    if(clientCancelled)NimaReachingTask::cancel();
     // stop trial
     SimulationManager::trialContext.trialRunning = false;
     std::cout << "[TEARDOWN] Trial stopping, beginning force teardown sequence" << std::endl;
@@ -607,7 +645,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
     if (SimulationManager::trialContext.endConditionMet != nullptr) {
         std::cout << "[TRIAL] End condition met: " << SimulationManager::trialContext.endConditionMet->getMessage() << std::endl;
 
-        status->set_status(TrialStatus::COMPLETED);
+        status->set_status(NimaReachingTask::active() && !NimaReachingTask::successful() ? TrialStatus::ERROR : TrialStatus::COMPLETED);
         status->set_message("Trial completed after " + std::to_string(SimulationManager::trialContext.time) + " seconds: " + SimulationManager::trialContext.endConditionMet->getMessage());
         if (!writer->Write(statusMsg)) {
             std::cout << "[WARN] Unable to send completion status to client (disconnected)." << std::endl;
@@ -633,6 +671,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         status->set_message(std::string("Unhandled server exception in RunTrial: ") + ex.what());
         // Best-effort write; swallow any errors here
         (void)writer->Write(statusMsg);
+        NimaReachingTask::cancel();
         return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
     } catch (...) {
         TrialResponseStream statusMsg;
@@ -640,6 +679,7 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         status->set_status(TrialStatus::ERROR);
         status->set_message("Unhandled server exception in RunTrial: unknown");
         (void)writer->Write(statusMsg);
+        NimaReachingTask::cancel();
         return grpc::Status(grpc::StatusCode::UNKNOWN, "Unexpected error in RPC handling");
     }
 }
