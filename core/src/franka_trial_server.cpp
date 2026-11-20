@@ -5,6 +5,7 @@
 #include <atomic>
 #include <chrono>
 #include <mutex>
+#include "devices/CFrankaDevices.h"
 
 namespace {
 std::mutex serverMutex;
@@ -432,7 +433,15 @@ grpc::Status FrankaTrialServiceImpl::RunTrial(
         force->set_x(retrievedComputedForce.x());
         force->set_y(retrievedComputedForce.y());
         force->set_z(retrievedComputedForce.z());
-        if (NimaReachingTask::active()) {
+        bool hasExternalForce = NimaReachingTask::active();
+        if (!hasExternalForce) {
+            auto frankaDevice = std::dynamic_pointer_cast<chai3d::cFrankaDevice>(
+                SimulationManager::simContext.hapticDevice);
+            hasExternalForce =
+                frankaDevice && frankaDevice->readExternalForceEstimate(retrievedExternalForce);
+        }
+
+        if (hasExternalForce) {
             Vector3* externalForce = dataPoint->mutable_measuredforce();
             externalForce->set_x(retrievedExternalForce.x());
             externalForce->set_y(retrievedExternalForce.y());
