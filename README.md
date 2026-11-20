@@ -74,10 +74,27 @@ Server (C++):
 ./scripts/start_core_lab.sh
 ```
 
-Client (Python):
+### Python client
+
+Run these commands from the repository root. If you built the server manually in a fresh clone, set up the Python environment and generate the client’s gRPC files before launching the client:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r python_client/requirements.txt
+python -m grpc_tools.protoc -I proto \
+  --python_out=python_client \
+  --grpc_python_out=python_client \
+  proto/franka_trial.proto
+```
+
+Repeat the generation command if `proto/franka_trial.proto` changes or the generated files are removed. If you see `ModuleNotFoundError: No module named 'franka_trial_pb2_grpc'`, run the generation command in this checkout.
+
+To launch the client:
+
 ```bash
 source .venv/bin/activate
-python3 python_client/main.py
+python python_client/main.py
 ```
 
 ## Regenerate protobuf/gRPC
